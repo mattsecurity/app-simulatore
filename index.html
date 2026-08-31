@@ -25,6 +25,7 @@
     --arancio:#ff9500; --arancio-tenue:rgba(255,149,0,.14); --arancio-txt:#b45309;
     --verde:#30a46c; --verde-tenue:rgba(48,164,108,.14); --verde-txt:#1f7a4f;
     --viola:#8b5cf6; --viola-tenue:rgba(139,92,246,.14); --viola-txt:#6d3ff0;
+    --teal:#0f9aa8; --teal-tenue:rgba(15,154,168,.14); --teal-txt:#0b7c88;
     --ombra:0 1px 2px rgba(17,24,39,.04), 0 8px 28px rgba(17,24,39,.06);
     --ombra-forte:0 12px 40px rgba(17,24,39,.14);
     --ombra-btn:0 1px 1px rgba(0,0,0,.04), 0 4px 14px rgba(0,122,255,.28);
@@ -44,6 +45,7 @@
     --arancio:#ff9f0a; --arancio-tenue:rgba(255,159,10,.18); --arancio-txt:#ff9f0a;
     --verde:#36c47d; --verde-tenue:rgba(54,196,125,.18); --verde-txt:#36c47d;
     --viola:#a78bfa; --viola-tenue:rgba(167,139,250,.20); --viola-txt:#a78bfa;
+    --teal:#3ec8d8; --teal-tenue:rgba(62,200,216,.20); --teal-txt:#3ec8d8;
     --ombra:0 1px 2px rgba(0,0,0,.35), 0 8px 28px rgba(0,0,0,.45);
     --ombra-forte:0 12px 40px rgba(0,0,0,.6);
     --ombra-btn:0 1px 1px rgba(0,0,0,.3), 0 4px 14px rgba(10,132,255,.35);
@@ -156,8 +158,8 @@
     body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-pannello,
     body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-dash{
       max-height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch }
-    body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-pannello{ position:static; padding-bottom:4px }
-    body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-dash{ padding-bottom:8px }
+    body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-pannello{ position:static; padding-bottom:calc(22px + env(safe-area-inset-bottom)) }
+    body:not(.presentazione) main#app:has(> .sim-grid) > .sim-grid > .sim-dash{ padding-bottom:calc(22px + env(safe-area-inset-bottom)) }
     /* intestazione compatta: taglia il vuoto in alto, più spazio ai dati */
     body:not(.presentazione) main#app:has(> .sim-grid){ padding-top:16px; padding-bottom:0 }
     body.sidebar-chiusa:not(.presentazione) main#app:has(> .sim-grid){ padding-top:calc(12px + env(safe-area-inset-top)) }
@@ -245,7 +247,7 @@
   /* ===== SIMULATORE: pagina di scelta, decumulo, salvataggi ===== */
   .sim-back{display:inline-flex; align-items:center; gap:4px; border:none; background:transparent; color:var(--accento); font-weight:600; font-size:14.5px; cursor:pointer; padding:10px 4px; margin:-8px 0 8px; font-family:inherit}
   .sim-back svg{flex:none}
-  .sim-scelte{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; max-width:1240px}
+  .sim-scelte{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; max-width:1240px}
   @media(max-width:1100px){ .sim-scelte{grid-template-columns:repeat(2,minmax(0,1fr)); max-width:1000px} }
   @media(max-width:600px){ .sim-scelte{grid-template-columns:1fr} }
   .sim-scelta{text-align:left; display:flex; flex-direction:column; align-items:flex-start; gap:6px; background:var(--carta); border:1px solid var(--bordo); border-radius:var(--raggio); box-shadow:var(--ombra); padding:26px; cursor:pointer; font-family:inherit; color:var(--testo); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
@@ -308,6 +310,117 @@
   .mut-conf th.sel,.mut-conf td.sel{background:var(--arancio-tenue); color:var(--arancio-txt); font-weight:700}
   .mut-conf th.sel{border-radius:8px 8px 0 0}
   .mut-conf tbody tr:last-child td.sel{border-radius:0 0 8px 8px}
+
+  /* Simulatore Successione (tema teal) */
+  .sim-hero.suc{background:linear-gradient(160deg,#2fb6c4 0%,#0f9aa8 55%,#0a7683 100%); box-shadow:0 10px 30px rgba(15,154,168,.30)}
+  .sim-scelta-ico.teal{background:var(--teal-tenue); color:var(--teal)}
+  .sim-scelta.teal .sim-scelta-vai{color:var(--teal-txt)}
+  .sim-mini-ico.teal{background:var(--teal-tenue); color:var(--teal)}
+  .sim-chip.teal .v{color:var(--teal-txt)}
+  /* riga di un bene o beneficiario ripetibile nel pannello */
+  .suc-bene{background:var(--fill); border:1px solid var(--bordo); border-radius:var(--raggio-sm); padding:12px; margin-bottom:10px}
+  .suc-bene .sim-inp{background:var(--carta)}
+  .suc-bene select{background:var(--carta); font-size:14px; padding:10px 12px; padding-right:34px}
+  .suc-bene-testa{display:flex; align-items:center; gap:8px; margin-bottom:9px}
+  .suc-bene-nome{flex:1; min-width:0; background:transparent; border:none; border-bottom:1px solid var(--bordo-forte); border-radius:0; padding:6px 2px; font-size:14.5px; font-weight:650}
+  .suc-bene-nome:focus{background:transparent; box-shadow:none; border-color:var(--accento)}
+  .suc-bene .icona-btn{width:34px; height:34px; border-radius:10px; background:transparent}
+  /* avvisi sopra i risultati */
+  .suc-avviso{border-radius:var(--raggio-md); padding:13px 16px; margin-bottom:14px; font-size:13.5px; line-height:1.55; border:1px solid transparent}
+  .suc-avviso.rosso{background:var(--rosso-tenue); border-color:var(--rosso); color:var(--testo)}
+  .suc-avviso.arancio{background:var(--arancio-tenue); border-color:var(--arancio); color:var(--testo)}
+  .suc-avviso.info{background:var(--fill); border-color:var(--bordo); color:var(--muto)}
+  /* riepilogo della massa ereditaria sotto la composizione */
+  .suc-massa{margin-top:18px; border-top:1px solid var(--bordo); padding-top:12px}
+  .suc-massa.fuori{margin-top:14px}
+  .riga-massa{display:flex; align-items:baseline; gap:12px; padding:6px 0; font-size:13.5px; color:var(--muto)}
+  .riga-massa b{margin-left:auto; font-variant-numeric:tabular-nums; font-weight:650; color:var(--testo)}
+  .riga-massa.forte{border-top:1px solid var(--bordo); margin-top:4px; padding-top:9px; color:var(--testo); font-weight:650}
+  .suc-nota{margin:10px 0 0; font-size:12.5px; line-height:1.6; color:var(--testo-3)}
+  .suc-badge{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; background:var(--fill-forte); color:var(--muto); border-radius:999px; padding:2px 8px; vertical-align:1px}
+  .suc-badge.verde{background:var(--verde-tenue); color:var(--verde-txt)}
+  .conf-tab.suc-tab{min-width:430px}
+  .conf-tab.suc-tab th, .conf-tab.suc-tab td{padding-left:9px; padding-right:9px}
+  .suc-tab-largo{min-width:940px}
+  .conf-tab.suc-tab-stretta{min-width:300px}
+  .suc-sotto{font-size:11.5px; color:var(--testo-3); margin-top:2px; font-weight:450}
+  /* pannello: spaziature più compatte e sezioni richiudibili */
+  .suc-pannello .sim-campo{margin-bottom:14px}
+  .suc-pannello .sim-strategia-desc{margin:11px 0 4px; line-height:1.5; font-size:13px}
+  .suc-eti-riga{display:flex; align-items:baseline; gap:10px; margin-bottom:7px}
+  .suc-eti-riga label{flex:1; min-width:0}
+  .suc-quota{font-size:12.5px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--testo-3); background:var(--fill); border-radius:999px; padding:2px 9px; flex:none}
+  .suc-quota.attiva{background:var(--teal-tenue); color:var(--teal-txt)}
+  .suc-sez{display:flex; align-items:center; gap:10px; width:100%; border:none; border-top:1px solid var(--bordo); background:transparent; padding:15px 2px 13px; margin-top:6px; font-family:inherit; font-size:12px; font-weight:650; letter-spacing:.5px; text-transform:uppercase; color:var(--muto); cursor:pointer; text-align:left}
+  .suc-sez-tit{flex:1; min-width:0}
+  .suc-sez-val{font-size:12px; font-weight:650; letter-spacing:0; text-transform:none; color:var(--testo-3); font-variant-numeric:tabular-nums; white-space:nowrap}
+  .suc-sez-chev{flex:none; transition:transform .2s ease}
+  .suc-sez.aperta{color:var(--testo)}
+  .suc-sez.aperta .suc-sez-chev{transform:rotate(180deg)}
+  .suc-sez-corpo{display:none}
+  .suc-sez-corpo.aperta{display:block; padding-top:2px}
+  .suc-due{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .suc-due > .sim-campo{margin-bottom:0}
+  .suc-mini-eti{display:block; font-size:11.5px; font-weight:600; color:var(--muto); margin:9px 0 5px}
+  /* coppia etichetta + importo su una riga: evita che le cifre lunghe vengano tagliate */
+  .suc-coppia{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+  .suc-coppia > .suc-mini-eti{width:86px; flex:none; margin:0}
+  .suc-coppia > .sim-inp{flex:1; min-width:0}
+  .suc-btn-agg{width:100%; justify-content:center; margin-top:4px; min-height:40px; font-size:13.5px}
+  /* voci facoltative: pulsanti «+» e crocetta per rimuoverle */
+  .suc-aggiungi{display:flex; flex-wrap:wrap; gap:7px; margin:10px 0 2px}
+  .suc-add{display:inline-flex; align-items:center; min-height:38px; padding:8px 14px; border-radius:999px; border:1px dashed var(--bordo-forte); background:transparent; color:var(--muto); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:color .13s, border-color .13s, background .13s}
+  .suc-add:active{background:var(--fill)}
+  .suc-togli{border:none; background:transparent; color:var(--muto); font-size:15px; line-height:1; width:28px; height:28px; border-radius:50%; cursor:pointer; flex:none; font-family:inherit}
+  .suc-togli:active{background:var(--fill-forte)}
+  .suc-sez .suc-togli{margin-left:2px}
+  /* riga di un bene o beneficiario ripetibile */
+  .suc-bene-testo{width:100%; font-size:15px; padding:10px 12px}
+  /* quote del testamento: nome a sinistra, percentuale a destra */
+  .suc-quota-riga{display:flex; align-items:center; gap:12px; margin-bottom:6px}
+  .suc-quota-nome{flex:1; min-width:0; font-size:14.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .suc-ben-quota{width:104px; flex:none; padding:0 11px}
+  .suc-ben-quota input{text-align:right; font-variant-numeric:tabular-nums}
+  .suc-quota-riga .suc-ben-quota{width:120px}
+  .suc-quota-riga .suc-ben-quota input{font-size:17px; font-weight:650}
+  .suc-quota-riga .suc-ben-quota .pre{font-size:14px}
+  /* quota fuori dai limiti di legge */
+  .sim-inp.errore{background:var(--rosso-tenue); border-color:var(--rosso)}
+  .sim-inp.errore input{color:var(--rosso); font-weight:700}
+  .sim-inp.errore:focus-within{border-color:var(--rosso); box-shadow:0 0 0 4px var(--rosso-tenue)}
+  .suc-quota-hint{font-size:12px; line-height:1.45; color:var(--testo-3); margin:0 0 11px}
+  .suc-quota-hint.errore{color:var(--rosso); font-weight:600}
+  .suc-quota-hint.avviso{color:var(--arancio-txt); font-weight:600}
+  .sim-inp.avviso{background:var(--arancio-tenue); border-color:var(--arancio)}
+  .sim-inp.avviso input{color:var(--arancio-txt); font-weight:700}
+  /* polizze, temporanea caso morte e previdenza */
+  .suc-prodotto{border:1px solid var(--bordo); border-radius:var(--raggio-sm); padding:12px 13px; margin-bottom:10px}
+  .suc-prodotto.spento{background:var(--fill); border-color:transparent}
+  .suc-prod-testa{display:flex; align-items:center; gap:10px}
+  .suc-prod-nome{flex:1; min-width:0; font-size:14px; font-weight:650; letter-spacing:-.2px}
+  .suc-seg-si-no{width:108px; flex:none; padding:2px}
+  .suc-seg-si-no button{padding:7px 4px; font-size:12.5px}
+  .suc-prod-corpo{margin-top:4px}
+  .suc-prod-corpo .sim-inp{background:var(--fill)}
+  /* beneficiario di polizza: nome sulla prima riga, quota e cestino sulla seconda */
+  .suc-ben-riga{display:grid; grid-template-columns:1fr auto; gap:7px 8px; align-items:center;
+                margin-bottom:11px; padding-bottom:11px; border-bottom:1px dashed var(--bordo)}
+  .suc-ben-riga:last-child{border-bottom:none; padding-bottom:0}
+  .suc-ben-riga > input[type=text]{grid-column:1 / -1; min-width:0; font-size:15px; padding:10px 12px}
+  .suc-ben-riga .suc-ben-quota{width:118px}
+  .suc-ben-riga .suc-ben-quota input{font-size:16px; font-weight:650}
+  .suc-ben-riga .icona-btn{width:38px; height:38px; border-radius:11px; background:transparent; justify-self:end}
+  .suc-ben-lista{margin-top:10px}
+  /* dashboard: blocco della ripartizione per gruppo familiare */
+  .suc-prod-blocco{padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--bordo)}
+  .suc-prod-blocco:last-of-type{border-bottom:none; padding-bottom:4px; margin-bottom:0}
+  .suc-prod-riga{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+  .suc-prod-riga b{margin-left:auto; font-variant-numeric:tabular-nums}
+  .suc-gruppi{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px 22px; margin-bottom:6px}
+  .suc-gruppo{display:flex; align-items:center; gap:9px; font-size:13.5px}
+  .suc-gruppo .eti{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .suc-gruppo .pct{margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums; color:var(--teal-txt)}
+  .suc-gruppo .imp{min-width:84px; text-align:right; font-variant-numeric:tabular-nums; color:var(--muto)}
 
   /* ===== TEXTAREA (note cliente) ===== */
   textarea{width:100%; font-family:inherit; font-size:16px; line-height:1.5; color:var(--testo); background:var(--fill); border:1px solid transparent; border-radius:var(--raggio-sm); padding:12px 14px; outline:none; -webkit-appearance:none; appearance:none; transition:background .15s, border .15s, box-shadow .15s; resize:vertical; min-height:84px}
@@ -398,6 +511,9 @@
     .sim-scelta.verde:hover{border-color:var(--verde)}
     .sim-scelta.viola:hover{border-color:var(--viola)}
     .sim-scelta.arancio:hover{border-color:var(--arancio)}
+    .sim-scelta.teal:hover{border-color:var(--teal)}
+    .suc-add:hover{color:var(--teal-txt); border-color:var(--teal); background:var(--teal-tenue)}
+    .suc-togli:hover{background:var(--fill-forte); color:var(--rosso)}
     .sim-chip:hover{transform:translateY(-2px); box-shadow:var(--ombra-forte)}
     .sim-salvata:hover{background:var(--fill); border-color:var(--bordo-forte)}
   }
@@ -761,10 +877,11 @@ function vistaSimulatore(){
   if(simPagina==='decumulo') return vistaSimDecumulo();
   if(simPagina==='universita') return vistaSimUniversita();
   if(simPagina==='mutuo') return vistaSimMutuo();
+  if(simPagina==='successione') return vistaSimSuccessione();
   return vistaSceltaSimulatore();
 }
 function vistaSceltaSimulatore(){
-  return testata('Simulatore', 'Scegli lo strumento: costruire un capitale, prelevare da un capitale esistente, stimare le spese universitarie di un figlio o calcolare la rata di un mutuo') +
+  return testata('Simulatore', 'Scegli lo strumento: costruire un capitale, prelevare da un capitale esistente, stimare le spese universitarie di un figlio, calcolare la rata di un mutuo o simulare una successione ereditaria') +
   `<div class="sim-scelte">
     <button class="sim-scelta" onclick="simApriPagina('accumulo')">
       <span class="sim-scelta-ico blu">${SIM_ICO_SU}</span>
@@ -790,6 +907,12 @@ function vistaSceltaSimulatore(){
       <span class="sim-scelta-desc">La rata di un mutuo a tasso fisso: importo, tasso e durata a confronto, con interessi totali e piano di ammortamento anno per anno.</span>
       <span class="sim-scelta-vai">Apri il simulatore ›</span>
     </button>
+    <button class="sim-scelta teal" onclick="simApriPagina('successione')">
+      <span class="sim-scelta-ico teal">${SUC_ICO}</span>
+      <span class="sim-scelta-tit">Simulatore Successione</span>
+      <span class="sim-scelta-desc">Come si divide il patrimonio fra gli eredi, se le quote di legittima sono rispettate e quanto pesano le imposte di successione.</span>
+      <span class="sim-scelta-vai">Apri il simulatore ›</span>
+    </button>
   </div>`;
 }
 function simBtnIndietro(){ return `<button class="sim-back" onclick="simApriPagina(null)">${ico('chevron-left',15)} Tutti i simulatori</button>`; }
@@ -808,7 +931,8 @@ function simScenarioHtml(pag){
     accumulo:   [()=>simScenario, 'simBloccaScenario()', 'simTogliScenario()'],
     decumulo:   [()=>decScenario, 'decBloccaScenario()', 'decTogliScenario()'],
     universita: [()=>uniScenario, 'uniBloccaScenario()', 'uniTogliScenario()'],
-    mutuo:      [()=>mutScenario, 'mutBloccaScenario()', 'mutTogliScenario()']
+    mutuo:      [()=>mutScenario, 'mutBloccaScenario()', 'mutTogliScenario()'],
+    successione:[()=>sucScenario, 'sucBloccaScenario()', 'sucTogliScenario()']
   }[pag];
   const sc = mappa[0](), blocca = mappa[1], togli = mappa[2];
   if(!sc) return `<button class="btn secondario" style="width:100%;justify-content:center" onclick="${blocca}">${ico('flag',16)} Blocca scenario per confronto</button>`;
@@ -853,7 +977,8 @@ function confCardHtml(pag, righe){
     accumulo:   ['simBloccaScenario()', 'simTogliScenario()'],
     decumulo:   ['decBloccaScenario()', 'decTogliScenario()'],
     universita: ['uniBloccaScenario()', 'uniTogliScenario()'],
-    mutuo:      ['mutBloccaScenario()', 'mutTogliScenario()']
+    mutuo:      ['mutBloccaScenario()', 'mutTogliScenario()'],
+    successione:['sucBloccaScenario()', 'sucTogliScenario()']
   }[pag];
   const corpo = righe.map(r=>`<tr${r.forte?' class="forte"':''}><td>${r.eti}</td><td>${r.blocco}</td><td>${r.ora}</td><td>${r.diff}</td></tr>`).join('');
   return `<div class="card">
@@ -882,6 +1007,7 @@ function confSbloccaCorrente(){
   else if(simPagina==='decumulo') decTogliScenario();
   else if(simPagina==='universita') uniTogliScenario();
   else if(simPagina==='mutuo') mutTogliScenario();
+  else if(simPagina==='successione') sucTogliScenario();
 }
 
 function vistaSimAccumulo(){
@@ -1005,6 +1131,13 @@ function initSimulatore(){
   } else if(simPagina==='mutuo'){
     ['mutImporto','mutTasso','mutAnni','mutInizio'].forEach(id=>ascolta(id, ()=>{ mutLeggiInput(); mutAggiorna(); }));
     mutAggiorna();
+  } else if(simPagina==='successione'){
+    ['sucLiquidita','sucTitoliInvestito','sucTitoli','sucTitoliStatoInvestito','sucTitoliStato',
+     'sucPartecipazioni','sucCrediti','sucBeniMobili','sucAltriBeni']
+      .forEach(id=>ascolta(id, ()=>{ sucLeggiInput(); sucAggiorna(); }));
+    ['sucFigli','sucAscendenti','sucFratelli'].forEach(id=>ascolta(id, sucCambiaFamiglia));
+    sucRenderPannello();
+    sucAggiorna();
   }
 }
 function simWireChart(){
@@ -1975,6 +2108,1296 @@ function uniTabella(d){
 }
 </script>
 <script>
+/* ================= SIMULATORE DI SUCCESSIONE EREDITARIA =================
+   Riferimenti normativi: successione legittima artt. 565-586 c.c.; quote di legittima
+   (riserva) artt. 536-542 c.c.; imposta di successione D.Lgs. 346/1990 con aliquote e
+   franchigie in vigore nel 2026; imposte ipotecaria e catastale D.Lgs. 347/1990;
+   polizze caso morte art. 1920 c.c. e art. 12 D.Lgs. 346/1990; previdenza complementare
+   art. 14 D.Lgs. 252/2005. Tutti i calcoli restano in locale. */
+
+const SUC_CLASSI = {
+  retta:    {nome:'Coniuge e parenti in linea retta', breve:'Linea retta',   aliq:0.04, franchigia:1000000},
+  fratelli: {nome:'Fratelli e sorelle',               breve:'Fratelli',      aliq:0.06, franchigia:100000},
+  parenti4: {nome:'Altri parenti fino al 4º grado',   breve:'Altri parenti', aliq:0.06, franchigia:0},
+  altri:    {nome:'Altri soggetti (estranei)',        breve:'Altri',         aliq:0.08, franchigia:0}
+};
+const SUC_FRANCHIGIA_DISABILE = 1500000;      // handicap grave L. 104/1992
+const SUC_ALIQ_IPOTECARIA = 0.02;             // 2% sul valore degli immobili
+const SUC_ALIQ_CATASTALE  = 0.01;             // 1% sul valore degli immobili
+const SUC_FISSA_PRIMA_CASA = 200;             // ipotecaria e catastale in misura fissa
+const SUC_CAT = [
+  {k:'liquidita',      nome:'Liquidità e depositi',      colore:'var(--accento)'},
+  {k:'titoli',         nome:'Titoli e fondi',            colore:'var(--viola)'},
+  {k:'titoliStato',    nome:'Titoli di Stato (esenti)',  colore:'var(--verde)'},
+  {k:'immobili',       nome:'Immobili',                  colore:'var(--arancio)'},
+  {k:'partecipazioni', nome:'Partecipazioni societarie', colore:'var(--teal)'},
+  {k:'crediti',        nome:'Crediti verso terzi',       colore:'#e0629a'},
+  {k:'beniMobili',     nome:'Beni mobili registrati',    colore:'#7d8ba1'},
+  {k:'altriBeni',      nome:'Altri beni di valore',      colore:'var(--muto)'}
+];
+/* Tipologie di immobile selezionabili per ciascun cespite */
+const SUC_TIPI_IMMOBILE = [
+  {k:'appartamento', nome:'Appartamento'},
+  {k:'casa',         nome:'Casa indipendente o villa'},
+  {k:'box',          nome:'Box, garage o posto auto'},
+  {k:'negozio',      nome:'Negozio'},
+  {k:'ufficio',      nome:'Ufficio o studio'},
+  {k:'capannone',    nome:'Capannone o laboratorio'},
+  {k:'terrenoAgr',   nome:'Terreno agricolo'},
+  {k:'terrenoEdi',   nome:'Terreno edificabile'},
+  {k:'altro',        nome:'Altro immobile'}
+];
+/* Capitali che non entrano nell'asse ereditario: vanno ai beneficiari designati */
+const SUC_PRODOTTI = [
+  {k:'polizza',    nome:'Polizza vita caso morte',  eti:'Capitale liquidato',  versato:''},
+  {k:'tcm',        nome:'Temporanea caso morte',    eti:'Capitale assicurato', versato:''},
+  {k:'previdenza', nome:'Previdenza complementare', eti:'Montante maturato',   versato:'Capitale versato'}
+];
+/* Voci facoltative: restano nascoste finché non le aggiungi */
+const SUC_OPZIONI = [
+  {k:'beniMobili', nome:'Beni mobili registrati', dove:'beni'},
+  {k:'altriBeni',  nome:'Altri beni di valore',   dove:'beni'},
+  {k:'passivita',  nome:'Passività',              dove:'sezione'},
+  {k:'disabili',   nome:'Handicap grave (L. 104)', dove:'sezione'}
+];
+const SUC_DESIGNAZIONI = [
+  {k:'nominativi',   nome:'Indicati per nome'},
+  {k:'legittimi',    nome:'Eredi legittimi'},
+  {k:'testamentari', nome:'Eredi testamentari'}
+];
+const SUC_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.4" r="2.3"/><path d="M12 6.7v2.6M4.6 9.3h14.8M4.6 9.3v2.6M12 9.3v2.6M19.4 9.3v2.6"/><circle cx="4.6" cy="14.5" r="2.3"/><circle cx="12" cy="14.5" r="2.3"/><circle cx="19.4" cy="14.5" r="2.3"/></svg>';
+
+let sucScenario = null;                                    // scenario bloccato per il confronto
+let sucSezioni = {altri:false, patr:true, imm:true, pol:false, dis:false};   // sezioni aperte nel pannello
+let sucStato = {
+  /* patrimonio che entra nella massa ereditaria */
+  liquidita:150000,
+  titoliInvestito:200000, titoli:250000,              // capitale investito e montante attuale
+  titoliStatoInvestito:95000, titoliStato:100000,
+  partecipazioni:0, partEsenti:false,                 // partEsenti: art. 3 c. 4-ter
+  crediti:0, beniMobili:0, altriBeni:0,
+  mutui:0, altrePassivita:0,                          // passività: solo se aggiunte
+  /* voci che compaiono solo quando l'utente le aggiunge con «+» */
+  opzioni:{beniMobili:false, altriBeni:false, passivita:false, disabili:false},
+  immobili:[
+    {id:'im1', tipo:'appartamento', nome:'Abitazione principale', indirizzo:'', valore:400000, primaCasa:true},
+    {id:'im2', tipo:'appartamento', nome:'Seconda casa',          indirizzo:'', valore:180000, primaCasa:false}
+  ],
+  /* capitali fuori successione */
+  polizza:    {attiva:true,  capitale:150000, versato:0, designazione:'nominativi',
+               beneficiari:[{id:'bp1', nome:'', quota:100}]},
+  tcm:        {attiva:false, capitale:200000, versato:0, designazione:'legittimi',  beneficiari:[]},
+  previdenza: {attiva:false, capitale:80000,  versato:60000, designazione:'legittimi', beneficiari:[]},
+  /* situazione familiare */
+  coniuge:true, figli:2, ascendenti:0, fratelli:0,
+  altri:[],                              // altri eredi o legatari {id, nome, classe}
+  disabili:{},                           // key erede -> true (handicap grave L. 104)
+  /* tipo di successione */
+  modo:'legittima',                      // 'legittima' | 'testamentaria'
+  quote:{}                               // key erede -> quota % del testamento
+};
+
+/* ---------- formattazione ---------- */
+function sucPct(f){ return (isFinite(f)?f*100:0).toLocaleString('it-IT',{minimumFractionDigits:0, maximumFractionDigits:2}) + '%'; }
+function sucFrazione(f){
+  const noti = [[1,'intero'],[1/2,'1/2'],[1/3,'1/3'],[2/3,'2/3'],[1/4,'1/4'],[3/4,'3/4'],[1/6,'1/6'],[1/12,'1/12'],[1/8,'1/8']];
+  for(const [v,t] of noti) if(Math.abs(f-v)<0.0005) return t;
+  return '';
+}
+function sucNomeTipoImmobile(k){ const t = SUC_TIPI_IMMOBILE.find(x=>x.k===k); return t ? t.nome : 'Immobile'; }
+function sucEtichettaImmobile(i){ return (i.nome||'').trim() || sucNomeTipoImmobile(i.tipo); }
+
+/* ---------- quote della successione legittima (senza testamento) ----------
+   Figli: escludono ascendenti e fratelli (artt. 566, 581 c.c.).
+   Coniuge: 1/2 con un figlio, 1/3 con due o più figli (art. 581).
+   Senza figli: coniuge 2/3, il restante 1/3 ad ascendenti e fratelli con riserva
+   di 1/4 dell'eredità agli ascendenti (art. 582); senza coniuge, ascendenti e fratelli
+   concorrono per capi con almeno la metà agli ascendenti (art. 571). */
+function sucQuoteLegge(coniuge, nFigli, nAsc, nFra){
+  const z = {coniuge:0, figli:0, ascendenti:0, fratelli:0};
+  if(nFigli>0){
+    if(coniuge) return nFigli===1 ? {...z, coniuge:1/2, figli:1/2} : {...z, coniuge:1/3, figli:2/3};
+    return {...z, figli:1};
+  }
+  const asc = nAsc>0, fra = nFra>0;
+  if(coniuge){
+    if(!asc && !fra) return {...z, coniuge:1};
+    if(asc && fra){
+      let qa = (1/3) * (nAsc/(nAsc+nFra));
+      if(qa < 1/4) qa = 1/4;                       // riserva minima agli ascendenti
+      return {...z, coniuge:2/3, ascendenti:qa, fratelli:1/3 - qa};
+    }
+    if(asc) return {...z, coniuge:2/3, ascendenti:1/3};
+    return {...z, coniuge:2/3, fratelli:1/3};
+  }
+  if(asc && fra){
+    let qa = nAsc/(nAsc+nFra);
+    if(qa < 1/2) qa = 1/2;                         // agli ascendenti almeno la metà
+    return {...z, ascendenti:qa, fratelli:1-qa};
+  }
+  if(asc) return {...z, ascendenti:1};
+  if(fra) return {...z, fratelli:1};
+  return z;                                        // nessun erede legittimo prossimo
+}
+
+/* ---------- quote di legittima (riservate ai legittimari, artt. 536-542 c.c.) ---------- */
+function sucQuoteRiservate(coniuge, nFigli, nAsc){
+  const asc = nAsc>0;
+  if(coniuge && nFigli===1)  return {coniuge:1/3,  figli:1/3, ascendenti:0};
+  if(coniuge && nFigli>=2)   return {coniuge:1/4,  figli:1/2, ascendenti:0};
+  if(coniuge && asc)         return {coniuge:1/2,  figli:0,   ascendenti:1/4};
+  if(coniuge)                return {coniuge:1/2,  figli:0,   ascendenti:0};
+  if(nFigli===1)             return {coniuge:0,    figli:1/2, ascendenti:0};
+  if(nFigli>=2)              return {coniuge:0,    figli:2/3, ascendenti:0};
+  if(asc)                    return {coniuge:0,    figli:0,   ascendenti:1/3};
+  return {coniuge:0, figli:0, ascendenti:0};
+}
+
+/* ---------- elenco degli eredi/beneficiari ---------- */
+function sucEredi(){
+  const s = sucStato, l = [];
+  if(s.coniuge) l.push({key:'coniuge', nome:'Coniuge', breve:'Coniuge', gruppo:'coniuge', classe:'retta'});
+  for(let i=0;i<s.figli;i++)      l.push({key:'figlio'+i, nome:'Figlio '+(i+1),  breve:'Figlio '+(i+1), gruppo:'figli', classe:'retta'});
+  for(let i=0;i<s.ascendenti;i++) l.push({key:'asc'+i,    nome:'Ascendente '+(i+1), breve:'Asc. '+(i+1), gruppo:'ascendenti', classe:'retta'});
+  for(let i=0;i<s.fratelli;i++)   l.push({key:'fra'+i,    nome:'Fratello/sorella '+(i+1), breve:'Fr. '+(i+1), gruppo:'fratelli', classe:'fratelli'});
+  s.altri.forEach((a,i)=> l.push({key:a.id, nome:a.nome || ('Beneficiario '+(i+1)), breve:(a.nome || ('Ben. '+(i+1))).split(' ')[0], gruppo:'altri', classe:a.classe||'altri', custom:true}));
+  l.forEach(e=> e.disabile = !!s.disabili[e.key]);
+  return l;
+}
+function sucQuoteIndividualiLegge(eredi){
+  const s = sucStato, g = sucQuoteLegge(s.coniuge, s.figli, s.ascendenti, s.fratelli), m = {};
+  const altri = eredi.filter(e=>e.gruppo==='altri');
+  const nessunProssimo = !s.coniuge && !s.figli && !s.ascendenti && !s.fratelli;
+  eredi.forEach(e=>{
+    if(e.gruppo==='coniuge')         m[e.key] = g.coniuge;
+    else if(e.gruppo==='figli')      m[e.key] = g.figli/s.figli;
+    else if(e.gruppo==='ascendenti') m[e.key] = g.ascendenti/s.ascendenti;
+    else if(e.gruppo==='fratelli')   m[e.key] = g.fratelli/s.fratelli;
+    else                             m[e.key] = (nessunProssimo && altri.length) ? 1/altri.length : 0;
+  });
+  return m;
+}
+function sucQuoteIndividualiTestamento(eredi){
+  const s = sucStato, m = {};
+  let somma = 0;
+  eredi.forEach(e=> somma += Math.max(0, Number(s.quote[e.key])||0)/100);
+  const fattore = somma > 1.0000001 ? 1/somma : 1;
+  eredi.forEach(e=> m[e.key] = (Math.max(0, Number(s.quote[e.key])||0)/100) * fattore);
+  return {mappa:m, somma};
+}
+/* Allinea l'oggetto delle quote testamentarie agli eredi presenti (azzerando le voci scomparse). */
+function sucAllineaQuote(reimposta){
+  const eredi = sucEredi(), legge = sucQuoteIndividualiLegge(eredi), nuovo = {};
+  eredi.forEach(e=>{
+    nuovo[e.key] = (!reimposta && sucStato.quote[e.key]!=null)
+      ? sucStato.quote[e.key]
+      : Math.round(legge[e.key]*10000)/100;
+  });
+  sucStato.quote = nuovo;
+}
+/* Minimo e massimo assegnabili a ciascun beneficiario per testamento.
+   Il minimo è la riserva di legge del legittimario; il massimo è quanto resta
+   una volta garantite le riserve di tutti gli altri legittimari. */
+function sucLimitiQuote(){
+  const s = sucStato, eredi = sucEredi();
+  const ris = sucQuoteRiservate(s.coniuge, s.figli, s.ascendenti);
+  const minimi = {};
+  eredi.forEach(e=>{
+    minimi[e.key] =
+      e.gruppo==='coniuge'    ? ris.coniuge :
+      e.gruppo==='figli'      ? (s.figli>0 ? ris.figli/s.figli : 0) :
+      e.gruppo==='ascendenti' ? (s.ascendenti>0 ? ris.ascendenti/s.ascendenti : 0) : 0;
+  });
+  const sommaMin = Object.values(minimi).reduce((a,b)=>a+b, 0);
+  const limiti = {};
+  eredi.forEach(e=>{
+    const altrui = sommaMin - minimi[e.key];
+    limiti[e.key] = {min:minimi[e.key]*100, max:Math.max(0, (1-altrui)*100)};
+  });
+  return {limiti, minimi, sommaMin, eredi};
+}
+/* Massimo effettivo: oltre alla riserva altrui, il totale non può superare il 100%.
+   Restituisce anche quale dei due vincoli sta mordendo, per dare il messaggio giusto. */
+function sucMassimoEffettivo(key){
+  const {limiti, eredi} = sucLimitiQuote();
+  if(!limiti[key]) return {massimo:100, vincolo:'nessuno', restante:100};
+  const altri = eredi.reduce((a,e)=> e.key===key ? a : a + Math.max(0, Number(sucStato.quote[e.key])||0), 0);
+  const perLegge = limiti[key].max, restante = 100 - altri;
+  const massimo = Math.max(limiti[key].min, Math.min(perLegge, restante));
+  return {massimo, restante, vincolo: restante < perLegge ? 'totale' : 'legittima'};
+}
+/* Percentuali per gruppo familiare, secondo la legge o secondo il testamento */
+function sucQuotePerGruppo(){
+  const eredi = sucEredi();
+  const base = sucStato.modo==='testamentaria'
+    ? sucQuoteIndividualiTestamento(eredi).mappa
+    : sucQuoteIndividualiLegge(eredi);
+  const g = {coniuge:0, figli:0, ascendenti:0, fratelli:0, altri:0};
+  eredi.forEach(e=> g[e.gruppo] += base[e.key]||0);
+  return g;
+}
+
+/* ---------- ripartizione dei capitali fuori successione ----------
+   Le polizze caso morte e la previdenza complementare si liquidano ai beneficiari
+   designati: per nome, oppure agli eredi legittimi o testamentari secondo le quote
+   della successione (qui riproporzionate al 100% del capitale). */
+function sucRipartoFuori(prod, eredi, quoteLegge, quoteTest){
+  if(!prod || !prod.attiva) return {voci:[], capitale:0, problema:''};
+  const capitale = Math.max(0, Number(prod.capitale)||0);
+  if(capitale<=0) return {voci:[], capitale:0, problema:''};
+  if(prod.designazione==='nominativi'){
+    const lista = prod.beneficiari || [];
+    if(!lista.length) return {voci:[], capitale, problema:'Nessun beneficiario indicato: il capitale seguirebbe le regole di polizza o del fondo.'};
+    const somma = lista.reduce((a,b)=>a + Math.max(0, Number(b.quota)||0), 0);
+    if(somma<=0) return {voci:lista.map((b,i)=>({nome:b.nome || ('Beneficiario '+(i+1)), quota:0, importo:0})), capitale,
+      problema:'Quote dei beneficiari tutte a zero: assegna almeno una percentuale.'};
+    return {voci:lista.map((b,i)=>{
+      const q = Math.max(0, Number(b.quota)||0)/somma;
+      return {nome:b.nome || ('Beneficiario '+(i+1)), quota:q, importo:capitale*q};
+    }), capitale, problema: Math.abs(somma-100)>0.01 ? 'Le quote indicate sommano a ' + somma.toLocaleString('it-IT',{maximumFractionDigits:2}) + '%: vengono riproporzionate a 100%.' : ''};
+  }
+  let base = prod.designazione==='testamentari' ? quoteTest : quoteLegge;
+  let somma = eredi.reduce((a,e)=>a + (base[e.key]||0), 0);
+  let nota = '';
+  /* Designazione «eredi testamentari» senza testamento (o con quote non assegnate):
+     il capitale si liquida a chi eredita per legge. */
+  if(prod.designazione==='testamentari' && somma<=0){
+    base = quoteLegge;
+    somma = eredi.reduce((a,e)=>a + (base[e.key]||0), 0);
+    nota = 'Non ci sono quote testamentarie: il capitale è attribuito agli eredi legittimi.';
+  }
+  if(somma<=0) return {voci:[], capitale, problema:'Nessun erede a cui attribuire il capitale: verifica la situazione familiare o le quote del testamento.'};
+  return {voci:eredi.filter(e=>(base[e.key]||0)>0).map(e=>{
+    const q = (base[e.key]||0)/somma;
+    return {nome:e.nome, quota:q, importo:capitale*q};
+  }), capitale, problema:nota};
+}
+
+/* ---------- motore di calcolo ---------- */
+function sucCalcola(){
+  const s = sucStato;
+  const immobiliTot = s.immobili.reduce((a,i)=>a + (Number(i.valore)||0), 0);
+  const comp = {
+    liquidita:s.liquidita, titoli:s.titoli, titoliStato:s.titoliStato, immobili:immobiliTot,
+    partecipazioni:s.partecipazioni, crediti:s.crediti, beniMobili:s.beniMobili, altriBeni:s.altriBeni
+  };
+  const lordo = SUC_CAT.reduce((a,c)=>a + (comp[c.k]||0), 0);
+  const passivita = s.opzioni.passivita ? (s.mutui + s.altrePassivita) : 0;
+  const netto = Math.max(0, lordo - passivita);                // asse ereditario netto
+  const esente = s.titoliStato + (s.partEsenti ? s.partecipazioni : 0);
+  const imponibileGlobale = Math.max(0, netto - esente);
+  const investito = s.titoliInvestito + s.titoliStatoInvestito;
+  const plusvalenza = (s.titoli + s.titoliStato) - investito;
+
+  const eredi = sucEredi();
+  const quoteLegge = sucQuoteIndividualiLegge(eredi);
+  const test = sucQuoteIndividualiTestamento(eredi);
+  const quote = s.modo==='testamentaria' ? test.mappa : quoteLegge;
+  const riproporzionate = s.modo==='testamentaria' && test.somma > 1.0000001;
+  const residuo = s.modo==='testamentaria'
+    ? Math.max(0, 1 - test.somma)
+    : Math.max(0, 1 - eredi.reduce((a,e)=>a + quoteLegge[e.key], 0));
+
+  const righe = eredi.map(e=>{
+    const q = quote[e.key] || 0;
+    const ricevuto = netto * q;
+    const parteEsente = esente * q;
+    const imponibile = imponibileGlobale * q;
+    const cl = SUC_CLASSI[e.classe] || SUC_CLASSI.altri;
+    const franchigia = e.disabile ? SUC_FRANCHIGIA_DISABILE : cl.franchigia;
+    const base = Math.max(0, imponibile - franchigia);
+    const imposta = base * cl.aliq;
+    return {...e, quota:q, ricevuto, parteEsente, imponibile, franchigia, base, aliquota:cl.aliq, imposta, netto:ricevuto - imposta};
+  });
+  const impostaSuccessione = righe.reduce((a,r)=>a + r.imposta, 0);
+
+  const immobili = s.immobili.map(i=>{
+    const val = Math.max(0, Number(i.valore)||0);
+    const ipo = i.primaCasa ? SUC_FISSA_PRIMA_CASA : val*SUC_ALIQ_IPOTECARIA;
+    const cat = i.primaCasa ? SUC_FISSA_PRIMA_CASA : val*SUC_ALIQ_CATASTALE;
+    return {...i, valore:val, ipo, cat, totale:ipo+cat};
+  });
+  const impostaImmobili = immobili.reduce((a,i)=>a + i.totale, 0);
+  const impostaTotale = impostaSuccessione + impostaImmobili;
+
+  /* capitali fuori successione, prodotto per prodotto */
+  const prodotti = SUC_PRODOTTI.map(p=>{
+    const st = s[p.k] || {};
+    const r = sucRipartoFuori(st, eredi, quoteLegge, s.modo==='testamentaria' ? test.mappa : {});
+    return {...p, attivo:!!st.attiva, designazione:st.designazione||'nominativi',
+      versatoVal:Math.max(0, Number(st.versato)||0), ...r};
+  });
+  const prodottiAttivi = prodotti.filter(p=>p.attivo && p.capitale>0);
+  const fuori = prodottiAttivi.reduce((a,p)=>a + p.capitale, 0);
+
+  /* legittima: confronto fra quota riservata e quota effettivamente assegnata */
+  const ris = sucQuoteRiservate(s.coniuge, s.figli, s.ascendenti);
+  const assegnato = {coniuge:0, figli:0, ascendenti:0};
+  righe.forEach(r=>{ if(assegnato[r.gruppo]!=null) assegnato[r.gruppo] += r.quota; });
+  const legittimari = [];
+  if(s.coniuge)       legittimari.push({k:'coniuge',    eti:'Coniuge'});
+  if(s.figli>0)       legittimari.push({k:'figli',      eti: s.figli===1 ? 'Figlio' : 'Figli ('+s.figli+')'});
+  if(s.figli===0 && s.ascendenti>0) legittimari.push({k:'ascendenti', eti:'Ascendenti ('+s.ascendenti+')'});
+  const verifiche = legittimari.map(g=>{
+    const mancante = Math.max(0, ris[g.k] - assegnato[g.k]);
+    return {eti:g.eti, riservato:ris[g.k], assegnato:assegnato[g.k], leso:mancante>0.0001, mancante, importoMancante:mancante*netto};
+  });
+  const disponibile = Math.max(0, 1 - ris.coniuge - ris.figli - ris.ascendenti);
+  const lesione = verifiche.some(v=>v.leso);
+
+  return {
+    comp, lordo, passivita, netto, esente, imponibileGlobale, immobiliTot, investito, plusvalenza,
+    eredi:righe, quote, quoteLegge, quoteTest:test.mappa, sommaTest:test.somma, residuo, riproporzionate,
+    impostaSuccessione, immobili, impostaImmobili, impostaTotale,
+    nettoEredi: Math.max(0, netto - impostaTotale),
+    prodotti, prodottiAttivi, fuori,
+    riservate:ris, verifiche, disponibile, lesione,
+    haLegittimari: legittimari.length>0
+  };
+}
+
+/* ---------- intestazione di una sezione richiudibile del pannello ---------- */
+function sucSezione(k, titolo, corpo){
+  const aperta = !!sucSezioni[k];
+  return `<button type="button" class="suc-sez${aperta?' aperta':''}" id="sucSezBtn_${k}" onclick="sucToggleSez('${k}')">
+      <span class="suc-sez-tit">${titolo}</span>
+      <span class="suc-sez-val" id="sucSezVal_${k}"></span>
+      <svg class="suc-sez-chev" width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="suc-sez-corpo${aperta?' aperta':''}" id="sucSez_${k}">${corpo}</div>`;
+}
+
+/* ---------- pagina ---------- */
+function vistaSimSuccessione(){
+  const s = sucStato;
+  return simBtnIndietro() +
+  testata('Simulatore Successione', 'Quote ereditarie, legittima, polizze e imposte di successione secondo la normativa italiana 2026', simBtnAzioni('successione')) +
+  `<div class="solo-stampa" id="printHead"></div>
+  <div class="sim-grid">
+    <div class="card sim-pannello suc-pannello">
+
+      <div class="sim-h2">Tipo di successione</div>
+      <div class="seg">
+        <button id="sucModoLeg" class="${s.modo==='legittima'?'on':''}" onclick="sucCambiaModo('legittima')">Senza testamento</button>
+        <button id="sucModoTest" class="${s.modo==='testamentaria'?'on':''}" onclick="sucCambiaModo('testamentaria')">Con testamento</button>
+      </div>
+      <div class="sim-strategia-desc" id="sucModoDesc"></div>
+
+      <div class="sim-h2 due">Chi eredita</div>
+      <div class="sim-campo">
+        <div class="suc-eti-riga"><label style="margin:0">Coniuge o unito civilmente</label><span class="suc-quota" id="sucQConiuge"></span></div>
+        <div class="seg">
+          <button id="sucConiugeSi" class="${s.coniuge?'on':''}" onclick="sucCambiaConiuge(true)">Sì</button>
+          <button id="sucConiugeNo" class="${s.coniuge?'':'on'}" onclick="sucCambiaConiuge(false)">No</button>
+        </div>
+      </div>
+      <div class="sim-campo">
+        <div class="suc-eti-riga"><label for="sucFigli" style="margin:0">Figli</label><span class="suc-quota" id="sucQFigli"></span></div>
+        <div class="sim-slider"><input type="range" id="sucFigli" min="0" max="8" value="${s.figli}"><span class="val" id="sucFigliVal">${s.figli}</span></div>
+        <div class="sim-eco" id="sucFigliEco"></div>
+      </div>
+      <div class="sim-campo">
+        <div class="suc-eti-riga"><label for="sucAscendenti" style="margin:0">Ascendenti in vita</label><span class="suc-quota" id="sucQAscendenti"></span></div>
+        <div class="sim-slider"><input type="range" id="sucAscendenti" min="0" max="4" value="${s.ascendenti}"><span class="val" id="sucAscendentiVal">${s.ascendenti}</span></div>
+        <div class="sim-eco" id="sucAscEco"></div>
+      </div>
+      <div class="sim-campo">
+        <div class="suc-eti-riga"><label for="sucFratelli" style="margin:0">Fratelli e sorelle</label><span class="suc-quota" id="sucQFratelli"></span></div>
+        <div class="sim-slider"><input type="range" id="sucFratelli" min="0" max="8" value="${s.fratelli}"><span class="val" id="sucFratelliVal">${s.fratelli}</span></div>
+        <div class="sim-eco" id="sucFraEco"></div>
+      </div>
+
+      <div id="sucQuoteBlocco"></div>
+
+      ${sucSezione('altri', 'Altri eredi o legatari',
+        `<div id="sucAltriLista"></div>
+         <button class="btn secondario suc-btn-agg" onclick="sucAltroAggiungi()">+ Aggiungi beneficiario</button>`)}
+
+      ${sucSezione('patr', 'Patrimonio finanziario',
+        `<div class="sim-campo">
+          <label for="sucLiquidita">Conti correnti e depositi</label>
+          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucLiquidita" value="${s.liquidita}" min="0" step="5000"></div>
+        </div>
+        <div class="sim-campo">
+          <label>Titoli e fondi</label>
+          <div class="suc-coppia"><span class="suc-mini-eti">Investito</span>
+            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliInvestito" value="${s.titoliInvestito}" min="0" step="5000"></div></div>
+          <div class="suc-coppia"><span class="suc-mini-eti">Montante</span>
+            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoli" value="${s.titoli}" min="0" step="5000"></div></div>
+          <div class="sim-eco" id="sucTitoliEco"></div>
+        </div>
+        <div class="sim-campo">
+          <label>Titoli di Stato</label>
+          <div class="suc-coppia"><span class="suc-mini-eti">Investito</span>
+            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliStatoInvestito" value="${s.titoliStatoInvestito}" min="0" step="5000"></div></div>
+          <div class="suc-coppia"><span class="suc-mini-eti">Montante</span>
+            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliStato" value="${s.titoliStato}" min="0" step="5000"></div></div>
+          <div class="sim-eco" id="sucTitoliStatoEco"></div>
+        </div>
+        <div class="sim-campo">
+          <label for="sucPartecipazioni">Partecipazioni societarie</label>
+          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucPartecipazioni" value="${s.partecipazioni}" min="0" step="5000"></div>
+          <div class="sim-freq" style="margin-top:8px">
+            <button type="button" id="sucPartEsenti" class="pill-scelta${s.partEsenti?' attiva':''}" aria-pressed="${s.partEsenti}" onclick="sucTogglePartEsenti()">Trasferimento esente (art. 3 c. 4-ter)</button>
+          </div>
+        </div>
+        <div class="sim-campo">
+          <label for="sucCrediti">Crediti verso terzi</label>
+          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucCrediti" value="${s.crediti}" min="0" step="1000"></div>
+        </div>
+        <div id="sucBeniOpz"></div>`)}
+
+      ${sucSezione('imm', 'Immobili',
+        `<div id="sucImmobiliLista"></div>
+         <button class="btn secondario suc-btn-agg" onclick="sucImmAggiungi()">+ Aggiungi immobile</button>`)}
+
+      ${sucSezione('pol', 'Polizze e previdenza',
+        `<div class="sim-eco" style="margin:0 0 12px">Capitali che non entrano nell'asse ereditario: vanno ai beneficiari designati</div>
+         ${SUC_PRODOTTI.map(p=>`<div class="suc-prodotto" id="sucProd_${p.k}"></div>`).join('')}`)}
+
+      <div id="sucOpzionali"></div>
+
+      <div class="sim-scenario-riga" id="simScenarioRiga">${simScenarioHtml('successione')}</div>
+    </div>
+
+    <div class="sim-dash">
+      <div class="card sim-hero suc">
+        <div class="sim-hero-tag" id="sucHeroTag"></div>
+        <div class="et" id="sucRisEt"></div>
+        <div class="cifra" id="sucRisCifra"></div>
+        <p class="nota" id="sucRisNota"></p>
+      </div>
+      <div id="sucAvvisi"></div>
+      <div id="confBox"></div>
+      <div class="sim-chips">
+        <div class="sim-chip"><div class="k">Asse ereditario</div><div class="v" id="sucChipAsse">—</div></div>
+        <div class="sim-chip arancio"><div class="k">Imposta di successione</div><div class="v" id="sucChipSucc">—</div></div>
+        <div class="sim-chip arancio"><div class="k">Ipotecaria e catastale</div><div class="v" id="sucChipImm">—</div></div>
+        <div class="sim-chip verde"><div class="k">Netto agli eredi</div><div class="v" id="sucChipNetto">—</div></div>
+        <div class="sim-chip teal" id="sucChipFuoriBox"><div class="k">Fuori successione</div><div class="v" id="sucChipFuori">—</div></div>
+      </div>
+
+      <div class="card">
+        <div class="sim-chart-testa">
+          <div class="sim-chart-tit">Quote ereditarie</div>
+          <div class="sim-legenda"><span><i class="sim-sw" style="background:var(--teal)"></i>Netto all'erede</span><span><i class="sim-sw" style="background:var(--rosso)"></i>Imposte</span></div>
+        </div>
+        <div id="sucGruppiBox"></div>
+        <div class="sim-chart-box"><svg id="sucChart" viewBox="0 0 760 330" preserveAspectRatio="none"></svg></div>
+        <div class="conf-scroll" style="margin-top:6px">
+          <table class="conf-tab suc-tab">
+            <thead><tr><th>Erede o legatario</th><th>Quota</th><th>Valore ricevuto</th><th>Imposta</th><th>Netto</th></tr></thead>
+            <tbody id="sucQuoteRighe"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sim-chart-testa"><div class="sim-chart-tit">Verifica delle quote di legittima</div></div>
+        <div id="sucLegittimaBox"></div>
+      </div>
+
+      <div class="card">
+        <div class="sim-chart-testa"><div class="sim-chart-tit">Composizione del patrimonio</div></div>
+        <div class="uni-comp" id="sucComp"></div>
+        <div class="uni-leg" id="sucLeg"></div>
+        <div id="sucMassaBox"></div>
+      </div>
+
+      <div class="card" id="sucCardFuori">
+        <div class="sim-chart-testa"><div class="sim-chart-tit">Polizze e previdenza: a chi vanno</div></div>
+        <div id="sucFuoriBox"></div>
+      </div>
+
+      <div class="card" id="sucCardImmobili">
+        <div class="sim-chart-testa"><div class="sim-chart-tit">Immobili e imposte ipotecaria e catastale</div></div>
+        <div class="conf-scroll" style="margin-top:6px">
+          <table class="conf-tab suc-tab">
+            <thead><tr><th>Immobile</th><th>Valore</th><th>Ipotecaria</th><th>Catastale</th><th>Totale</th></tr></thead>
+            <tbody id="sucImmobiliRighe"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <button class="sim-tab-toggle" onclick="simToggleTabella()">Dettaglio del calcolo dell'imposta
+          <span class="hint"><svg class="sim-chev" id="simChev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="sim-tab-corpo" id="simTabCorpo">
+          <div class="sim-tab-scroll">
+            <table class="sim-tabella suc-tab-largo">
+              <thead><tr><th>Beneficiario</th><th>Classe</th><th>Quota</th><th>Ricevuto</th><th>Di cui esente</th><th>Franchigia</th><th>Imponibile</th><th>Aliquota</th><th>Imposta</th></tr></thead>
+              <tbody id="sucTabRighe"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="sim-piede">Stima indicativa aggiornata alla normativa in vigore nel 2026. Imposta di successione: 4% oltre 1.000.000 € di franchigia per coniuge e parenti in linea retta, 6% oltre 100.000 € per fratelli e sorelle, 6% senza franchigia per gli altri parenti fino al 4º grado e gli affini, 8% senza franchigia per gli altri soggetti; franchigia di 1.500.000 € per i beneficiari con handicap grave ai sensi della L. 104/1992. La franchigia si applica a ciascun beneficiario sulla quota che riceve. I titoli di Stato entrano nell'asse per il calcolo delle quote ma sono esenti dall'imposta. Le polizze caso morte si liquidano ai beneficiari designati per diritto proprio (art. 1920 c.c.): restano fuori dall'asse ereditario e sono esenti da imposta di successione (art. 12 D.Lgs. 346/1990); i premi versati possono però essere soggetti ad azione di riduzione se la designazione lede i legittimari. Anche le prestazioni della previdenza complementare vanno ai beneficiari designati fuori dall'asse (art. 14 D.Lgs. 252/2005). Imposte ipotecaria (2%) e catastale (1%) sul valore degli immobili, ridotte a 200 € ciascuna con l'agevolazione «prima casa». I debiti del defunto si indicano nella voce facoltativa «Passività» e riducono l'asse ereditario; il simulatore non considera le spese funerarie né le donazioni fatte in vita (riunione fittizia), che in una successione reale modificano l'asse e le quote di legittima; l'azione di riduzione si prescrive in 10 anni dall'apertura della successione. Non sostituisce il parere di un notaio o di un commercialista.</p>
+    </div>
+  </div>`;
+}
+
+/* ---------- blocchi dinamici del pannello ---------- */
+function sucToggleSez(k){
+  sucSezioni[k] = !sucSezioni[k];
+  const btn = document.getElementById('sucSezBtn_'+k), corpo = document.getElementById('sucSez_'+k);
+  if(btn) btn.classList.toggle('aperta', sucSezioni[k]);
+  if(corpo) corpo.classList.toggle('aperta', sucSezioni[k]);
+}
+function sucApriSez(k){
+  if(sucSezioni[k]) return;
+  sucSezioni[k] = true;
+  const btn = document.getElementById('sucSezBtn_'+k), corpo = document.getElementById('sucSez_'+k);
+  if(btn) btn.classList.add('aperta');
+  if(corpo) corpo.classList.add('aperta');
+}
+function sucRenderImmobili(){
+  const c = document.getElementById('sucImmobiliLista'); if(!c) return;
+  if(!sucStato.immobili.length){ c.innerHTML = '<div class="sim-eco" style="margin-bottom:10px">Nessun immobile inserito.</div>'; return; }
+  c.innerHTML = sucStato.immobili.map(i=>`<div class="suc-bene">
+    <div class="suc-bene-testa">
+      <input type="text" class="suc-bene-nome" value="${esc(i.nome)}" maxlength="60" placeholder="Nome (es. Casa al mare)" oninput="sucImmCampo('${i.id}','nome',this.value)">
+      <button class="icona-btn rosso" title="Rimuovi" onclick="sucImmRimuovi('${i.id}')">${ico('trash',16)}</button>
+    </div>
+    <span class="suc-mini-eti">Tipo</span>
+    <select onchange="sucImmCampo('${i.id}','tipo',this.value)">
+      ${SUC_TIPI_IMMOBILE.map(t=>`<option value="${t.k}"${i.tipo===t.k?' selected':''}>${t.nome}</option>`).join('')}
+    </select>
+    <span class="suc-mini-eti">Indirizzo</span>
+    <input type="text" class="suc-bene-testo" value="${esc(i.indirizzo||'')}" maxlength="90" placeholder="Via, civico, città" oninput="sucImmCampo('${i.id}','indirizzo',this.value)">
+    <span class="suc-mini-eti">Valore</span>
+    <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${i.valore}" min="0" step="10000" oninput="sucImmCampo('${i.id}','valore',this.value)"></div>
+    <div class="sim-freq" style="margin-top:9px">
+      <button type="button" class="pill-scelta${i.primaCasa?' attiva':''}" aria-pressed="${!!i.primaCasa}" onclick="sucImmPrimaCasa('${i.id}',this)">Agevolazione prima casa</button>
+    </div>
+  </div>`).join('');
+}
+function sucRenderAltri(){
+  const c = document.getElementById('sucAltriLista'); if(!c) return;
+  if(!sucStato.altri.length){
+    c.innerHTML = `<div class="sim-eco" style="margin-bottom:10px">${sucStato.modo==='legittima'
+      ? 'Senza testamento gli altri parenti ereditano solo in mancanza di coniuge, figli, ascendenti e fratelli.'
+      : 'Aggiungi chi riceve per testamento pur non essendo erede legittimo.'}</div>`;
+    return;
+  }
+  c.innerHTML = sucStato.altri.map(a=>`<div class="suc-bene">
+    <div class="suc-bene-testa">
+      <input type="text" class="suc-bene-nome" value="${esc(a.nome)}" maxlength="50" placeholder="Nome" oninput="sucAltroCampo('${a.id}','nome',this.value)">
+      <button class="icona-btn rosso" title="Rimuovi" onclick="sucAltroRimuovi('${a.id}')">${ico('trash',16)}</button>
+    </div>
+    <span class="suc-mini-eti">Rapporto con il defunto (determina l'aliquota)</span>
+    <select onchange="sucAltroCampo('${a.id}','classe',this.value)">
+      ${Object.keys(SUC_CLASSI).map(k=>`<option value="${k}"${a.classe===k?' selected':''}>${SUC_CLASSI[k].nome} — ${sucPct(SUC_CLASSI[k].aliq)}</option>`).join('')}
+    </select>
+  </div>`).join('');
+}
+function sucRenderQuote(){
+  const c = document.getElementById('sucQuoteBlocco'); if(!c) return;
+  if(sucStato.modo!=='testamentaria'){ c.innerHTML = ''; return; }
+  sucAllineaQuote(false);
+  const eredi = sucEredi();
+  c.innerHTML = `<div class="sim-h2 due">Quote del testamento</div>` + (eredi.length
+    ? eredi.map(e=>`<div class="suc-quota-riga">
+        <span class="suc-quota-nome">${esc(e.nome)}</span>
+        <div class="sim-inp suc-ben-quota" id="sucQuotaBox_${e.key}"><input type="number" inputmode="decimal" enterkeyhint="done" id="sucQuotaInp_${e.key}" value="${sucStato.quote[e.key]}" min="0" max="100" step="0.5" oninput="sucQuotaCampo('${e.key}',this.value)" onchange="sucQuotaCommit('${e.key}')"><span class="pre">%</span></div>
+      </div>
+      <div class="suc-quota-hint" id="sucQuotaHint_${e.key}"></div>`).join('') +
+      `<div class="sim-eco" id="sucQuoteEco" style="margin:6px 0 10px"></div>
+       <button class="btn secondario suc-btn-agg" onclick="sucQuoteDaLegge()">${ico('undo',15)} Riparti come per legge</button>`
+    : '<div class="sim-eco">Nessun beneficiario: aggiungi familiari o altri eredi.</div>');
+}
+/* Polizza vita, temporanea caso morte e previdenza complementare */
+function sucRenderProdotto(k){
+  const c = document.getElementById('sucProd_'+k); if(!c) return;
+  const cfg = SUC_PRODOTTI.find(p=>p.k===k), st = sucStato[k];
+  let html = `<div class="suc-prod-testa">
+      <span class="suc-prod-nome">${cfg.nome}</span>
+      <div class="seg suc-seg-si-no">
+        <button class="${st.attiva?'on':''}" onclick="sucProdToggle('${k}',true)">Sì</button>
+        <button class="${st.attiva?'':'on'}" onclick="sucProdToggle('${k}',false)">No</button>
+      </div>
+    </div>`;
+  if(st.attiva){
+    html += `<div class="suc-prod-corpo">`;
+    if(cfg.versato){
+      html += `<div class="suc-coppia"><span class="suc-mini-eti">${cfg.versato}</span>
+        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.versato}" min="0" step="5000" oninput="sucProdCampo('${k}','versato',this.value)"></div></div>
+      <div class="suc-coppia"><span class="suc-mini-eti">${cfg.eti}</span>
+        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.capitale}" min="0" step="10000" oninput="sucProdCampo('${k}','capitale',this.value)"></div></div>
+      <div class="sim-eco" id="sucProdEco_${k}"></div>`;
+    } else {
+      html += `<span class="suc-mini-eti">${cfg.eti}</span>
+        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.capitale}" min="0" step="10000" oninput="sucProdCampo('${k}','capitale',this.value)"></div>`;
+    }
+    html += `<span class="suc-mini-eti">Beneficiari</span>
+      <div class="sim-freq">${SUC_DESIGNAZIONI.map(dz=>`<button type="button" class="pill-scelta${st.designazione===dz.k?' attiva':''}" aria-pressed="${st.designazione===dz.k}" onclick="sucProdDesignazione('${k}','${dz.k}')">${dz.nome}</button>`).join('')}</div>`;
+    if(st.designazione==='nominativi'){
+      html += `<div class="suc-ben-lista">` + (st.beneficiari.length
+        ? st.beneficiari.map((b,i)=>`<div class="suc-ben-riga">
+            <input type="text" value="${esc(b.nome)}" maxlength="50" placeholder="Nome beneficiario ${i+1}" oninput="sucProdBenCampo('${k}','${b.id}','nome',this.value)">
+            <div class="sim-inp suc-ben-quota"><input type="number" inputmode="decimal" enterkeyhint="done" value="${b.quota}" min="0" max="100" step="1" oninput="sucProdBenCampo('${k}','${b.id}','quota',this.value)"><span class="pre">%</span></div>
+            <button class="icona-btn rosso" title="Rimuovi" onclick="sucProdBenRimuovi('${k}','${b.id}')">${ico('trash',15)}</button>
+          </div>`).join('')
+        : `<div class="sim-eco">Nessun beneficiario indicato.</div>`) + `</div>
+        <button class="btn secondario suc-btn-agg" onclick="sucProdBenAggiungi('${k}')">+ Aggiungi beneficiario</button>`;
+    } else {
+      html += `<div class="sim-eco">Il capitale segue le quote ${st.designazione==='legittimi' ? 'della successione legittima' : 'assegnate dal testamento'}.</div>`;
+    }
+    html += `</div>`;
+  }
+  c.innerHTML = html;
+  c.classList.toggle('spento', !st.attiva);
+}
+function sucRenderProdotti(){ SUC_PRODOTTI.forEach(p=>sucRenderProdotto(p.k)); }
+/* Pulsanti «+» per le voci non ancora aggiunte */
+function sucChipsAggiungi(dove){
+  const mancanti = SUC_OPZIONI.filter(o=>o.dove===dove && !sucStato.opzioni[o.k]);
+  if(!mancanti.length) return '';
+  return `<div class="suc-aggiungi">${mancanti.map(o=>`<button type="button" class="suc-add" onclick="sucAggiungiVoce('${o.k}')">+ ${o.nome}</button>`).join('')}</div>`;
+}
+function sucCampoOpzionale(k, eti, aiuto){
+  return `<div class="sim-campo">
+    <div class="suc-eti-riga">
+      <label for="suc${k.charAt(0).toUpperCase()+k.slice(1)}" style="margin:0">${eti}</label>
+      <button type="button" class="suc-togli" title="Rimuovi la voce" onclick="sucRimuoviVoce('${k}')">✕</button>
+    </div>
+    <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="suc${k.charAt(0).toUpperCase()+k.slice(1)}" value="${sucStato[k]}" min="0" step="1000" oninput="sucCampoNum('${k}',this.value)"></div>
+    ${aiuto?`<div class="sim-eco">${aiuto}</div>`:''}
+  </div>`;
+}
+/* Beni facoltativi dentro la sezione Patrimonio */
+function sucRenderBeniOpz(){
+  const c = document.getElementById('sucBeniOpz'); if(!c) return;
+  let html = '';
+  if(sucStato.opzioni.beniMobili) html += sucCampoOpzionale('beniMobili', 'Beni mobili registrati', 'Auto, moto, barche, aeromobili');
+  if(sucStato.opzioni.altriBeni)  html += sucCampoOpzionale('altriBeni', 'Altri beni di valore', 'Gioielli, opere d\'arte, arredi di pregio, metalli preziosi');
+  c.innerHTML = html + sucChipsAggiungi('beni');
+}
+/* Sezioni facoltative in fondo al pannello: passività e handicap grave */
+function sucRenderOpzionali(){
+  const c = document.getElementById('sucOpzionali'); if(!c) return;
+  let html = '';
+  if(sucStato.opzioni.passivita){
+    html += sucSezione('pass', `Passività <button type="button" class="suc-togli" onclick="event.stopPropagation();sucRimuoviVoce('passivita')">✕</button>`,
+      `<div class="sim-campo">
+        <label for="sucMutui">Mutui ancora da pagare</label>
+        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucMutui" value="${sucStato.mutui}" min="0" step="5000" oninput="sucCampoNum('mutui',this.value)"></div>
+      </div>
+      <div class="sim-campo">
+        <label for="sucAltrePassivita">Altre passività</label>
+        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucAltrePassivita" value="${sucStato.altrePassivita}" min="0" step="1000" oninput="sucCampoNum('altrePassivita',this.value)"></div>
+        <div class="sim-eco">Prestiti, debiti fiscali e altri debiti certi del defunto</div>
+      </div>`);
+  }
+  if(sucStato.opzioni.disabili){
+    html += sucSezione('dis', `Handicap grave (L. 104/1992) <button type="button" class="suc-togli" onclick="event.stopPropagation();sucRimuoviVoce('disabili')">✕</button>`,
+      `<div id="sucDisabiliBlocco"></div>`);
+  }
+  c.innerHTML = html + sucChipsAggiungi('sezione');
+  if(sucStato.opzioni.disabili) sucRenderDisabili();
+}
+function sucAggiungiVoce(k){
+  sucStato.opzioni[k] = true;
+  if(k==='passivita' || k==='disabili'){ sucSezioni[k==='passivita'?'pass':'dis'] = true; sucRenderOpzionali(); }
+  else sucRenderBeniOpz();
+  sucAggiorna();
+}
+function sucRimuoviVoce(k){
+  sucStato.opzioni[k] = false;
+  if(k==='beniMobili' || k==='altriBeni'){ sucStato[k] = 0; sucRenderBeniOpz(); }
+  else if(k==='passivita'){ sucStato.mutui = 0; sucStato.altrePassivita = 0; sucRenderOpzionali(); }
+  else { sucStato.disabili = {}; sucRenderOpzionali(); }
+  sucAggiorna();
+}
+function sucCampoNum(k, v){ sucStato[k] = Math.max(0, parseFloat(v)||0); sucAggiornaSoft(); }
+function sucRenderDisabili(){
+  const c = document.getElementById('sucDisabiliBlocco'); if(!c) return;
+  const eredi = sucEredi();
+  if(!eredi.length){ c.innerHTML = '<div class="sim-eco">Nessun beneficiario da segnalare.</div>'; return; }
+  c.innerHTML = `<div class="sim-freq">${eredi.map(e=>`<button type="button" class="pill-scelta${e.disabile?' attiva':''}" aria-pressed="${e.disabile}" onclick="sucToggleDisabile('${e.key}',this)">${esc(e.nome)}</button>`).join('')}</div>
+    <div class="sim-eco">Franchigia elevata a ${simEuro(SUC_FRANCHIGIA_DISABILE)} per chi è portatore di handicap grave</div>`;
+}
+function sucRenderPannello(){ sucRenderImmobili(); sucRenderAltri(); sucRenderQuote(); sucRenderProdotti(); sucRenderBeniOpz(); sucRenderOpzionali(); }
+
+/* ---------- interazioni ---------- */
+let _sucRaf = 0;
+function sucAggiornaSoft(){ if(_sucRaf) return; _sucRaf = requestAnimationFrame(()=>{ _sucRaf = 0; sucAggiorna(); }); }
+function sucLeggiInput(){
+  const n = id => { const el = document.getElementById(id); return el ? Math.max(0, parseFloat(el.value)||0) : null; };
+  ['liquidita','titoliInvestito','titoli','titoliStatoInvestito','titoliStato','partecipazioni','crediti']
+    .forEach(k=>{ const v = n('suc'+k.charAt(0).toUpperCase()+k.slice(1)); if(v!==null) sucStato[k] = v; });
+  const f = document.getElementById('sucFigli'), a = document.getElementById('sucAscendenti'), fr = document.getElementById('sucFratelli');
+  if(f) sucStato.figli = parseInt(f.value,10)||0;
+  if(a) sucStato.ascendenti = parseInt(a.value,10)||0;
+  if(fr) sucStato.fratelli = parseInt(fr.value,10)||0;
+}
+function sucCambiaFamiglia(){
+  sucLeggiInput();
+  sucRenderQuote(); sucRenderAltri();
+  if(sucStato.opzioni.disabili) sucRenderDisabili();
+  sucAggiorna();
+}
+function sucCambiaModo(m){
+  sucStato.modo = m;
+  document.getElementById('sucModoLeg').classList.toggle('on', m==='legittima');
+  document.getElementById('sucModoTest').classList.toggle('on', m==='testamentaria');
+  sucRenderQuote(); sucRenderAltri();
+  sucAggiorna();
+}
+function sucCambiaConiuge(v){
+  sucStato.coniuge = !!v;
+  document.getElementById('sucConiugeSi').classList.toggle('on', !!v);
+  document.getElementById('sucConiugeNo').classList.toggle('on', !v);
+  sucRenderQuote();
+  if(sucStato.opzioni.disabili) sucRenderDisabili();
+  sucAggiorna();
+}
+function sucTogglePartEsenti(){
+  sucStato.partEsenti = !sucStato.partEsenti;
+  const b = document.getElementById('sucPartEsenti');
+  if(b){ b.classList.toggle('attiva', sucStato.partEsenti); b.setAttribute('aria-pressed', sucStato.partEsenti); }
+  sucAggiorna();
+}
+function sucToggleDisabile(key, el){
+  sucStato.disabili[key] = !sucStato.disabili[key];
+  el.classList.toggle('attiva', !!sucStato.disabili[key]);
+  el.setAttribute('aria-pressed', !!sucStato.disabili[key]);
+  sucAggiorna();
+}
+/* immobili */
+function sucImmAggiungi(){
+  sucStato.immobili.push({id:'im'+nuovoId(), tipo:'appartamento', nome:'', indirizzo:'', valore:150000, primaCasa:false});
+  sucApriSez('imm'); sucRenderImmobili(); sucAggiorna();
+}
+function sucImmRimuovi(id){
+  sucStato.immobili = sucStato.immobili.filter(i=>i.id!==id);
+  sucRenderImmobili(); sucAggiorna();
+}
+function sucImmCampo(id, campo, valore){
+  const i = sucStato.immobili.find(x=>x.id===id); if(!i) return;
+  i[campo] = campo==='valore' ? Math.max(0, parseFloat(valore)||0) : valore;
+  sucAggiornaSoft();
+}
+function sucImmPrimaCasa(id, el){
+  const i = sucStato.immobili.find(x=>x.id===id); if(!i) return;
+  i.primaCasa = !i.primaCasa;
+  el.classList.toggle('attiva', i.primaCasa);
+  el.setAttribute('aria-pressed', i.primaCasa);
+  sucAggiorna();
+}
+/* altri eredi */
+function sucAltroAggiungi(){
+  sucStato.altri.push({id:'al'+nuovoId(), nome:'', classe:'altri'});
+  sucApriSez('altri'); sucRenderAltri(); sucRenderQuote(); if(sucStato.opzioni.disabili) sucRenderDisabili(); sucAggiorna();
+}
+function sucAltroRimuovi(id){
+  sucStato.altri = sucStato.altri.filter(a=>a.id!==id);
+  delete sucStato.quote[id]; delete sucStato.disabili[id];
+  sucRenderAltri(); sucRenderQuote(); if(sucStato.opzioni.disabili) sucRenderDisabili(); sucAggiorna();
+}
+function sucAltroCampo(id, campo, valore){
+  const a = sucStato.altri.find(x=>x.id===id); if(!a) return;
+  a[campo] = valore;
+  if(campo==='nome'){ if(sucStato.opzioni.disabili) sucRenderDisabili(); sucAggiornaSoft(); }
+  else { sucAggiorna(); }
+}
+function sucQuotaCampo(key, valore){
+  sucStato.quote[key] = Math.max(0, Math.min(100, parseFloat(valore)||0));
+  sucAggiornaSoft();
+}
+/* Alla conferma del campo: si tiene la quota richiesta e si liberano i punti
+   percentuali mancanti riducendo le altre quote in proporzione, senza mai
+   scendere sotto la riserva di legge di ciascun legittimario. */
+function sucQuotaCommit(key){
+  const {limiti, eredi} = sucLimitiQuote();
+  const lim = limiti[key]; if(!lim) return;
+  const q = k => Math.max(0, Number(sucStato.quote[k])||0);
+  const chiesta = q(key);
+  const voluta = Math.min(Math.max(chiesta, lim.min), lim.max);   // entro la riserva propria e quella altrui
+  const altri = eredi.filter(e=>e.key!==key);
+  let eccesso = voluta + altri.reduce((a,e)=>a + q(e.key), 0) - 100;
+
+  const ridotti = [];
+  if(eccesso > 0.005){
+    /* capacità di riduzione: quanto ciascuno può cedere restando sopra la propria riserva */
+    const capacita = altri.map(e=>({e, spazio:Math.max(0, q(e.key) - limiti[e.key].min)}));
+    const totale = capacita.reduce((a,c)=>a + c.spazio, 0);
+    const preleva = Math.min(eccesso, totale);
+    if(preleva > 0.005){
+      capacita.forEach(c=>{
+        if(c.spazio<=0) return;
+        const giu = preleva * (c.spazio/totale);
+        sucStato.quote[c.e.key] = Math.round((q(c.e.key) - giu)*100)/100;
+        ridotti.push(c.e.nome);
+      });
+    }
+    eccesso -= preleva;
+  }
+  /* se anche azzerando lo spazio disponibile non basta, la quota si ferma al massimo di legge */
+  const finale = Math.round(Math.max(lim.min, voluta - Math.max(0, eccesso))*100)/100;
+  sucStato.quote[key] = finale;
+
+  /* pareggio degli arrotondamenti sulla quota altrui più capiente */
+  const somma = eredi.reduce((a,e)=>a + q(e.key), 0);
+  if(Math.abs(somma-100) > 0.001 && altri.length){
+    const cand = altri.map(e=>({e, spazio:q(e.key) - limiti[e.key].min}))
+                      .sort((a,b)=>b.spazio-a.spazio)[0];
+    if(cand && cand.spazio > (somma-100)) sucStato.quote[cand.e.key] = Math.round((q(cand.e.key) - (somma-100))*100)/100;
+  }
+  eredi.forEach(e=>{
+    const inp = document.getElementById('sucQuotaInp_'+e.key);
+    if(inp) inp.value = sucStato.quote[e.key];
+  });
+  if(chiesta > finale + 0.005){
+    toast('Massimo assegnabile ' + sucPct(finale/100) + ': gli altri sono già alla riserva di legge');
+  } else if(ridotti.length){
+    toast(ridotti.length===1
+      ? 'Ridotta la quota di ' + ridotti[0] + ' per fare spazio'
+      : 'Ridotte in proporzione le quote di ' + ridotti.slice(0,-1).join(', ') + ' e ' + ridotti[ridotti.length-1]);
+  }
+  sucAggiorna();
+}
+/* Chi può ancora cedere quota, e quanta: serve per spiegare cosa ridurre */
+function sucCedibili(key){
+  const {limiti, eredi} = sucLimitiQuote();
+  return eredi.filter(e=>e.key!==key)
+    .map(e=>({nome:e.nome, spazio:Math.max(0, (Number(sucStato.quote[e.key])||0) - limiti[e.key].min)}))
+    .filter(x=>x.spazio > 0.005);
+}
+/* Messaggio sotto ogni quota: verde/neutro se a posto, arancio se serve liberare
+   spazio (verrà fatto alla conferma), rosso se il limite di legge è invalicabile. */
+function sucAggiornaValidazioneQuote(){
+  if(sucStato.modo!=='testamentaria') return;
+  const {limiti, eredi} = sucLimitiQuote();
+  const q = k => Math.max(0, Number(sucStato.quote[k])||0);
+  const somma = eredi.reduce((a,e)=>a + q(e.key), 0);
+  eredi.forEach(e=>{
+    const box = document.getElementById('sucQuotaBox_'+e.key);
+    const hint = document.getElementById('sucQuotaHint_'+e.key);
+    if(!box || !hint) return;
+    const lim = limiti[e.key], v = q(e.key);
+    const oltreLegge = v > lim.max + 0.005;
+    const sottoRiserva = v < lim.min - 0.005;
+    const serveSpazio = !oltreLegge && somma > 100.005;
+    box.classList.toggle('errore', oltreLegge || sottoRiserva);
+    box.classList.toggle('avviso', serveSpazio && !oltreLegge && !sottoRiserva);
+    hint.classList.toggle('errore', oltreLegge || sottoRiserva);
+    hint.classList.toggle('avviso', serveSpazio && !oltreLegge && !sottoRiserva);
+    if(oltreLegge){
+      const bloccati = eredi.filter(x=>x.key!==e.key && limiti[x.key].min>0)
+                            .map(x=>x.nome + ' ' + sucPct(limiti[x.key].min/100));
+      hint.textContent = 'Massimo ' + sucPct(lim.max/100) + ': la legittima riservata agli altri non si può toccare'
+        + (bloccati.length ? ' (' + bloccati.join(', ') + ')' : '');
+    } else if(sottoRiserva){
+      hint.textContent = 'Riserva di legge: minimo ' + sucPct(lim.min/100);
+    } else if(serveSpazio){
+      const manca = somma - 100;
+      const cedibili = sucCedibili(e.key);
+      hint.textContent = cedibili.length
+        ? 'Servono altri ' + sucPct(manca/100) + ': alla conferma li tolgo da ' +
+          (cedibili.length===1 ? cedibili[0].nome
+            : cedibili.map(c=>c.nome).slice(0,-1).join(', ') + ' e ' + cedibili[cedibili.length-1].nome) +
+          ' in proporzione'
+        : 'Servono altri ' + sucPct(manca/100) + ', ma le altre quote sono già alla riserva minima';
+    } else {
+      const cedibili = sucCedibili(e.key);
+      const spazio = Math.max(0, Math.min(lim.max - v, 100 - somma + 0));
+      hint.textContent = (lim.min>0 ? 'Riserva ' + sucPct(lim.min/100) + ' · ' : '')
+        + (v < lim.max - 0.005
+            ? 'puoi salire fino a ' + sucPct(lim.max/100) +
+              (cedibili.length && spazio < lim.max - v - 0.005 ? ' riducendo le altre quote' : '')
+            : 'sei al massimo consentito');
+    }
+  });
+}
+function sucQuoteDaLegge(){
+  sucAllineaQuote(true);
+  sucRenderQuote();
+  sucAggiorna();
+  toast('Quote riportate a quelle di legge');
+}
+/* polizze e previdenza */
+function sucProdToggle(k, on){
+  sucStato[k].attiva = !!on;
+  sucRenderProdotto(k); sucAggiorna();
+}
+function sucProdCampo(k, campo, valore){
+  sucStato[k][campo] = Math.max(0, parseFloat(valore)||0);
+  sucAggiornaSoft();
+}
+function sucProdDesignazione(k, d){
+  const st = sucStato[k];
+  st.designazione = d;
+  if(d==='nominativi' && !st.beneficiari.length) st.beneficiari = [{id:'b'+nuovoId(), nome:'', quota:100}];
+  sucRenderProdotto(k); sucAggiorna();
+}
+function sucProdBenAggiungi(k){
+  const st = sucStato[k];
+  st.beneficiari.push({id:'b'+nuovoId(), nome:'', quota: st.beneficiari.length ? 0 : 100});
+  sucRenderProdotto(k); sucAggiorna();
+}
+function sucProdBenRimuovi(k, id){
+  sucStato[k].beneficiari = sucStato[k].beneficiari.filter(b=>b.id!==id);
+  sucRenderProdotto(k); sucAggiorna();
+}
+function sucProdBenCampo(k, id, campo, valore){
+  const b = sucStato[k].beneficiari.find(x=>x.id===id); if(!b) return;
+  b[campo] = campo==='quota' ? Math.max(0, Math.min(100, parseFloat(valore)||0)) : valore;
+  sucAggiornaSoft();
+}
+/* scenario di confronto */
+function sucBloccaScenario(){
+  const d = sucCalcola(), s = sucStato;
+  const desc = `${simEuro(d.netto)} · ${s.modo==='legittima'?'senza testamento':'con testamento'} · imposte ${simEuro(d.impostaTotale)}`;
+  sucScenario = { stato:JSON.parse(JSON.stringify(sucStato)), netto:d.netto, lordo:d.lordo, passivita:d.passivita,
+    impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaTotale:d.impostaTotale,
+    nettoEredi:d.nettoEredi, nEredi:d.eredi.length, lesione:d.lesione, fuori:d.fuori, modo:s.modo, testo:desc };
+  const r = document.getElementById('simScenarioRiga'); if(r) r.innerHTML = simScenarioHtml('successione');
+  sucAggiorna();
+  toast('Scenario bloccato: muovi i parametri per confrontare');
+}
+function sucTogliScenario(){
+  sucScenario = null;
+  const r = document.getElementById('simScenarioRiga'); if(r) r.innerHTML = simScenarioHtml('successione');
+  sucAggiorna();
+}
+
+/* ---------- aggiornamento della dashboard ---------- */
+function sucAggiorna(){
+  if(simPagina!=='successione' || !document.getElementById('sucChart')) return;
+  const s = sucStato, d = sucCalcola(), el = id => document.getElementById(id);
+  const g = sucQuotePerGruppo();
+  const perLegge = s.modo==='legittima';
+
+  /* pannello: conteggi, percentuali per gruppo, note */
+  el('sucFigliVal').textContent = s.figli;
+  el('sucAscendentiVal').textContent = s.ascendenti;
+  el('sucFratelliVal').textContent = s.fratelli;
+  el('sucModoDesc').textContent = perLegge
+    ? 'Le quote sono ripartite dal codice civile fra coniuge, figli, ascendenti e fratelli.'
+    : 'Assegni tu le quote: il simulatore verifica che le quote di legittima siano rispettate.';
+  const badge = (id, presente, quota) => {
+    const e = el(id); if(!e) return;
+    e.textContent = presente ? sucPct(quota) : '—';
+    e.className = 'suc-quota' + (presente && quota>0 ? ' attiva' : '');
+  };
+  badge('sucQConiuge', s.coniuge, g.coniuge);
+  badge('sucQFigli', s.figli>0, g.figli);
+  badge('sucQAscendenti', s.ascendenti>0, g.ascendenti);
+  badge('sucQFratelli', s.fratelli>0, g.fratelli);
+  const ciascuno = (n, quota) => n>1 ? ' · ' + sucPct(quota/n) + ' a testa' : '';
+  el('sucFigliEco').textContent = s.figli>0
+    ? simEuro(g.figli*d.netto) + ciascuno(s.figli, g.figli)
+    : 'Nessun figlio';
+  el('sucAscEco').textContent = s.ascendenti===0 ? 'Nessun ascendente in vita'
+    : (perLegge && s.figli>0 ? 'Esclusi dalla successione: ci sono figli'
+      : simEuro(g.ascendenti*d.netto) + ciascuno(s.ascendenti, g.ascendenti));
+  el('sucFraEco').textContent = s.fratelli===0 ? 'Nessun fratello o sorella'
+    : (perLegge && s.figli>0 ? 'Esclusi dalla successione: ci sono figli'
+      : (perLegge && g.fratelli===0 ? 'Esclusi: ereditano coniuge e ascendenti'
+        : simEuro(g.fratelli*d.netto) + ciascuno(s.fratelli, g.fratelli)));
+  const plus = (v, inv) => {
+    if(inv<=0) return '';
+    const dlt = v - inv;
+    return dlt>=0 ? 'Plusvalenza latente: +' + simEuro(dlt) : 'Minusvalenza latente: −' + simEuro(-dlt);
+  };
+  el('sucTitoliEco').textContent = plus(s.titoli, s.titoliInvestito);
+  el('sucTitoliStatoEco').textContent = (plus(s.titoliStato, s.titoliStatoInvestito) + ' · Esenti da imposta di successione').replace(/^ · /,'');
+  sucAggiornaValidazioneQuote();
+  const qEco = el('sucQuoteEco');
+  if(qEco){
+    const tot = d.sommaTest*100;
+    qEco.textContent = 'Assegnato ' + tot.toLocaleString('it-IT',{maximumFractionDigits:2}) + '%' +
+      (tot < 99.995 ? ' · residuo ' + (100-tot).toLocaleString('it-IT',{maximumFractionDigits:2}) + '%' : (tot > 100.005 ? ' · oltre il 100%' : ' · quote complete'));
+  }
+  const prevEco = el('sucProdEco_previdenza');
+  if(prevEco){
+    const st = s.previdenza, dlt = st.capitale - st.versato;
+    prevEco.textContent = st.versato>0 ? (dlt>=0 ? 'Rendimento maturato: +' + simEuro(dlt) : 'Perdita: −' + simEuro(-dlt)) : '';
+  }
+  /* totali nelle intestazioni delle sezioni richiudibili */
+  const sezVal = (k, testo) => { const e = el('sucSezVal_'+k); if(e) e.textContent = testo; };
+  sezVal('altri', s.altri.length ? s.altri.length + (s.altri.length===1?' persona':' persone') : 'nessuno');
+  sezVal('patr', simEuro(d.lordo - d.immobiliTot));
+  sezVal('imm', s.immobili.length ? s.immobili.length + ' · ' + simEuro(d.immobiliTot) : 'nessuno');
+  sezVal('pol', d.fuori>0 ? simEuro(d.fuori) : 'nessuna');
+  if(s.opzioni.passivita) sezVal('pass', simEuro(d.passivita));
+  if(s.opzioni.disabili){
+    const nDis = Object.values(s.disabili).filter(Boolean).length;
+    sezVal('dis', nDis ? nDis + (nDis===1?' persona':' persone') : 'nessuno');
+  }
+
+  /* hero */
+  el('sucHeroTag').textContent = perLegge ? 'Senza testamento' : 'Con testamento';
+  el('sucRisEt').textContent = 'Totale imposte della successione';
+  animaCifra(el('sucRisCifra'), d.impostaTotale, simEuro);
+  risBarAggiorna('Totale imposte', simEuro(d.impostaTotale), 'var(--teal-txt)');
+  const incidenza = d.netto>0 ? d.impostaTotale/d.netto : 0;
+  el('sucRisNota').innerHTML = `Su un asse ereditario di <b>${simEuro(d.netto)}</b> le imposte pesano il <b>${sucPct(incidenza)}</b>: ` +
+    `<b>${simEuro(d.impostaSuccessione)}</b> di imposta di successione e <b>${simEuro(d.impostaImmobili)}</b> di ipotecaria e catastale. ` +
+    `Agli eredi restano <b>${simEuro(d.nettoEredi)}</b>` +
+    (d.fuori>0 ? `, oltre a <b>${simEuro(d.fuori)}</b> di polizze e previdenza che vanno direttamente ai beneficiari designati, esenti da imposta.` : '.');
+
+  /* avvisi */
+  const avvisi = [];
+  if(!d.eredi.length) avvisi.push({t:'rosso', txt:'Nessun erede indicato: imposta la situazione familiare o aggiungi altri beneficiari. In mancanza di parenti entro il 6º grado l\'eredità è devoluta allo Stato.'});
+  if(d.lesione) avvisi.push({t:'rosso', txt:'Le quote assegnate ledono la legittima: i legittimari lesi possono esperire l\'azione di riduzione entro 10 anni dall\'apertura della successione.'});
+  if(d.riproporzionate) avvisi.push({t:'arancio', txt:'Le quote del testamento superano il 100%: il calcolo le riproporziona a 100%.'});
+  else if(d.residuo > 0.0001 && !perLegge) avvisi.push({t:'arancio', txt:'Quota non assegnata: ' + sucPct(d.residuo) + ' del patrimonio (' + simEuro(d.residuo*d.netto) + ') resta senza destinatario e si devolve secondo le regole della successione legittima.'});
+  if(perLegge && d.residuo > 0.0001 && d.eredi.length) avvisi.push({t:'arancio', txt:'Solo ' + sucPct(1-d.residuo) + ' del patrimonio trova un erede fra quelli indicati: il resto spetta ad altri parenti entro il 6º grado o allo Stato.'});
+  d.prodottiAttivi.forEach(p=>{ if(p.problema) avvisi.push({t:'arancio', txt:p.nome + ' — ' + p.problema}); });
+  if(s.partEsenti && s.partecipazioni>0) avvisi.push({t:'info', txt:'Partecipazioni escluse dall\'imposta per ' + simEuro(s.partecipazioni) + ': l\'esenzione decade se gli eredi non proseguono l\'attività per almeno 5 anni.'});
+  el('sucAvvisi').innerHTML = avvisi.map(a=>`<div class="suc-avviso ${a.t}">${a.txt}</div>`).join('');
+
+  /* chip */
+  animaCifra(el('sucChipAsse'), d.netto, simEuro);
+  animaCifra(el('sucChipSucc'), d.impostaSuccessione, simEuro);
+  animaCifra(el('sucChipImm'), d.impostaImmobili, simEuro);
+  animaCifra(el('sucChipNetto'), d.nettoEredi, simEuro);
+  el('sucChipFuoriBox').style.display = d.fuori>0 ? '' : 'none';
+  if(d.fuori>0) animaCifra(el('sucChipFuori'), d.fuori, simEuro);
+
+  /* riepilogo delle percentuali per gruppo, sopra il grafico */
+  const gruppi = [
+    {eti:'Coniuge',    n:s.coniuge?1:0,    q:g.coniuge,    col:'var(--teal)'},
+    {eti:'Figli',      n:s.figli,          q:g.figli,      col:'var(--accento)'},
+    {eti:'Ascendenti', n:s.ascendenti,     q:g.ascendenti, col:'var(--viola)'},
+    {eti:'Fratelli',   n:s.fratelli,       q:g.fratelli,   col:'var(--arancio)'},
+    {eti:'Altri',      n:s.altri.length,   q:g.altri,      col:'var(--muto)'}
+  ].filter(x=>x.n>0);
+  el('sucGruppiBox').innerHTML = gruppi.length ? `
+    <div class="uni-comp">${gruppi.filter(x=>x.q>0).map(x=>`<span style="width:${(x.q*100).toFixed(2)}%;background:${x.col}"></span>`).join('')}${d.residuo>0.0001?`<span style="width:${(d.residuo*100).toFixed(2)}%;background:var(--fill-forte)"></span>`:''}</div>
+    <div class="suc-gruppi">${gruppi.map(x=>`<div class="suc-gruppo">
+        <span class="pallino" style="background:${x.col}"></span>
+        <span class="eti">${x.eti}${x.n>1?' <span class="muto">×'+x.n+'</span>':''}</span>
+        <span class="pct">${sucPct(x.q)}</span>
+        <span class="imp">${simEuro(x.q*d.netto)}</span>
+      </div>`).join('') + (d.residuo>0.0001 ? `<div class="suc-gruppo">
+        <span class="pallino" style="background:var(--fill-forte)"></span>
+        <span class="eti muto">Non assegnato</span>
+        <span class="pct">${sucPct(d.residuo)}</span>
+        <span class="imp">${simEuro(d.residuo*d.netto)}</span>
+      </div>` : '')}</div>` : '';
+
+  /* composizione del patrimonio */
+  const tot = d.lordo || 1;
+  el('sucComp').innerHTML = SUC_CAT.filter(c=>d.comp[c.k]>0).map(c=>`<span style="width:${(d.comp[c.k]/tot*100).toFixed(2)}%;background:${c.colore}"></span>`).join('');
+  el('sucLeg').innerHTML = SUC_CAT.filter(c=>d.comp[c.k]>0).map(c=>`<div class="r"><span class="pallino" style="background:${c.colore}"></span>${c.nome}<span class="imp">${simEuro(d.comp[c.k])}</span><span class="pct">${(d.comp[c.k]/tot*100).toFixed(0)}%</span></div>`).join('')
+    || '<div class="r muto">Nessun bene inserito</div>';
+  const righeMassa = d.passivita>0
+    ? [['Patrimonio lordo', simEuro(d.lordo), false],
+       ['Mutui ancora da pagare', '− ' + simEuro(s.mutui), false],
+       ['Altre passività', '− ' + simEuro(s.altrePassivita), false],
+       ['Asse ereditario netto', simEuro(d.netto), true]]
+    : [['Asse ereditario', simEuro(d.netto), true]];
+  el('sucMassaBox').innerHTML = `<div class="suc-massa">${righeMassa.map(r=>`<div class="riga-massa${r[2]?' forte':''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div>` +
+    (d.investito>0 ? `<p class="suc-nota">Sul portafoglio titoli sono stati investiti ${simEuro(d.investito)} e il montante alla data del decesso è ${simEuro(s.titoli + s.titoliStato)}: ${d.plusvalenza>=0 ? 'una plusvalenza latente di ' + simEuro(d.plusvalenza) : 'una minusvalenza di ' + simEuro(-d.plusvalenza)}. Nell'asse ereditario entra il montante.</p>` : '');
+
+  /* polizze e previdenza: a chi vanno */
+  const cardF = el('sucCardFuori');
+  if(!d.prodottiAttivi.length){ cardF.style.display = 'none'; }
+  else {
+    cardF.style.display = '';
+    el('sucFuoriBox').innerHTML = d.prodottiAttivi.map(p=>{
+      const dz = (SUC_DESIGNAZIONI.find(x=>x.k===p.designazione)||{}).nome || '';
+      const righe = p.voci.length
+        ? p.voci.map(v=>`<tr><td>${esc(v.nome)}</td><td>${sucPct(v.quota)}</td><td><b>${simEuro(v.importo)}</b></td></tr>`).join('')
+        : `<tr><td colspan="3" class="muto">Nessun beneficiario determinato</td></tr>`;
+      return `<div class="suc-prod-blocco">
+        <div class="suc-prod-riga"><span class="suc-prod-nome">${p.nome}</span><span class="suc-badge teal">${dz}</span><b>${simEuro(p.capitale)}</b></div>
+        ${p.versato ? `<div class="suc-nota" style="margin:0 0 9px">Capitale versato ${simEuro(p.versatoVal)} · montante ${simEuro(p.capitale)}</div>` : ''}
+        <div class="conf-scroll">
+          <table class="conf-tab suc-tab suc-tab-stretta">
+            <thead><tr><th>Beneficiario</th><th>Quota</th><th>Importo</th></tr></thead>
+            <tbody>${righe}</tbody>
+          </table>
+        </div>
+      </div>`;
+    }).join('') +
+    `<div class="suc-massa"><div class="riga-massa forte"><span>Totale fuori successione</span><b>${simEuro(d.fuori)}</b></div></div>
+     <p class="suc-nota">Capitali liquidati ai beneficiari designati per diritto proprio: non concorrono all'asse ereditario, non rilevano per le quote di legittima e sono esenti dall'imposta di successione. Se però la designazione è fatta in frode ai legittimari, i premi versati possono essere aggrediti con l'azione di riduzione.</p>`;
+  }
+
+  /* quote ereditarie */
+  el('sucQuoteRighe').innerHTML = d.eredi.length
+    ? d.eredi.map(e=>{
+        const fr = sucFrazione(e.quota);
+        return `<tr><td>${esc(e.nome)}${e.disabile?' <span class="suc-badge">L. 104</span>':''}</td>
+          <td>${sucPct(e.quota)}${fr?' <span class="muto">('+fr+')</span>':''}</td>
+          <td>${simEuro(e.ricevuto)}</td>
+          <td>${e.imposta>0?simEuro(e.imposta):'<span class="conf-diff-muto">esente</span>'}</td>
+          <td><b>${simEuro(e.netto)}</b></td></tr>`;
+      }).join('') + (d.residuo>0.0001 ? `<tr><td class="muto">Quota non assegnata</td><td>${sucPct(d.residuo)}</td><td>${simEuro(d.residuo*d.netto)}</td><td>—</td><td>—</td></tr>` : '')
+    : '<tr><td colspan="5" class="muto">Nessun erede indicato</td></tr>';
+
+  /* verifica della legittima */
+  const boxL = el('sucLegittimaBox');
+  if(!d.haLegittimari){
+    boxL.innerHTML = `<p class="suc-nota" style="margin-top:0">Non ci sono legittimari (coniuge, figli o, in loro mancanza, ascendenti): il testatore può disporre liberamente dell'intero patrimonio. Fratelli e sorelle non sono legittimari e non hanno una quota riservata.</p>`;
+  } else {
+    const righe = d.verifiche.map(v=>`<tr${v.leso?' class="forte"':''}>
+        <td>${v.eti}</td>
+        <td>${sucPct(v.riservato)}${sucFrazione(v.riservato)?' <span class="muto">('+sucFrazione(v.riservato)+')</span>':''} · ${simEuro(v.riservato*d.netto)}</td>
+        <td>${sucPct(v.assegnato)} · ${simEuro(v.assegnato*d.netto)}</td>
+        <td>${v.leso ? '<span class="conf-diff-rosso">Lesa di '+simEuro(v.importoMancante)+'</span>' : '<span class="conf-diff-verde">Rispettata</span>'}</td>
+      </tr>`).join('');
+    boxL.innerHTML = `<div class="conf-scroll">
+        <table class="conf-tab suc-tab">
+          <thead><tr><th>Legittimario</th><th>Riservato per legge</th><th>Assegnato</th><th>Esito</th></tr></thead>
+          <tbody>${righe}
+            <tr><td>Quota disponibile</td><td>${sucPct(d.disponibile)}${sucFrazione(d.disponibile)?' <span class="muto">('+sucFrazione(d.disponibile)+')</span>':''} · ${simEuro(d.disponibile*d.netto)}</td><td colspan="2" class="muto">Di cui il testatore può disporre liberamente</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="suc-nota">${d.lesione
+        ? 'La quota assegnata a uno o più legittimari è inferiore alla riserva di legge: il testamento è valido ma impugnabile con l\'azione di riduzione entro 10 anni dall\'apertura della successione.'
+        : 'Tutte le quote riservate dalla legge sono rispettate. Al coniuge spettano inoltre il diritto di abitazione sulla casa familiare e l\'uso dei mobili che la corredano (art. 540 c.c.), qui non valorizzati.'}</p>`;
+  }
+
+  /* immobili */
+  const cardImm = el('sucCardImmobili');
+  if(!d.immobili.length){ cardImm.style.display = 'none'; }
+  else {
+    cardImm.style.display = '';
+    el('sucImmobiliRighe').innerHTML = d.immobili.map(i=>`<tr>
+        <td><b>${esc(sucEtichettaImmobile(i))}</b>${i.primaCasa?' <span class="suc-badge verde">prima casa</span>':''}
+          <div class="suc-sotto">${esc(sucNomeTipoImmobile(i.tipo))}${i.indirizzo?' · '+esc(i.indirizzo):''}</div></td>
+        <td>${simEuro(i.valore)}</td>
+        <td>${i.primaCasa ? simEuro2(SUC_FISSA_PRIMA_CASA) : simEuro(i.ipo)}</td>
+        <td>${i.primaCasa ? simEuro2(SUC_FISSA_PRIMA_CASA) : simEuro(i.cat)}</td>
+        <td><b>${simEuro(i.totale)}</b></td>
+      </tr>`).join('') +
+      `<tr class="forte"><td><b>Totale</b></td><td><b>${simEuro(d.immobiliTot)}</b></td><td colspan="2"></td><td><b>${simEuro(d.impostaImmobili)}</b></td></tr>`;
+  }
+
+  sucDisegnaGrafico(d);
+  sucTabella(d);
+
+  /* confronto con lo scenario bloccato */
+  confAggiornaSblocca(!!sucScenario);
+  const confBox = el('confBox');
+  if(confBox){
+    if(sucScenario){
+      const b = sucScenario;
+      const modoTxt = m => m==='legittima' ? 'Senza testamento' : 'Con testamento';
+      const righe = [
+        {eti:'Tipo di successione', blocco:modoTxt(b.modo), ora:modoTxt(s.modo), diff:confDiffTesto(b.modo, s.modo, 'cambiato')},
+        {eti:'Patrimonio lordo', blocco:simEuro(b.lordo||b.netto), ora:simEuro(d.lordo), diff:confDiffNum(b.lordo||b.netto, d.lordo, simEuro)},
+        {eti:'Passività', blocco:simEuro(b.passivita||0), ora:simEuro(d.passivita), diff:confDiffNum(b.passivita||0, d.passivita, simEuro, 'giu')},
+        {eti:'Asse ereditario netto', blocco:simEuro(b.netto), ora:simEuro(d.netto), diff:confDiffNum(b.netto, d.netto, simEuro)},
+        {eti:'Numero di eredi', blocco:String(b.nEredi), ora:String(d.eredi.length), diff:confDiffNum(b.nEredi, d.eredi.length, v=>String(Math.round(v)))},
+        {eti:'Imposta di successione', blocco:simEuro(b.impostaSuccessione), ora:simEuro(d.impostaSuccessione), diff:confDiffNum(b.impostaSuccessione, d.impostaSuccessione, simEuro, 'giu')},
+        {eti:'Ipotecaria e catastale', blocco:simEuro(b.impostaImmobili), ora:simEuro(d.impostaImmobili), diff:confDiffNum(b.impostaImmobili, d.impostaImmobili, simEuro, 'giu')},
+        {eti:'Polizze e previdenza', blocco:simEuro(b.fuori||0), ora:simEuro(d.fuori), diff:confDiffNum(b.fuori||0, d.fuori, simEuro, 'su')},
+        {eti:'Legittima', blocco:b.lesione?'Lesa':'Rispettata', ora:d.lesione?'Lesa':'Rispettata', diff:confDiffTesto(b.lesione, d.lesione, 'cambiata')},
+        {eti:'Totale imposte', forte:true, blocco:simEuro(b.impostaTotale), ora:simEuro(d.impostaTotale), diff:confDiffNum(b.impostaTotale, d.impostaTotale, simEuro, 'giu')},
+        {eti:'Netto agli eredi', forte:true, blocco:simEuro(b.nettoEredi), ora:simEuro(d.nettoEredi), diff:confDiffNum(b.nettoEredi, d.nettoEredi, simEuro, 'su')}
+      ];
+      confBox.innerHTML = confCardHtml('successione', righe);
+    } else confBox.innerHTML = '';
+  }
+}
+
+function sucDisegnaGrafico(d){
+  const W=760, H=330, padL=76, padR=16, padT=26, padB=42;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  const dati = d.eredi.filter(e=>e.ricevuto>0);
+  if(!dati.length){
+    document.getElementById('sucChart').innerHTML =
+      `<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="15" fill="var(--muto)">Nessuna quota da rappresentare</text>`;
+    return;
+  }
+  const maxVal = Math.max(...dati.map(e=>e.ricevuto))*1.14 || 1;
+  const passo = simPassoBello(maxVal/5);
+  const yTicks = [];
+  for(let v=0; v<=maxVal; v+=passo) yTicks.push(v);
+  if(yTicks[yTicks.length-1] < maxVal) yTicks.push(yTicks[yTicks.length-1] + passo);
+  const yMax = yTicks[yTicks.length-1] || 1;
+  const yPerV = v => padT + (1 - v/yMax)*innerH;
+  let svg = '';
+  yTicks.forEach(v=>{
+    const y = yPerV(v).toFixed(1);
+    svg += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--bordo)" stroke-width="1"/>`;
+    svg += `<text x="${padL-10}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="13" fill="var(--muto)">€ ${simCompatto(v)}</text>`;
+  });
+  svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="var(--bordo-forte)" stroke-width="1"/>`;
+  svg += `<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="var(--bordo-forte)" stroke-width="1"/>`;
+  const n = dati.length, slot = innerW/n, barW = Math.min(70, slot*0.62), etichette = n<=9;
+  dati.forEach((e,idx)=>{
+    const x = padL + slot*idx + (slot-barW)/2;
+    const yTop = yPerV(e.ricevuto), yImposta = yPerV(e.netto);
+    const hNetto = Math.max(1, (H-padB) - yImposta), hImposta = Math.max(0, yImposta - yTop);
+    svg += `<rect x="${x.toFixed(1)}" y="${yImposta.toFixed(1)}" width="${barW.toFixed(1)}" height="${hNetto.toFixed(1)}" rx="6" fill="var(--teal)" opacity="0.92"/>`;
+    if(hImposta > 0.8) svg += `<rect x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${hImposta.toFixed(1)}" rx="4" fill="var(--rosso)" opacity="0.9"/>`;
+    if(etichette) svg += `<text x="${(x+barW/2).toFixed(1)}" y="${(yTop-8).toFixed(1)}" text-anchor="middle" font-size="12.5" font-weight="650" fill="var(--muto)">€ ${simCompatto(e.ricevuto)}</text>`;
+    svg += `<text x="${(x+barW/2).toFixed(1)}" y="${H-24}" text-anchor="middle" font-size="12.5" fill="var(--muto)">${esc(n>6 ? e.breve : e.nome)}</text>`;
+    svg += `<text x="${(x+barW/2).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="11.5" fill="var(--testo-3)">${sucPct(e.quota)}</text>`;
+  });
+  document.getElementById('sucChart').innerHTML = svg;
+}
+
+function sucTabella(d){
+  if(tabellaRimandata(d, sucTabella)) return;
+  const corpo = document.getElementById('sucTabRighe'); if(!corpo) return;
+  corpo.innerHTML = d.eredi.length ? d.eredi.map(e=>{
+    const cl = SUC_CLASSI[e.classe] || SUC_CLASSI.altri;
+    return `<tr>
+      <td>${esc(e.nome)}${e.disabile?' <span class="suc-badge">L. 104</span>':''}</td>
+      <td>${cl.breve}</td>
+      <td>${sucPct(e.quota)}</td>
+      <td>${simEuro(e.ricevuto)}</td>
+      <td>${simEuro(e.parteEsente)}</td>
+      <td>${simEuro(e.franchigia)}</td>
+      <td>${simEuro(e.base)}</td>
+      <td>${sucPct(e.aliquota)}</td>
+      <td><b>${simEuro(e.imposta)}</b></td>
+    </tr>`;
+  }).join('') + `<tr><td><b>Totale</b></td><td colspan="7"></td><td><b>${simEuro(d.impostaSuccessione)}</b></td></tr>`
+   : '<tr><td colspan="9" class="muto">Nessun beneficiario</td></tr>';
+}
+
+/* Riporta uno stato salvato (anche in formato precedente) alla struttura corrente. */
+function sucNormalizzaStato(d){
+  const prodotto = (vecchioImporto, nuovo, versato) => {
+    if(nuovo && typeof nuovo==='object'){
+      return {attiva:!!nuovo.attiva, capitale:Math.max(0, Number(nuovo.capitale)||0),
+        versato:Math.max(0, Number(nuovo.versato)||0),
+        designazione:nuovo.designazione||'legittimi',
+        beneficiari:(nuovo.beneficiari||[]).map(b=>({id:b.id||('b'+nuovoId()), nome:b.nome||'', quota:Math.max(0, Number(b.quota)||0)}))};
+    }
+    const imp = Math.max(0, Number(vecchioImporto)||0);
+    return {attiva:imp>0, capitale:imp, versato:Math.max(0, Number(versato)||0), designazione:'legittimi', beneficiari:[]};
+  };
+  return {
+    liquidita:Math.max(0, Number(d.liquidita)||0),
+    titoliInvestito:Math.max(0, Number(d.titoliInvestito)||0),
+    titoli:Math.max(0, Number(d.titoli)||0),
+    titoliStatoInvestito:Math.max(0, Number(d.titoliStatoInvestito)||0),
+    titoliStato:Math.max(0, Number(d.titoliStato)||0),
+    partecipazioni:Math.max(0, Number(d.partecipazioni)||0), partEsenti:!!d.partEsenti,
+    crediti:Math.max(0, Number(d.crediti)||0), beniMobili:Math.max(0, Number(d.beniMobili)||0),
+    altriBeni:Math.max(0, Number(d.altriBeni)||0),
+    mutui:Math.max(0, Number(d.mutui != null ? d.mutui : d.debiti)||0),
+    altrePassivita:Math.max(0, Number(d.altrePassivita)||0),
+    opzioni:{
+      beniMobili: d.opzioni ? !!d.opzioni.beniMobili : (Number(d.beniMobili)||0)>0,
+      altriBeni:  d.opzioni ? !!d.opzioni.altriBeni  : (Number(d.altriBeni)||0)>0,
+      passivita:  d.opzioni ? !!d.opzioni.passivita  : ((Number(d.mutui)||0)+(Number(d.altrePassivita)||0)+(Number(d.debiti)||0))>0,
+      disabili:   d.opzioni ? !!d.opzioni.disabili   : Object.values(d.disabili||{}).some(Boolean)
+    },
+    immobili:(d.immobili||[]).map(i=>({id:i.id||('im'+nuovoId()), tipo:i.tipo||'appartamento', nome:i.nome||'',
+      indirizzo:i.indirizzo||'', valore:Math.max(0, Number(i.valore)||0), primaCasa:!!i.primaCasa})),
+    polizza:    prodotto(d.polizze, d.polizza),
+    tcm:        prodotto(0, d.tcm),
+    previdenza: prodotto(d.fondoPensione, d.previdenza),
+    coniuge:!!d.coniuge, figli:Number(d.figli)||0, ascendenti:Number(d.ascendenti)||0, fratelli:Number(d.fratelli)||0,
+    altri:JSON.parse(JSON.stringify(d.altri||[])), disabili:{...(d.disabili||{})},
+    modo:d.modo||'legittima', quote:{...(d.quote||{})}
+  };
+}
+</script>
+<script>
 /* ---------- SIMULATORE MUTUO ---------- */
 /* Ammortamento alla francese (rata costante) a tasso fisso. La rata usa il tasso periodico
    i = TAN/k (tasso annuo nominale diviso per i pagamenti dell'anno), coerente con le tabelle
@@ -2306,6 +3729,17 @@ function fotografiaSimulazione(tipo){
       sistemazione:s.sistemazione, citta:s.citta, vitto:s.vitto, km:s.km, mezzo:s.mezzo, inflazione:s.inflazione,
       totale:d.totale, totaleOggi:d.totaleOggi, annuoOggi:d.annuoOggi, anniTot:d.anniTot, tasseAnno:d.tasseAnno }};
   }
+  if(tipo==='successione'){
+    const s = sucStato, d = sucCalcola();
+    return {tipo, dati:{ ...JSON.parse(JSON.stringify(s)),
+      lordo:d.lordo, passivita:d.passivita, netto:d.netto,
+      impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili,
+      impostaTotale:d.impostaTotale, nettoEredi:d.nettoEredi, nEredi:d.eredi.length, lesione:d.lesione,
+      fuori:d.fuori, immobiliTot:d.immobiliTot,
+      eredi:d.eredi.map(e=>({nome:e.nome, quota:e.quota, ricevuto:e.ricevuto, imposta:e.imposta})),
+      fuoriDettaglio:d.prodottiAttivi.map(p=>({nome:p.nome, capitale:p.capitale,
+        voci:p.voci.map(v=>({nome:v.nome, quota:v.quota, importo:v.importo}))})) }};
+  }
   if(tipo==='mutuo'){
     const s = mutStato, d = mutCalcola();
     return {tipo, dati:{ importo:s.importo, tasso:s.tasso, anni:s.anni, freq:s.freq, inizio:s.inizio||'',
@@ -2342,6 +3776,20 @@ function testoRiepilogo(tipo){
     righe.push('Simulazione Spese Universitarie' + (d.studente ? ' — ' + d.studente : ''));
     righe.push(`${uniNomeCorso(d.corso)}${d.fuoriCorso ? ' + ' + simAnniTesto(d.fuoriCorso) + ' fuori corso' : ''}, inizio ${d.anniMancanti===0 ? 'immediato' : 'tra ' + simAnniTesto(d.anniMancanti)}`);
     righe.push(`Costo annuo ai prezzi di oggi: ${simEuro(d.annuoOggi)} — capitale complessivo necessario (rivalutato al ${simPct(d.inflazione)}%): ${simEuro(d.totale)}`);
+  } else if(tipo==='successione'){
+    righe.push('Simulazione Successione ereditaria');
+    righe.push(`${d.modo==='legittima' ? 'Successione legittima (senza testamento)' : 'Successione testamentaria'} — ${d.nEredi} ${d.nEredi===1?'erede':'eredi'}`);
+    righe.push(d.passivita>0
+      ? `Patrimonio lordo: ${simEuro(d.lordo)} − passività ${simEuro(d.passivita)} = asse ereditario netto ${simEuro(d.netto)}`
+      : `Asse ereditario: ${simEuro(d.netto)}`);
+    (d.eredi||[]).forEach(e=> righe.push(`  · ${e.nome}: ${sucPct(e.quota)} = ${simEuro(e.ricevuto)}${e.imposta>0 ? ' (imposta '+simEuro(e.imposta)+')' : ' (esente)'}`));
+    righe.push(`Imposta di successione: ${simEuro(d.impostaSuccessione)} · ipotecaria e catastale: ${simEuro(d.impostaImmobili)} · totale imposte: ${simEuro(d.impostaTotale)}`);
+    righe.push(`Netto agli eredi: ${simEuro(d.nettoEredi)}`);
+    (d.fuoriDettaglio||[]).forEach(p=>{
+      righe.push(`${p.nome}: ${simEuro(p.capitale)} fuori successione`);
+      (p.voci||[]).forEach(v=> righe.push(`  · ${v.nome}: ${sucPct(v.quota)} = ${simEuro(v.importo)}`));
+    });
+    if(d.lesione) righe.push('ATTENZIONE: le quote assegnate ledono la legittima (azione di riduzione entro 10 anni).');
   } else {
     righe.push('Simulazione Mutuo');
     righe.push(`Mutuo di ${simEuro(d.importo)} al ${simPct(d.tasso)}% (TAN) in ${simAnniTesto(d.anni)}`);
@@ -2430,6 +3878,7 @@ function simTipoMeta(tipo){
   if(tipo==='accumulo') return {nome:'Accumulo', classe:'blu', ico:SIM_ICO_SU};
   if(tipo==='decumulo') return {nome:'Decumulo', classe:'verde', ico:SIM_ICO_GIU};
   if(tipo==='mutuo') return {nome:'Mutuo', classe:'arancio', ico:SIM_ICO_MUTUO};
+  if(tipo==='successione') return {nome:'Successione', classe:'teal', ico:SUC_ICO};
   return {nome:'Spese Universitarie', classe:'viola', ico:SIM_ICO_CAP};
 }
 function uniNomeCorso(k){ const c = UNI_CORSI.find(x=>x.k===k); return c ? c.nome : ''; }
@@ -2440,6 +3889,7 @@ function simRigaTitolo(sim){
     : `Accumulo — obiettivo ${simEuro(d.obiettivo)} in ${simAnniTesto(d.anni)}`;
   if(sim.tipo==='universita') return `Università${d.studente?' per '+d.studente:''} — ${simAnniTesto(d.anniTot||0)} di studi`;
   if(sim.tipo==='mutuo') return `Mutuo — ${simEuro(d.importo)} in ${simAnniTesto(d.anni)}`;
+  if(sim.tipo==='successione') return `Successione — ${simEuro(d.netto)} fra ${d.nEredi||0} ${(d.nEredi===1?'erede':'eredi')}`;
   return d.modo==='orizzonte'
     ? `Decumulo — ${simEuro(d.capitale)} per ${simAnniTesto(d.anni)}`
     : `Decumulo — ${simEuro(d.capitale)}, necessità ${simEuro(d.necessita)} l'anno`;
@@ -2453,6 +3903,7 @@ function simRigaRisultato(sim){
   }
   if(sim.tipo==='universita') return {v:simEuro(d.totale), k:'capitale necessario'};
   if(sim.tipo==='mutuo') return {v:simEuro2(d.rata), k:'rata al '+(SIM_FREQ_PAROLA[d.freq]||'mese')};
+  if(sim.tipo==='successione') return {v:simEuro(d.impostaTotale), k:'totale imposte'};
   if(d.modo==='orizzonte') return {v:simEuro(d.prelievoAnnuo), k:"prelievo all'anno"};
   return {v: d.perpetuo ? 'Per sempre' : (d.oltre ? 'Oltre 100 anni' : decDurataTesto(d.durataPeriodi||0, d.freq||1)), k:'durata del capitale'};
 }
@@ -2470,7 +3921,10 @@ function vistaSalvate(){
   html += `<div class="card"><h2>${icoTit('save')} Simulazioni salvate <span class="muto" style="font-weight:400">(${sims.length})</span></h2>`;
   for(const s of sims){
     const d = s.dati||{}, r = simRigaRisultato(s), m = simTipoMeta(s.tipo);
-    const parametro = s.tipo==='universita' ? 'inflazione '+simPct(d.inflazione||0)+'%' : (s.tipo==='mutuo' ? 'TAN '+simPct(d.tasso||0)+'%' : 'rendimento '+simPct(d.tasso||0)+'%');
+    const parametro = s.tipo==='universita' ? 'inflazione '+simPct(d.inflazione||0)+'%'
+      : s.tipo==='mutuo' ? 'TAN '+simPct(d.tasso||0)+'%'
+      : s.tipo==='successione' ? (d.modo==='legittima' ? 'senza testamento' : 'con testamento')
+      : 'rendimento '+simPct(d.tasso||0)+'%';
     html += `<div class="sim-salvata" onclick="apriSimulazioneSalvata('${s.id}')">
       <span class="sim-mini-ico ${m.classe}">${m.ico}</span>
       <div style="flex:1;min-width:0">
@@ -2489,8 +3943,34 @@ function vistaSalvate(){
 function apriSimulazioneSalvata(id){
   const s = db.simulazioni.find(x=>x.id===id); if(!s) return;
   const d = s.dati||{}, r = simRigaRisultato(s), acc = s.tipo==='accumulo', mut = s.tipo==='mutuo', m = simTipoMeta(s.tipo);
+  const suc = s.tipo==='successione';
   const voci = [];
-  if(s.tipo==='universita'){
+  if(suc){
+    voci.push(['Tipo di successione', d.modo==='legittima' ? 'Legittima (senza testamento)' : 'Testamentaria']);
+    const fam = [];
+    if(d.coniuge) fam.push('coniuge');
+    if(d.figli) fam.push(d.figli + (d.figli===1?' figlio':' figli'));
+    if(d.ascendenti) fam.push(d.ascendenti + (d.ascendenti===1?' ascendente':' ascendenti'));
+    if(d.fratelli) fam.push(d.fratelli + (d.fratelli===1?' fratello/sorella':' fratelli/sorelle'));
+    if((d.altri||[]).length) fam.push((d.altri||[]).length + ' altri beneficiari');
+    voci.push(['Situazione familiare', fam.length ? fam.join(', ') : 'Nessun erede indicato']);
+    if(d.passivita>0){
+      voci.push(['Patrimonio lordo', simEuro(d.lordo)]);
+      voci.push(['Passività', simEuro(d.passivita)]);
+    }
+    voci.push([d.passivita>0 ? 'Asse ereditario netto' : 'Asse ereditario', simEuro(d.netto)]);
+    if(d.titoliStato>0) voci.push(['Titoli di Stato (esenti)', simEuro(d.titoliStato)]);
+    if((d.immobili||[]).length) voci.push(['Immobili', (d.immobili||[]).length + ' per ' + simEuro(d.immobiliTot||0)]);
+    voci.push(['Imposta di successione', simEuro(d.impostaSuccessione)]);
+    voci.push(['Ipotecaria e catastale', simEuro(d.impostaImmobili)]);
+    voci.push(['Netto agli eredi', simEuro(d.nettoEredi)]);
+    voci.push(['Quote di legittima', d.lesione ? 'Lese: azione di riduzione possibile' : 'Rispettate']);
+    (d.eredi||[]).forEach(e=> voci.push([esc(e.nome), sucPct(e.quota) + ' · ' + simEuro(e.ricevuto)]));
+    (d.fuoriDettaglio||[]).forEach(p=>{
+      voci.push([esc(p.nome), simEuro(p.capitale) + ' fuori successione']);
+      (p.voci||[]).forEach(v=> voci.push(['↳ ' + esc(v.nome), sucPct(v.quota) + ' · ' + simEuro(v.importo)]));
+    });
+  } else if(s.tipo==='universita'){
     if(d.studente) voci.push(['Studente', esc(d.studente)]);
     voci.push(['Ateneo', d.tipoAteneo==='statale' ? 'Statale' : (d.tipoAteneo==='privata' ? 'Privato — retta '+simEuro(d.retta)+'/anno' : 'Telematico — retta '+simEuro(d.retta)+'/anno')]);
     if(d.tipoAteneo==='statale'){ voci.push(['ISEE familiare', simEuro(d.isee)]); voci.push(['Tasse stimate', simEuro(d.tasseAnno)+" all'anno"]); }
@@ -2559,8 +4039,10 @@ function apriSimulazioneSalvata(id){
       <span class="sim-mini-ico ${m.classe}">${m.ico}</span>
       ${esc(s.nome || 'Simulatore '+m.nome)}
       <span class="muto" style="font-weight:400;font-size:13px">salvata il ${simDataTesto(s.creata)}</span></h3>
-    <div class="card sim-hero ${s.tipo==='universita'?'uni':(mut?'mut':(acc?'':'dec'))}" style="margin:14px 0 18px">
-      <div class="et">${s.tipo==='universita'
+    <div class="card sim-hero ${s.tipo==='universita'?'uni':(suc?'suc':(mut?'mut':(acc?'':'dec')))}" style="margin:14px 0 18px">
+      <div class="et">${suc
+        ? 'Totale imposte della successione'
+        : s.tipo==='universita'
         ? 'Capitale complessivo necessario'
         : mut
           ? 'Rata ' + (MUT_FREQ_AGG[d.freq]||'mensile')
@@ -2592,6 +4074,9 @@ function riapriSimulazione(id){
   } else if(s.tipo==='mutuo'){
     mutStato = { importo:(d.importo ?? 120000), tasso:(d.tasso ?? 3), anni:(d.anni ?? 30), freq:(d.freq ?? 12), inizio:(d.inizio ?? '') };
     simPagina = 'mutuo';
+  } else if(s.tipo==='successione'){
+    sucStato = sucNormalizzaStato(d);
+    simPagina = 'successione';
   } else {
     decStato = { modo:d.modo||'orizzonte', freq:d.freq||12, capitale:d.capitale||0,
       anni:(d.anni ?? decStato.anni), tasso:(d.tasso ?? 4), necessita:(d.necessita ?? decStato.necessita), fiscale:d.fiscale||'lordo' };
