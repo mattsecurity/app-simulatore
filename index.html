@@ -91,7 +91,8 @@
     .sidebar .spinta{flex:1}
     main{margin-left:0; padding:88px 20px 40px; max-width:none}
   }
-  @media(max-width:520px){ .navvoce span:not(.nav-count), .logo > div{display:none} .navvoce{padding:9px 11px} }
+  .navvoce span{white-space:nowrap}
+  @media(max-width:700px){ .navvoce span:not(.nav-count), .logo > div{display:none} .navvoce{padding:9px 11px} }
 
   .testata{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin:2px 0 24px}
   .testata h1{margin:0; font-size:28px; font-weight:750; letter-spacing:-.8px}
@@ -172,13 +173,23 @@
   }
 
   /* Barra risultato live: visibile solo a colonna singola (iPad portrait), mostra il risultato mentre regoli i parametri */
-  #risBar{position:fixed; left:0; right:0; bottom:0; z-index:15; display:none; align-items:center; justify-content:space-between; gap:14px; padding:12px 20px calc(12px + env(safe-area-inset-bottom)); background:var(--sidebar); -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px); border-top:1px solid var(--sidebar-bordo)}
-  #risBar .et{font-size:12.5px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.3px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-  #risBar .cifra{font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accento)}
+  #risBar{position:fixed; left:0; right:0; bottom:0; z-index:15; display:none; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px calc(8px + env(safe-area-inset-bottom)); background:var(--sidebar); -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px); border-top:1px solid var(--sidebar-bordo)}
+  /* a sinistra il risultato (toccandolo si passa ai risultati), a destra le due schede */
+  #risBar .risBar-info{flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:1px; min-height:48px; border:none; background:transparent; padding:4px 8px; border-radius:12px; text-align:left; font-family:inherit; cursor:pointer}
+  #risBar .risBar-info:active{background:var(--fill)}
+  #risBar .et{font-size:12px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.3px; min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  #risBar .cifra{font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accento); line-height:1.15}
+  #risBar .seg{flex:none; width:318px}
+  #risBar .seg button{min-height:44px; font-size:14px; padding:10px 4px}
+  @media(max-width:560px){ #risBar .seg{width:246px} #risBar .seg button{font-size:12.5px} }
   @media(max-width:860px){
     body.sim-aperto #risBar{display:flex}
-    body.sim-aperto main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
-    body.sim-aperto .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+    body.sim-aperto main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+    body.sim-aperto .toast{bottom:calc(110px + env(safe-area-inset-bottom))}
+    /* colonna singola (iPad portrait, Split View): una scheda alla volta, parametri o risultati */
+    body.sim-aperto:not(.presentazione).scheda-ris .sim-grid > .sim-pannello{display:none}
+    body.sim-aperto:not(.presentazione).scheda-par .sim-grid > .sim-dash{display:none}
+    /* «Entrambi»: nessuna delle due classi, le colonne stanno una sotto l'altra */
   }
   .sim-dash{display:flex; flex-direction:column; gap:22px}
   .sim-dash > .card{margin-bottom:0}
@@ -489,7 +500,24 @@
   body.presentazione #presEsci{display:inline-flex}
 
   /* ===== TIPOGRAFIA PER SCHERMI TOUCH (iPad) ===== */
+  /* Comandi ed etichette: il tocco prolungato non deve selezionare testo né aprire il callout */
+  button, label, .pill-scelta, .seg, .navvoce, .sim-tab-toggle, .sim-back, .suc-add, .suc-togli, .sim-h2, .sim-minmax, .sim-slider, #risBar, .sim-chip .k, .sidebar-riapri{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+  /* App aggiunta alla Home: la pagina non deve «rimbalzare» ai bordi */
+  @media(display-mode:standalone){ html, body{overscroll-behavior-y:none} }
   @media(pointer:coarse){
+    /* target minimi da 44pt (Apple HIG) sui comandi che erano più piccoli */
+    .suc-bene .icona-btn{width:44px; height:44px}
+    .suc-togli{width:36px; height:36px; margin:-4px 0}
+    .suc-bene-nome{padding:11px 2px; min-height:44px}
+    .sim-tab-toggle{min-height:44px}
+    .sim-back{min-height:44px}
+    .suc-add{min-height:44px}
+    .sidebar-riapri{width:44px; height:44px}
+    .seg button{min-height:44px}
+    select, .suc-bene select{min-height:44px}
+    .sim-inp{min-height:46px}
+    .sim-inp input{min-height:44px; padding:10px 0}
+    input:not([type=range]):not([type=checkbox]):not([type=radio]){min-height:44px}
     body{font-size:15.5px}
     label{font-size:14px}
     .sim-eco{font-size:13px}
@@ -632,16 +660,16 @@
   </div>
   <button class="navvoce" id="navSimulatore" title="Simulatori" onclick="vai('simulatore')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-    Simulatori
+    <span class="nav-eti">Simulatori</span>
   </button>
   <button class="navvoce" id="navSalvate" title="Simulazioni salvate" onclick="vai('salvate')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h11l3 3V19a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 19V6a1.5 1.5 0 0 1 1-1.5z"/><path d="M8 4.5v4h6v-4M8 20v-5h8v5"/></svg>
-    Salvate
+    <span class="nav-eti">Salvate</span>
     <span class="nav-count" id="cntSalvate"></span>
   </button>
   <button class="navvoce" id="navDati" title="Dati di mercato" onclick="vai('dati')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 13 7.5 13 10.5 5.5 14 19 16.5 13 21 13"/></svg>
-    Dati di mercato
+    <span class="nav-eti">Dati di mercato</span>
   </button>
   <span class="spinta"></span>
   <button class="navvoce" id="btnTema" title="Aspetto chiaro/scuro" onclick="temaToggle()">
@@ -652,7 +680,14 @@
 
 <main id="app"></main>
 
-<div id="risBar" aria-live="polite"><span class="et" id="risBarEt"></span><b class="cifra" id="risBarCifra"></b></div>
+<div id="risBar">
+  <button type="button" class="risBar-info" aria-live="polite" title="Vai ai risultati" onclick="simScheda('risultati')"><span class="et" id="risBarEt"></span><b class="cifra" id="risBarCifra"></b></button>
+  <div class="seg" role="tablist" aria-label="Parametri o risultati">
+    <button type="button" role="tab" id="schedaPar" class="on" aria-selected="true" onclick="simScheda('parametri')">Parametri</button>
+    <button type="button" role="tab" id="schedaTutto" aria-selected="false" onclick="simScheda('entrambi')">Entrambi</button>
+    <button type="button" role="tab" id="schedaRis" aria-selected="false" onclick="simScheda('risultati')">Risultati</button>
+  </div>
+</div>
 <button id="presEsci" onclick="presentazioneToggle()">✕ Esci dalla presentazione</button>
 
 <div class="velo" id="velo"><div class="finestra" id="finestra"></div></div>
@@ -668,6 +703,40 @@ try{
 function salva(){ try{ localStorage.setItem('simfin_db', JSON.stringify(db)); return true; }catch(e){ return false; } }
 function nuovoId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* Campi numerici in euro (o in unità intere): si scrive 150000 e si vede 150.000.
+   Il campo è type="text" con inputmode="numeric" (tastiera numerica) e l'attributo
+   data-migliaia; la formattazione avviene mentre si scrive, il valore si rilegge con
+   numIT(). fmtMigliaia() serve a scrivere il valore iniziale nel campo. */
+function numIT(v){ if(typeof v==='number') return v; const s = String(v==null?'':v).replace(/\D/g,''); return s ? parseInt(s, 10) : NaN; }
+/* Numero all'italiana con il punto delle migliaia SEMPRE: toLocaleString('it-IT') lo omette
+   sotto le cinque cifre (5000 e non 5.000), qui invece 1.000 e 10.000. dec = decimali fissi. */
+function itNum(n, dec){
+  n = Number(n); if(!isFinite(n)) n = 0; dec = dec || 0;
+  const [i, d] = Math.abs(n).toFixed(dec).split('.');
+  const neg = n < 0 && Number(Math.abs(n).toFixed(dec)) > 0;
+  return (neg ? '-' : '') + i.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (dec > 0 ? ',' + d : '');
+}
+function fmtMigliaia(n){ n = typeof n==='number' ? n : numIT(n); return isFinite(n) ? itNum(n, 0) : ''; }
+document.addEventListener('focusin', e=>{ const el = e.target; if(el && el.matches && el.matches('input[data-migliaia]')) el.dataset.prev = el.value; }, true);
+document.addEventListener('input', e=>{
+  const el = e.target;
+  if(!el || !el.matches || !el.matches('input[data-migliaia]')) return;
+  let raw = el.value, caret = el.selectionStart!=null ? el.selectionStart : raw.length;
+  const prev = el.dataset.prev != null ? el.dataset.prev : raw;
+  const cifreDi = s => s.replace(/\D/g,'').length;
+  /* cancellando un punto le cifre non cambiano e il punto ricomparirebbe: tolgo anche la cifra accanto */
+  if(cifreDi(raw)===cifreDi(prev) && raw.length < prev.length){
+    if(e.inputType==='deleteContentBackward' && caret>0){ raw = raw.slice(0, caret-1) + raw.slice(caret); caret--; }
+    else if(e.inputType==='deleteContentForward' && caret < raw.length){ raw = raw.slice(0, caret) + raw.slice(caret+1); }
+  }
+  const cifrePrima = cifreDi(raw.slice(0, caret));
+  const cifre = raw.replace(/\D/g,'').replace(/^0+(?=\d)/,'');
+  const nuovo = cifre ? itNum(parseInt(cifre, 10), 0) : '';
+  el.value = nuovo; el.dataset.prev = nuovo;
+  let pos = 0, c = 0;
+  while(pos < nuovo.length && c < cifrePrima){ if(/\d/.test(nuovo[pos])) c++; pos++; }
+  try{ el.setSelectionRange(pos, pos); }catch(_){}
+}, true);
 
 let vistaCorrente = 'simulatore';
 let clienteAperto = null;
@@ -769,8 +838,32 @@ function rendi(){
   else if(vistaCorrente==='dati'){ app.innerHTML = vistaDati(); if(titoloAperto) initTitolo(); else initDati(); }
   else { app.innerHTML = vistaSimulatore(); initSimulatore(); }
   document.body.classList.toggle('sim-aperto', vistaCorrente==='simulatore' && !!simPagina);
+  simSchedaApplica();
   if(vistaCorrente!=='simulatore' || !simPagina) document.body.classList.remove('presentazione');
   aggiornaContatori();
+}
+/* Schede «Parametri | Entrambi | Risultati»: contano solo a colonna singola (iPad portrait,
+   Split View), dove le due colonne non stanno affiancate. In landscape il CSS le mostra
+   entrambe. «Entrambi» le mette una sotto l'altra nella stessa pagina. */
+let simSchedaCorrente = 'parametri';
+function simScheda(s){
+  simSchedaCorrente = (s==='risultati' || s==='entrambi') ? s : 'parametri';
+  simSchedaApplica();
+  /* ridisegno: grafici e cifre animate della colonna appena mostrata */
+  const f = {accumulo:'simAggiorna', decumulo:'decAggiorna', universita:'uniAggiorna', mutuo:'mutAggiorna', successione:'sucAggiorna'}[simPagina];
+  if(f && typeof window[f]==='function' && matchMedia('(max-width:860px)').matches) window[f]();
+  /* in cima, anche dopo il ridisegno (l'ancoraggio dello scroll potrebbe spostare la pagina) */
+  window.scrollTo(0, 0);
+  requestAnimationFrame(()=> window.scrollTo(0, 0));
+}
+function simSchedaApplica(){
+  const c = simSchedaCorrente;
+  document.body.classList.toggle('scheda-ris', c==='risultati');
+  document.body.classList.toggle('scheda-par', c==='parametri');
+  [['schedaPar','parametri'], ['schedaTutto','entrambi'], ['schedaRis','risultati']].forEach(([id, k])=>{
+    const b = document.getElementById(id); if(!b) return;
+    b.classList.toggle('on', c===k); b.setAttribute('aria-selected', c===k);
+  });
 }
 /* Barra risultato fissa (solo a colonna singola): rispecchia etichetta e cifra del box hero */
 function risBarAggiorna(et, cifra, colore){
@@ -882,12 +975,12 @@ const SIM_FREQ_NOMI = {12:'Mensile', 6:'Bimestrale', 4:'Trimestrale', 2:'Semestr
 const SIM_FREQ_PAROLA = {12:'mese', 6:'bimestre', 4:'trimestre', 2:'semestre', 1:'anno'};
 const MUT_FREQ_AGG = {12:'mensile', 6:'bimestrale', 4:'trimestrale', 2:'semestrale', 1:'annuale'};
 
-function simEuro(n){ if(!isFinite(n)) n = 0; return n.toLocaleString('it-IT', {style:'currency', currency:'EUR', maximumFractionDigits:0, minimumFractionDigits:0}); }
-function simEuro2(n){ if(!isFinite(n)) n = 0; return n.toLocaleString('it-IT', {style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2}); }
+function simEuro(n){ return itNum(n, 0) + '\u00a0€'; }
+function simEuro2(n){ return itNum(n, 2) + '\u00a0€'; }
 function simPct(n){ return n.toFixed(1).replace('.', ','); }
 function simAnniTesto(n){ return n + (n===1 ? ' anno' : ' anni'); }
 
-function simApriPagina(p){ simPagina = p; vistaCorrente = 'simulatore'; clienteAperto = null; rendi(); window.scrollTo(0,0); }
+function simApriPagina(p){ simPagina = p; vistaCorrente = 'simulatore'; clienteAperto = null; simSchedaCorrente = 'parametri'; rendi(); window.scrollTo(0,0); }
 function vistaSimulatore(){
   if(simPagina==='accumulo') return vistaSimAccumulo();
   if(simPagina==='decumulo') return vistaSimDecumulo();
@@ -1049,17 +1142,17 @@ function vistaSimAccumulo(){
       <div class="sim-h2 due">Parametri</div>
       <div class="sim-campo">
         <label for="simCapitale">Capitale che hai oggi</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="simCapitale" value="${s.capitale}" min="0" step="100"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="simCapitale" value="${fmtMigliaia(s.capitale)}"></div>
         <div class="sim-eco" id="simCapitaleEco"></div>
       </div>
       <div class="sim-campo">
         <label for="simObiettivo" id="simObiettivoLabel">Obiettivo futuro</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="simObiettivo" value="${s.obiettivo}" min="0" step="500"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="simObiettivo" value="${fmtMigliaia(s.obiettivo)}"></div>
         <div class="sim-eco" id="simObiettivoEco"></div>
       </div>
       <div class="sim-campo${s.modo==='rata'?'':' chiuso'}" id="simCampoRata">
         <label for="simRata">Importo di ogni versamento</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="simRata" value="${s.rata}" min="0" step="50"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="simRata" value="${fmtMigliaia(s.rata)}"></div>
         <div class="sim-eco" id="simRataEco"></div>
       </div>
       <div class="sim-campo">
@@ -1128,7 +1221,7 @@ function initSimulatore(){
   let _raf = 0;
   const ascolta = (id, fn)=>{
     const el = document.getElementById(id); if(!el) return;
-    const th = ()=>{ if(_raf) return; _raf = requestAnimationFrame(()=>{ _raf = 0; fn(); }); };
+    const th = ()=>{ if(_raf) return; _raf = requestAnimationFrame(()=>{ _raf = 0; if(document.getElementById(id)) fn(); }); };
     el.addEventListener('input', th);
     if(el.tagName==='SELECT' || el.type==='date') el.addEventListener('change', th);
   };
@@ -1170,10 +1263,10 @@ function simNascondiTip(){
   const g = document.getElementById('simGuida'); if(g) g.style.opacity = '0';
 }
 function simLeggiInput(){
-  simStato.capitale = Math.max(0, parseFloat(document.getElementById('simCapitale').value) || 0);
-  simStato.obiettivo = Math.max(0, parseFloat(document.getElementById('simObiettivo').value) || 0);
+  simStato.capitale = Math.max(0, numIT(document.getElementById('simCapitale').value) || 0);
+  simStato.obiettivo = Math.max(0, numIT(document.getElementById('simObiettivo').value) || 0);
   const rataEl = document.getElementById('simRata');
-  if(rataEl) simStato.rata = Math.max(0, parseFloat(rataEl.value) || 0);
+  if(rataEl) simStato.rata = Math.max(0, numIT(rataEl.value) || 0);
   simStato.anni = parseInt(document.getElementById('simAnni').value, 10);
   simStato.tasso = parseFloat(document.getElementById('simTasso').value);
 }
@@ -1525,12 +1618,12 @@ function vistaSimDecumulo(){
       <div class="sim-h2 due">Parametri</div>
       <div class="sim-campo">
         <label for="decCapitale">Capitale esistente (montante)</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="decCapitale" value="${s.capitale}" min="0" step="1000"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="decCapitale" value="${fmtMigliaia(s.capitale)}"></div>
         <div class="sim-eco" id="decCapitaleEco"></div>
       </div>
       <div class="sim-campo${s.modo==='necessita'?'':' chiuso'}" id="decCampoNec">
         <label for="decNecessita">Necessità annua</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="decNecessita" value="${s.necessita}" min="0" step="500"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="decNecessita" value="${fmtMigliaia(s.necessita)}"></div>
         <div class="sim-eco" id="decNecessitaEco"></div>
       </div>
       <div class="sim-campo${s.modo==='orizzonte'?'':' chiuso'}" id="decCampoAnni">
@@ -1597,8 +1690,8 @@ function vistaSimDecumulo(){
   </div>`;
 }
 function decLeggiInput(){
-  decStato.capitale = Math.max(0, parseFloat(document.getElementById('decCapitale').value) || 0);
-  const nec = document.getElementById('decNecessita'); if(nec) decStato.necessita = Math.max(0, parseFloat(nec.value) || 0);
+  decStato.capitale = Math.max(0, numIT(document.getElementById('decCapitale').value) || 0);
+  const nec = document.getElementById('decNecessita'); if(nec) decStato.necessita = Math.max(0, numIT(nec.value) || 0);
   const an = document.getElementById('decAnni'); if(an) decStato.anni = parseInt(an.value, 10);
   decStato.tasso = parseFloat(document.getElementById('decTasso').value);
 }
@@ -1826,12 +1919,12 @@ function vistaSimUniversita(){
       </div>
       <div class="sim-campo${statale?'':' chiuso'}" id="uniBloccoIsee" style="margin-top:14px">
         <label for="uniIsee">ISEE familiare</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="uniIsee" value="${s.isee}" min="0" step="1000"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="uniIsee" value="${fmtMigliaia(s.isee)}"></div>
         <div class="sim-eco" id="uniIseeEco"></div>
       </div>
       <div class="sim-campo${statale?' chiuso':''}" id="uniBloccoRetta" style="margin-top:14px">
         <label for="uniRetta">Retta annua</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="uniRetta" value="${s.retta}" min="0" step="500"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="uniRetta" value="${fmtMigliaia(s.retta)}"></div>
         <div class="sim-eco" id="uniRettaEco"></div>
       </div>
       <div class="sim-campo">
@@ -1870,7 +1963,7 @@ function vistaSimUniversita(){
       <div id="uniBloccoPendolare" class="${famiglia?'':'chiuso-blocco'}">
         <div class="sim-campo">
           <label for="uniKm">Distanza casa–università (solo andata)</label>
-          <div class="sim-inp"><input type="number" inputmode="numeric" enterkeyhint="done" id="uniKm" value="${s.km}" min="0" step="5"><span class="pre">km</span></div>
+          <div class="sim-inp"><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="uniKm" value="${fmtMigliaia(s.km)}"><span class="pre">km</span></div>
         </div>
         <div class="sim-campo">
           <label>Mezzo di trasporto</label>
@@ -1932,13 +2025,13 @@ function vistaSimUniversita(){
 function uniLeggiInput(){
   const v = id => document.getElementById(id);
   if(v('uniStudente')) uniStato.studente = v('uniStudente').value.trim();
-  if(v('uniIsee')) uniStato.isee = Math.max(0, parseFloat(v('uniIsee').value) || 0);
-  if(v('uniRetta')) uniStato.retta = Math.max(0, parseFloat(v('uniRetta').value) || 0);
+  if(v('uniIsee')) uniStato.isee = Math.max(0, numIT(v('uniIsee').value) || 0);
+  if(v('uniRetta')) uniStato.retta = Math.max(0, numIT(v('uniRetta').value) || 0);
   if(v('uniIndirizzo')) uniStato.indirizzo = v('uniIndirizzo').value;
   if(v('uniCorso')) uniStato.corso = v('uniCorso').value;
   if(v('uniAnniMancanti')) uniStato.anniMancanti = parseInt(v('uniAnniMancanti').value, 10) || 0;
   if(v('uniCitta')) uniStato.citta = v('uniCitta').value;
-  if(v('uniKm')) uniStato.km = Math.max(0, parseFloat(v('uniKm').value) || 0);
+  if(v('uniKm')) uniStato.km = Math.max(0, numIT(v('uniKm').value) || 0);
   if(v('uniInflazione')) uniStato.inflazione = parseFloat(v('uniInflazione').value) || 0;
 }
 function uniCambiaTipoAteneo(t){
@@ -1949,7 +2042,7 @@ function uniCambiaTipoAteneo(t){
   document.getElementById('uniTipoTelematica').classList.toggle('on', t==='telematica');
   document.getElementById('uniBloccoIsee').classList.toggle('chiuso', t!=='statale');
   document.getElementById('uniBloccoRetta').classList.toggle('chiuso', t==='statale');
-  const retta = document.getElementById('uniRetta'); if(retta && t!=='statale') retta.value = uniStato.retta;
+  const retta = document.getElementById('uniRetta'); if(retta && t!=='statale') retta.value = fmtMigliaia(uniStato.retta);
   uniAggiorna();
 }
 function uniPill(contId, k, campo){
@@ -2125,6 +2218,8 @@ function uniTabella(d){
 </script>
 <script>
 /* ================= SIMULATORE DI SUCCESSIONE EREDITARIA =================
+   v96 — Beni mobili registrati: auto, moto e camper esenti da imposta di successione,
+   IPT di voltura per veicolo; barche, navi e aeromobili imponibili con trascrizione.
    v95 — Quattro domande davanti al cliente: chi eredita e quanto, la legittima è
    rispettata, quante imposte si pagano, cosa va fuori successione.
    Immobili, beni mobili registrati e altri beni di valore sono ELENCHI (tipo, nota,
@@ -2149,7 +2244,7 @@ const SUC_ALIQ_IPOTECARIA = 0.02;             // 2% sul valore degli immobili
 const SUC_ALIQ_CATASTALE  = 0.01;             // 1% sul valore degli immobili
 const SUC_FISSA_PRIMA_CASA = 200;             // ipotecaria e catastale in misura fissa
 const SUC_CAT = [
-  {k:'liquidita',      nome:'Liquidità e depositi',      colore:'var(--accento)'},
+  {k:'liquidita',      nome:'Conti correnti',           colore:'var(--accento)'},
   {k:'titoli',         nome:'Titoli e fondi',            colore:'var(--viola)'},
   {k:'titoliStato',    nome:'Titoli di Stato (esenti)',  colore:'var(--verde)'},
   {k:'immobili',       nome:'Immobili',                  colore:'var(--arancio)'},
@@ -2170,14 +2265,39 @@ const SUC_TIPI_IMMOBILE = [
   {k:'terrenoEdi',   nome:'Terreno edificabile'},
   {k:'altro',        nome:'Altro immobile'}
 ];
+/* Beni mobili registrati. «esente»: auto, moto e camper entrano nell'asse (contano per le
+   quote e per la legittima) ma NON concorrono alla base imponibile dell'imposta di
+   successione. Barche, navi e aeromobili sono invece tassati come gli altri beni.
+   «registro»: dove si trascrive il passaggio di proprietà all'erede (voltura). */
 const SUC_TIPI_MOBILE = [
-  {k:'auto',   nome:'Automobile'},
-  {k:'moto',   nome:'Moto'},
-  {k:'camper', nome:'Camper o furgone'},
-  {k:'barca',  nome:'Barca'},
-  {k:'aereo',  nome:'Aeromobile'},
-  {k:'altro',  nome:'Altro mezzo registrato'}
+  {k:'auto',   nome:'Automobile',              esente:true,  registro:'PRA',         kwStima:85},
+  {k:'moto',   nome:'Moto o scooter',          esente:true,  registro:'PRA',         kwStima:35},
+  {k:'camper', nome:'Camper, furgone o autocarro', esente:true, registro:'PRA',      kwStima:100},
+  {k:'barca',  nome:'Imbarcazione da diporto', esente:false, registro:'RID'},
+  {k:'nave',   nome:'Nave',                    esente:false, registro:'navale'},
+  {k:'aereo',  nome:'Aeromobile',              esente:false, registro:'aeronautico'},
+  {k:'altro',  nome:'Altro mezzo registrato',  esente:false, registro:'altro'}
 ];
+/* IPT (Imposta Provinciale di Trascrizione, D.Lgs. 446/1997 art. 56 e D.M. 435/1998) dovuta
+   al PRA per la trascrizione dell'accettazione di eredità di auto, moto e camper:
+   tariffa base 150,81 € fino a 53 kW, poi 3,5119 €/kW; moto fino a 11 kW 25,82 €.
+   Quasi tutte le province applicano la maggiorazione massima del 30%. Se i kW non sono
+   indicati si usa una potenza media per tipologia (kwStima). */
+const SUC_IPT = {fissa:150.81, kwSoglia:53, perKw:3.5119, motoFissa:25.82, motoKwSoglia:11, maggiorazione:1.30};
+/* Imposte e diritti di trascrizione nei registri di barche, navi e aeromobili: importi
+   medi indicativi per tipologia (bolli, diritti di segreteria, tasse di iscrizione). */
+const SUC_VOLTURA_FISSA = {barca:200, nave:500, aereo:300, altro:200};
+function sucTipoMobile(k){ return SUC_TIPI_MOBILE.find(t=>t.k===k) || SUC_TIPI_MOBILE[SUC_TIPI_MOBILE.length-1]; }
+/* Imposta di voltura del singolo veicolo: IPT per i mezzi al PRA, importo medio per gli altri */
+function sucVoltura(b){
+  const t = sucTipoMobile(b.tipo);
+  if(t.registro!=='PRA') return SUC_VOLTURA_FISSA[t.k] != null ? SUC_VOLTURA_FISSA[t.k] : SUC_VOLTURA_FISSA.altro;
+  const kw = sucPos(b.kw) > 0 ? sucPos(b.kw) : t.kwStima;
+  let base;
+  if(t.k==='moto' && kw <= SUC_IPT.motoKwSoglia) base = SUC_IPT.motoFissa;
+  else base = kw <= SUC_IPT.kwSoglia ? SUC_IPT.fissa : kw*SUC_IPT.perKw;
+  return base*SUC_IPT.maggiorazione;
+}
 const SUC_TIPI_VALORE = [
   {k:'gioielli',   nome:'Gioielli'},
   {k:'orologi',    nome:'Orologi di pregio'},
@@ -2191,7 +2311,7 @@ const SUC_TIPI_VALORE = [
 const SUC_LISTE_BENI = [
   {k:'immobili',   cat:'immobili',   nome:'Immobili',                sing:'immobile',       tipi:SUC_TIPI_IMMOBILE, sez:'imm'},
   {k:'beniMobili', cat:'beniMobili', nome:'Beni mobili registrati',  sing:'bene mobile',    tipi:SUC_TIPI_MOBILE, sez:'bmob',
-   spiega:'Auto, moto, camper, barche, aeromobili', nota:'Nota (es. modello, targa)'},
+   spiega:'Auto, moto, camper, barche, navi, aeromobili: valore di mercato alla data del decesso. Auto, moto e camper sono esenti da imposta di successione ma pagano l\'IPT per la voltura al PRA; barche, navi e aeromobili concorrono alla base imponibile e pagano la trascrizione nel loro registro', nota:'Nota (es. modello, targa)'},
   {k:'altriBeni',  cat:'altriBeni',  nome:'Altri beni di valore',    sing:'bene di valore', tipi:SUC_TIPI_VALORE, sez:'bval',
    spiega:"Gioielli, opere d'arte, arredi di pregio, metalli preziosi", nota:'Nota (es. descrizione, autore)'}
 ];
@@ -2377,6 +2497,8 @@ function sucAsse(s){
     immobili:somma('immobili'), partecipazioni:sucPos(s.partecipazioni), crediti:sucPos(s.crediti),
     beniMobili:somma('beniMobili'), altriBeni:somma('altriBeni')
   };
+  /* auto, moto e camper: nell'asse ma fuori dalla base imponibile dell'imposta di successione */
+  comp.beniMobiliEsenti = (s.beniMobili||[]).filter(b=>sucTipoMobile(b.tipo).esente).reduce((t,b)=>t + sucPos(b.valore), 0);
   const lordo = SUC_CAT.reduce((a,c)=>a + (comp[c.k]||0), 0);
   const passivita = s.opzioni.passivita ? (sucPos(s.mutui) + sucPos(s.altrePassivita)) : 0;
   return {comp, lordo, passivita, asse: Math.max(0, lordo - passivita)};
@@ -2598,7 +2720,7 @@ function sucCalcola(s){
     M = sucMassa(s); eff = L.perErede; pctResto = L.perErede; daLegati = {};
   }
   const comp = M.comp, lordo = M.lordo, passivita = M.passivita, netto = M.asse;
-  const esente = Math.min(netto, comp.titoliStato + (s.partEsenti ? comp.partecipazioni : 0));
+  const esente = Math.min(netto, comp.titoliStato + (s.partEsenti ? comp.partecipazioni : 0) + comp.beniMobiliEsenti);
   const imponibileGlobale = Math.max(0, netto - esente);
   const investito = sucPos(s.titoliInvestito) + sucPos(s.titoliStatoInvestito);
   const plusvalenza = (comp.titoli + comp.titoliStato) - investito;
@@ -2616,6 +2738,19 @@ function sucCalcola(s){
   const ipocatAssegnati = immobili.filter(i=>i.a).reduce((t,i)=>t + i.totale, 0);
   const ipocatMassa = impostaImmobili - ipocatAssegnati;
 
+  /* beni mobili registrati, veicolo per veicolo: esenzione dall'imposta di successione
+     (auto, moto, camper) e imposta di voltura (IPT al PRA o trascrizione nel registro),
+     a carico di chi riceve il mezzo */
+  const veicoli = (s.beniMobili||[]).map(b=>{
+    const t = sucTipoMobile(b.tipo), val = sucPos(b.valore);
+    const a = (test && b.a && keys.has(b.a)) ? b.a : '';
+    return {...b, valore:val, tipoNome:t.nome, esente:!!t.esente, registro:t.registro, kwUsati: t.registro==='PRA' ? (sucPos(b.kw)>0 ? sucPos(b.kw) : t.kwStima) : null,
+      kwStimati: t.registro==='PRA' && !(sucPos(b.kw)>0), voltura: val>0 ? sucVoltura(b) : 0, a, aNome: a ? sucNomeErede(a, E) : ''};
+  });
+  const impostaVoltura = veicoli.reduce((a,v)=>a + v.voltura, 0);
+  const volturaAssegnati = veicoli.filter(v=>v.a).reduce((t,v)=>t + v.voltura, 0);
+  const volturaMassa = impostaVoltura - volturaAssegnati;
+
   const righe = E.map(e=>{
     const q = Math.max(0, eff[e.key]||0);
     const cl = SUC_CLASSI[e.classe] || SUC_CLASSI.altri;
@@ -2624,14 +2759,16 @@ function sucCalcola(s){
     const base = Math.max(0, imponibile - franchigia);
     const imposta = base*cl.aliq;
     const ipocatQuota = immobili.filter(i=>i.a===e.key).reduce((t,i)=>t + i.totale, 0) + ipocatMassa*(pctResto[e.key]||0);
+    const volturaQuota = veicoli.filter(v=>v.a===e.key).reduce((t,v)=>t + v.voltura, 0) + volturaMassa*(pctResto[e.key]||0);
     const legati = M.legati[e.key] || 0;
     return {...e, quota:q, ricevuto, parteEsente, imponibile, franchigia, base, aliquota:cl.aliq, classeNome:cl.nome, classeBreve:cl.breve,
-      imposta, ipocatQuota, imposteTot: imposta + ipocatQuota, netto: ricevuto - imposta - ipocatQuota,
+      imposta, ipocatQuota, volturaQuota, altreImposte: ipocatQuota + volturaQuota,
+      imposteTot: imposta + ipocatQuota + volturaQuota, netto: ricevuto - imposta - ipocatQuota - volturaQuota,
       legati, pctLegati: daLegati[e.key]||0, pctResto: pctResto[e.key]||0, dalResto: ricevuto - legati,
       quotaLegge: L.perErede[e.key]||0, riserva: R.perErede[e.key]||0, quotaTest: test ? sucPos(s.quote[e.key]) : null};
   });
   const impostaSuccessione = righe.reduce((a,r)=>a + r.imposta, 0);
-  const impostaTotale = impostaSuccessione + impostaImmobili;
+  const impostaTotale = impostaSuccessione + impostaImmobili + impostaVoltura;
 
   /* capitali fuori successione, prodotto per prodotto */
   const prodotti = SUC_PRODOTTI.map(p=>{
@@ -2666,7 +2803,7 @@ function sucCalcola(s){
     comp, lordo, passivita, netto, esente, imponibileGlobale, immobiliTot:comp.immobili, investito, plusvalenza,
     eredi:righe, quote:eff, quoteLegge:L.perErede, quoteTest: test ? eff : {}, legge:L, riservate:R,
     sommaQuote, residuo:nonAss, nonAss, oltre, riproporzionate:false,
-    impostaSuccessione, immobili, impostaImmobili, impostaTotale,
+    impostaSuccessione, immobili, impostaImmobili, veicoli, impostaVoltura, beniMobiliEsenti: comp.beniMobiliEsenti, impostaTotale,
     nettoEredi: Math.max(0, netto - impostaTotale),
     prodotti, prodottiAttivi, fuori,
     verifiche, disponibile, lesione, lesi, legati,
@@ -2814,35 +2951,35 @@ function vistaSimSuccessione(){
 
       ${sucSezione('patr', 'Patrimonio finanziario',
         `<div class="sim-campo">
-          <label for="sucLiquidita">Conti correnti e depositi</label>
-          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucLiquidita" value="${s.liquidita}" min="0" step="5000"></div>
+          <label for="sucLiquidita">Conti correnti</label>
+          <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucLiquidita" value="${fmtMigliaia(s.liquidita)}"></div>
         </div>
         <div class="sim-campo">
           <label>Titoli e fondi</label>
           <div class="suc-coppia"><span class="suc-mini-eti">Investito</span>
-            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliInvestito" value="${s.titoliInvestito}" min="0" step="5000"></div></div>
+            <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucTitoliInvestito" value="${fmtMigliaia(s.titoliInvestito)}"></div></div>
           <div class="suc-coppia"><span class="suc-mini-eti">Montante</span>
-            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoli" value="${s.titoli}" min="0" step="5000"></div></div>
+            <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucTitoli" value="${fmtMigliaia(s.titoli)}"></div></div>
           <div class="sim-eco" id="sucTitoliEco"></div>
         </div>
         <div class="sim-campo">
           <label>Titoli di Stato</label>
           <div class="suc-coppia"><span class="suc-mini-eti">Investito</span>
-            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliStatoInvestito" value="${s.titoliStatoInvestito}" min="0" step="5000"></div></div>
+            <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucTitoliStatoInvestito" value="${fmtMigliaia(s.titoliStatoInvestito)}"></div></div>
           <div class="suc-coppia"><span class="suc-mini-eti">Montante</span>
-            <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucTitoliStato" value="${s.titoliStato}" min="0" step="5000"></div></div>
+            <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucTitoliStato" value="${fmtMigliaia(s.titoliStato)}"></div></div>
           <div class="sim-eco" id="sucTitoliStatoEco"></div>
         </div>
         <div class="sim-campo">
           <label for="sucPartecipazioni">Partecipazioni societarie</label>
-          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucPartecipazioni" value="${s.partecipazioni}" min="0" step="5000"></div>
+          <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucPartecipazioni" value="${fmtMigliaia(s.partecipazioni)}"></div>
           <div class="sim-freq" style="margin-top:8px">
             <button type="button" id="sucPartEsenti" class="pill-scelta${s.partEsenti?' attiva':''}" aria-pressed="${s.partEsenti}" onclick="sucTogglePartEsenti()">Trasferimento esente (art. 3 c. 4-ter)</button>
           </div>
         </div>
         <div class="sim-campo">
           <label for="sucCrediti">Crediti verso terzi</label>
-          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucCrediti" value="${s.crediti}" min="0" step="1000"></div>
+          <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucCrediti" value="${fmtMigliaia(s.crediti)}"></div>
         </div>
         <div id="sucBeniOpz"></div>`)}
 
@@ -2874,6 +3011,7 @@ function vistaSimSuccessione(){
         <div class="sim-chip"><div class="k">Asse ereditario</div><div class="v" id="sucChipAsse">—</div></div>
         <div class="sim-chip arancio"><div class="k">Imposta di successione</div><div class="v" id="sucChipSucc">—</div></div>
         <div class="sim-chip arancio"><div class="k">Ipotecaria e catastale</div><div class="v" id="sucChipImm">—</div></div>
+        <div class="sim-chip arancio" id="sucChipVoltBox"><div class="k">Voltura veicoli (IPT)</div><div class="v" id="sucChipVolt">—</div></div>
         <div class="sim-chip verde"><div class="k">Netto agli eredi</div><div class="v" id="sucChipNetto">—</div></div>
         <div class="sim-chip teal" id="sucChipFuoriBox"><div class="k">Fuori successione</div><div class="v" id="sucChipFuori">—</div></div>
       </div>
@@ -2887,7 +3025,7 @@ function vistaSimSuccessione(){
         <div class="sim-chart-box"><svg id="sucChart" viewBox="0 0 760 330" preserveAspectRatio="none"></svg></div>
         <div class="conf-scroll" style="margin-top:6px">
           <table class="conf-tab suc-tab suc-tab-eredi">
-            <thead><tr><th>Erede o legatario</th><th>Quota</th><th>Valore ricevuto</th><th>Imposta succ.</th><th>Ipot. + cat.</th><th>Netto</th></tr></thead>
+            <thead><tr><th>Erede o legatario</th><th>Quota</th><th>Valore ricevuto</th><th>Imposta succ.</th><th>Ipot., cat. e voltura</th><th>Netto</th></tr></thead>
             <tbody id="sucQuoteRighe"></tbody>
           </table>
         </div>
@@ -2932,6 +3070,17 @@ function vistaSimSuccessione(){
         </div>
       </div>
 
+      <div class="card" id="sucCardVeicoli">
+        <div class="sim-chart-testa"><div class="sim-chart-tit">Beni mobili registrati e imposte di voltura</div></div>
+        <div class="conf-scroll" style="margin-top:6px">
+          <table class="conf-tab suc-tab">
+            <thead><tr><th>Veicolo</th><th>Valore</th><th>Imposta di successione</th><th>Voltura</th></tr></thead>
+            <tbody id="sucVeicoliRighe"></tbody>
+          </table>
+        </div>
+        <p class="suc-nota" id="sucVeicoliNota"></p>
+      </div>
+
       <div class="card">
         <button class="sim-tab-toggle" onclick="simToggleTabella()">Dettaglio del calcolo dell'imposta
           <span class="hint"><svg class="sim-chev" id="simChev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -2951,7 +3100,7 @@ function vistaSimSuccessione(){
         <ol class="suc-limiti">${SUC_LIMITI.map(t=>`<li>${t}</li>`).join('')}</ol>
       </div>
 
-      <p class="sim-piede">Stima indicativa aggiornata alla normativa in vigore nel 2026. Imposta di successione: 4% oltre 1.000.000 € di franchigia per coniuge e parenti in linea retta, 6% oltre 100.000 € per fratelli e sorelle, 6% senza franchigia per gli altri parenti fino al 4º grado e gli affini, 8% senza franchigia per gli altri soggetti; franchigia di 1.500.000 € per i beneficiari con handicap grave ai sensi della L. 104/1992. La franchigia si applica a ciascun beneficiario sulla quota che riceve. I titoli di Stato entrano nell'asse per il calcolo delle quote ma sono esenti dall'imposta. Le polizze caso morte si liquidano ai beneficiari designati per diritto proprio (art. 1920 c.c.): restano fuori dall'asse ereditario e sono esenti da imposta di successione (art. 12 D.Lgs. 346/1990); i premi versati possono però essere soggetti ad azione di riduzione se la designazione lede i legittimari. Anche le prestazioni della previdenza complementare vanno ai beneficiari designati fuori dall'asse (art. 14 D.Lgs. 252/2005). Imposte ipotecaria (2%) e catastale (1%) sul valore degli immobili, ridotte a 200 € ciascuna con l'agevolazione «prima casa»: le paga chi riceve l'immobile. I debiti del defunto si indicano nella voce facoltativa «Passività» e riducono l'asse ereditario. Non sostituisce il parere di un notaio o di un commercialista.</p>
+      <p class="sim-piede">Stima indicativa aggiornata alla normativa in vigore nel 2026. Imposta di successione: 4% oltre 1.000.000 € di franchigia per coniuge e parenti in linea retta, 6% oltre 100.000 € per fratelli e sorelle, 6% senza franchigia per gli altri parenti fino al 4º grado e gli affini, 8% senza franchigia per gli altri soggetti; franchigia di 1.500.000 € per i beneficiari con handicap grave ai sensi della L. 104/1992. La franchigia si applica a ciascun beneficiario sulla quota che riceve. I titoli di Stato entrano nell'asse per il calcolo delle quote ma sono esenti dall'imposta. Le polizze caso morte si liquidano ai beneficiari designati per diritto proprio (art. 1920 c.c.): restano fuori dall'asse ereditario e sono esenti da imposta di successione (art. 12 D.Lgs. 346/1990); i premi versati possono però essere soggetti ad azione di riduzione se la designazione lede i legittimari. Anche le prestazioni della previdenza complementare vanno ai beneficiari designati fuori dall'asse (art. 14 D.Lgs. 252/2005). Imposte ipotecaria (2%) e catastale (1%) sul valore degli immobili, ridotte a 200 € ciascuna con l'agevolazione «prima casa»: le paga chi riceve l'immobile. Auto, moto e camper entrano nell'asse ereditario ma sono esenti dall'imposta di successione; per la voltura al PRA si paga l'IPT (150,81 € fino a 53 kW, poi 3,5119 €/kW, con la maggiorazione provinciale del 30%), a carico di chi riceve il mezzo. Imbarcazioni, navi e aeromobili concorrono invece alla base imponibile e pagano la trascrizione nel rispettivo registro (qui un importo medio indicativo). I debiti del defunto si indicano nella voce facoltativa «Passività» e riducono l'asse ereditario. Non sostituisce il parere di un notaio o di un commercialista.</p>
     </div>
   </div>`;
 }
@@ -2995,7 +3144,7 @@ function sucRenderImmobili(){
     <span class="suc-mini-eti">Indirizzo</span>
     <input type="text" class="suc-bene-testo" value="${esc(i.indirizzo||'')}" maxlength="90" placeholder="Via, civico, città" oninput="sucBeneTesto('immobili','${i.id}','indirizzo',this.value)">
     <span class="suc-mini-eti">Valore</span>
-    <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${i.valore}" min="0" step="10000" oninput="sucBeneValore('immobili','${i.id}',this.value)"></div>
+    <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(i.valore)}" oninput="sucBeneValore('immobili','${i.id}',this.value)"></div>
     <div class="sim-freq" style="margin-top:9px">
       <button type="button" class="pill-scelta${i.primaCasa?' attiva':''}" aria-pressed="${!!i.primaCasa}" onclick="sucImmPrimaCasa('${i.id}',this)">Agevolazione prima casa</button>
     </div>
@@ -3023,8 +3172,11 @@ function sucRenderBeniListe(){
           </div>
           <input type="text" class="suc-bene-testo" value="${esc(b.nota||'')}" maxlength="80" placeholder="${L.nota}" oninput="sucBeneTesto('${L.k}','${b.id}','nota',this.value)">
           <span class="suc-mini-eti">Valore</span>
-          <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${b.valore}" min="0" step="1000" oninput="sucBeneValore('${L.k}','${b.id}',this.value)"></div>
+          <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(b.valore)}" oninput="sucBeneValore('${L.k}','${b.id}',this.value)"></div>
+          ${L.k==='beniMobili' && sucTipoMobile(b.tipo).registro==='PRA' ? `<span class="suc-mini-eti">Potenza (kW, dalla carta di circolazione) per l'IPT</span>
+          <div class="sim-inp"><input type="number" inputmode="numeric" enterkeyhint="done" value="${b.kw!=null && b.kw>0 ? b.kw : ''}" min="0" step="1" placeholder="es. 85" oninput="sucBeneKw('${b.id}',this.value)"><span class="pre">kW</span></div>` : ''}
           ${sucSelectAssegna(L.k, b, eredi)}
+          ${L.k==='beniMobili' ? `<div class="sim-eco" id="sucEcoBmob_${b.id}"></div>` : ''}
         </div>`).join('') || `<div class="sim-eco" style="margin-bottom:10px">Nessun bene inserito.</div>`}
        <button class="btn secondario suc-btn-agg" onclick="sucBeneAggiungi('${L.k}')">+ Aggiungi un ${L.sing}</button>`);
   });
@@ -3081,13 +3233,13 @@ function sucRenderProdotto(k){
     html += `<div class="suc-prod-corpo">`;
     if(cfg.versato){
       html += `<div class="suc-coppia"><span class="suc-mini-eti">${cfg.versato}</span>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.versato}" min="0" step="5000" oninput="sucProdCampo('${k}','versato',this.value)"></div></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(st.versato)}" oninput="sucProdCampo('${k}','versato',this.value)"></div></div>
       <div class="suc-coppia"><span class="suc-mini-eti">${cfg.eti}</span>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.capitale}" min="0" step="10000" oninput="sucProdCampo('${k}','capitale',this.value)"></div></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(st.capitale)}" oninput="sucProdCampo('${k}','capitale',this.value)"></div></div>
       <div class="sim-eco" id="sucProdEco_${k}"></div>`;
     } else {
       html += `<span class="suc-mini-eti">${cfg.eti}</span>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" value="${st.capitale}" min="0" step="10000" oninput="sucProdCampo('${k}','capitale',this.value)"></div>`;
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(st.capitale)}" oninput="sucProdCampo('${k}','capitale',this.value)"></div>`;
     }
     html += `<span class="suc-mini-eti">Beneficiari</span>
       <div class="sim-freq">${SUC_DESIGNAZIONI.map(dz=>`<button type="button" class="pill-scelta${st.designazione===dz.k?' attiva':''}" aria-pressed="${st.designazione===dz.k}" onclick="sucProdDesignazione('${k}','${dz.k}')">${dz.nome}</button>`).join('')}</div>`;
@@ -3128,11 +3280,11 @@ function sucRenderOpzionali(){
     html += sucSezione('pass', `Passività <button type="button" class="suc-togli" onclick="event.stopPropagation();sucRimuoviVoce('passivita')">✕</button>`,
       `<div class="sim-campo">
         <label for="sucMutui">Mutui ancora da pagare</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucMutui" value="${sucStato.mutui}" min="0" step="5000" oninput="sucCampoNum('mutui',this.value)"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucMutui" value="${fmtMigliaia(sucStato.mutui)}" oninput="sucCampoNum('mutui',this.value)"></div>
       </div>
       <div class="sim-campo">
         <label for="sucAltrePassivita">Altre passività</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="sucAltrePassivita" value="${sucStato.altrePassivita}" min="0" step="1000" oninput="sucCampoNum('altrePassivita',this.value)"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucAltrePassivita" value="${fmtMigliaia(sucStato.altrePassivita)}" oninput="sucCampoNum('altrePassivita',this.value)"></div>
         <div class="sim-eco">Prestiti, debiti fiscali e altri debiti certi del defunto</div>
       </div>`);
   }
@@ -3159,7 +3311,7 @@ function sucRenderPannello(){
 let _sucRaf = 0;
 function sucAggiornaSoft(){ if(_sucRaf) return; _sucRaf = requestAnimationFrame(()=>{ _sucRaf = 0; sucAggiorna(); }); }
 function sucLeggiInput(){
-  const n = id => { const el = document.getElementById(id); return el ? Math.max(0, parseFloat(el.value)||0) : null; };
+  const n = id => { const el = document.getElementById(id); return el ? Math.max(0, numIT(el.value)||0) : null; };
   ['liquidita','titoliInvestito','titoli','titoliStatoInvestito','titoliStato','partecipazioni','crediti']
     .forEach(k=>{ const v = n('suc'+k.charAt(0).toUpperCase()+k.slice(1)); if(v!==null) sucStato[k] = v; });
   const f = document.getElementById('sucFigli'), a = document.getElementById('sucAscendenti'), fr = document.getElementById('sucFratelli');
@@ -3211,7 +3363,7 @@ function sucToggleDisabile(key, el){
 function sucBeneAggiungi(k){
   const L = sucLista(k);
   if(k==='immobili') sucStato.immobili.push({id:'im'+nuovoId(), tipo:'appartamento', nome:'', indirizzo:'', valore:150000, primaCasa:false, a:''});
-  else sucStato[k].push({id:'bn'+nuovoId(), tipo:L.tipi[0].k, nota:'', valore:0, a:''});
+  else sucStato[k].push({id:'bn'+nuovoId(), tipo:L.tipi[0].k, nota:'', valore:0, kw:null, a:''});
   sucApriSez(L.sez);
   if(k==='immobili') sucRenderImmobili(); else sucRenderBeniListe();
   sucAggiorna();
@@ -3224,11 +3376,17 @@ function sucBeneRimuovi(k, id){
 function sucBeneTesto(k, id, campo, valore){
   const b = (sucStato[k]||[]).find(x=>x.id===id); if(!b) return;
   b[campo] = valore;
+  if(k==='beniMobili' && campo==='tipo'){ sucRenderBeniListe(); sucAggiorna(); return; }
+  sucAggiornaSoft();
+}
+function sucBeneKw(id, valore){
+  const b = (sucStato.beniMobili||[]).find(x=>x.id===id); if(!b) return;
+  b.kw = Math.max(0, parseFloat(valore)||0) || null;
   sucAggiornaSoft();
 }
 function sucBeneValore(k, id, valore){
   const b = (sucStato[k]||[]).find(x=>x.id===id); if(!b) return;
-  b.valore = Math.max(0, parseFloat(valore)||0);
+  b.valore = Math.max(0, numIT(valore)||0);
   /* se il bene è assegnato a qualcuno cambiano i minimi delle quote: le riallineo
      senza ridisegnare il pannello, per non perdere il cursore */
   if(sucStato.modo==='testamentaria' && b.a){ sucRiconciliaQuote(sucStato); sucAggiornaQuoteCampi(); }
@@ -3351,7 +3509,7 @@ function sucQuoteDaLegge(){
 }
 /* polizze e previdenza */
 function sucProdToggle(k, on){ sucStato[k].attiva = !!on; sucRenderProdotto(k); sucAggiorna(); }
-function sucProdCampo(k, campo, valore){ sucStato[k][campo] = Math.max(0, parseFloat(valore)||0); sucAggiornaSoft(); }
+function sucProdCampo(k, campo, valore){ sucStato[k][campo] = Math.max(0, numIT(valore)||0); sucAggiornaSoft(); }
 function sucProdDesignazione(k, d){
   const st = sucStato[k];
   st.designazione = d;
@@ -3392,13 +3550,13 @@ function sucRimuoviVoce(k){
   if(sucStato.modo==='testamentaria'){ sucRiconciliaQuote(sucStato); sucAggiornaQuoteCampi(); }
   sucAggiorna();
 }
-function sucCampoNum(k, v){ sucStato[k] = Math.max(0, parseFloat(v)||0); sucAggiornaSoft(); }
+function sucCampoNum(k, v){ sucStato[k] = Math.max(0, numIT(v)||0); sucAggiornaSoft(); }
 /* scenario di confronto */
 function sucBloccaScenario(){
   const d = sucCalcola(), s = sucStato;
   const desc = `${simEuro(d.netto)} · ${s.modo==='legittima'?'senza testamento':'con testamento'} · imposte ${simEuro(d.impostaTotale)}`;
   sucScenario = { stato:JSON.parse(JSON.stringify(sucStato)), netto:d.netto, lordo:d.lordo, passivita:d.passivita,
-    impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaTotale:d.impostaTotale,
+    impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaVoltura:d.impostaVoltura, impostaTotale:d.impostaTotale,
     nettoEredi:d.nettoEredi, nEredi:d.nEredi, lesione:d.lesione, fuori:d.fuori, legati:d.legati.totale, modo:s.modo, testo:desc };
   const r = document.getElementById('simScenarioRiga'); if(r) r.innerHTML = simScenarioHtml('successione');
   sucAggiorna();
@@ -3460,6 +3618,10 @@ function sucAggiorna(){
   if(el('sucTitoliEco')) el('sucTitoliEco').textContent = plus(s.titoli, s.titoliInvestito);
   if(el('sucTitoliStatoEco')) el('sucTitoliStatoEco').textContent = (plus(s.titoliStato, s.titoliStatoInvestito) + ' · Esenti da imposta di successione').replace(/^ · /,'');
   d.immobili.forEach(i=> set('sucEcoImm_'+i.id, `Ipotecaria ${simEuro(i.ipo)} + catastale ${simEuro(i.cat)} = <b>${simEuro(i.totale)}</b>${i.a ? ' · a carico di '+esc(i.aNome) : ''}`));
+  d.veicoli.forEach(v=> set('sucEcoBmob_'+v.id, (v.esente
+      ? `<b>Esente</b> da imposta di successione · IPT voltura al PRA <b>${simEuro2(v.voltura)}</b>${v.kwStimati ? ' (stima su '+v.kwUsati+' kW: inserisci i kW reali)' : ' ('+v.kwUsati+' kW)'}`
+      : `<b>Imponibile</b> per l'imposta di successione · trascrizione nel registro ${v.registro==='RID' ? 'RID' : (v.registro==='navale' ? 'navale' : (v.registro==='aeronautico' ? 'aeronautico' : 'competente'))} circa <b>${simEuro(v.voltura)}</b>`)
+    + (v.a ? ' · a carico di '+esc(v.aNome) : '')));
   const prevEco = el('sucProdEco_previdenza');
   if(prevEco){
     const st = s.previdenza, dlt = st.capitale - st.versato;
@@ -3485,7 +3647,7 @@ function sucAggiorna(){
   sezVal('altri', s.altri.length ? s.altri.length + (s.altri.length===1?' persona':' persone') : 'nessuno');
   sezVal('patr', simEuro(d.comp.liquidita + d.comp.titoli + d.comp.titoliStato + d.comp.partecipazioni + d.comp.crediti));
   sezVal('imm', s.immobili.length ? s.immobili.length + ' · ' + simEuro(d.comp.immobili) : 'nessuno');
-  if(s.opzioni.beniMobili) sezVal('bmob', s.beniMobili.length ? s.beniMobili.length + ' · ' + simEuro(d.comp.beniMobili) : 'nessuno');
+  if(s.opzioni.beniMobili) sezVal('bmob', s.beniMobili.length ? s.beniMobili.length + ' · ' + simEuro(d.comp.beniMobili) + (d.beniMobiliEsenti>0 ? ' (esenti ' + simEuro(d.beniMobiliEsenti) + ')' : '') : 'nessuno');
   if(s.opzioni.altriBeni) sezVal('bval', s.altriBeni.length ? s.altriBeni.length + ' · ' + simEuro(d.comp.altriBeni) : 'nessuno');
   sezVal('pol', d.fuori>0 ? simEuro(d.fuori) : 'nessuna');
   if(s.opzioni.passivita) sezVal('pass', '− ' + simEuro(d.passivita));
@@ -3503,9 +3665,11 @@ function sucAggiorna(){
   if(d.netto<=0) nota = 'Inserisci il patrimonio nel pannello: qui compaiono quote, imposte e netto agli eredi.';
   else {
     nota = `Su un asse ereditario di <b>${simEuro(d.netto)}</b> le imposte stimate sono <b>${simEuro(d.impostaTotale)}</b>, cioè il <b>${sucPct(d.incidenza)}</b>. `;
-    if(d.impostaSuccessione<=0 && d.impostaImmobili>0) nota += `L'imposta di successione è <b>zero</b>: ogni erede resta sotto la sua franchigia. Restano ipotecaria e catastale sugli immobili (${simEuro(d.impostaImmobili)}). `;
+    const voltTxt = d.impostaVoltura>0 ? ' e voltura dei veicoli ' + simEuro(d.impostaVoltura) : '';
+    if(d.impostaSuccessione<=0 && (d.impostaImmobili>0 || d.impostaVoltura>0)) nota += `L'imposta di successione è <b>zero</b>: ogni erede resta sotto la sua franchigia. Restano ${d.impostaImmobili>0 ? 'ipotecaria e catastale sugli immobili (' + simEuro(d.impostaImmobili) + ')' : ''}${d.impostaImmobili>0 && d.impostaVoltura>0 ? ' e ' : ''}${d.impostaVoltura>0 ? 'la voltura dei veicoli (' + simEuro(d.impostaVoltura) + ')' : ''}. `;
     else if(d.impostaSuccessione<=0) nota += `L'imposta di successione è <b>zero</b>: ogni erede resta sotto la sua franchigia. `;
-    else nota += `Imposta di successione <b>${simEuro(d.impostaSuccessione)}</b>${d.impostaImmobili>0 ? ' più ipotecaria e catastale ' + simEuro(d.impostaImmobili) : ''}. `;
+    else nota += `Imposta di successione <b>${simEuro(d.impostaSuccessione)}</b>${d.impostaImmobili>0 ? ' più ipotecaria e catastale ' + simEuro(d.impostaImmobili) : ''}${voltTxt}. `;
+    if(d.beniMobiliEsenti>0) nota += `Auto, moto e camper (${simEuro(d.beniMobiliEsenti)}) sono esenti dall'imposta di successione. `;
     nota += `Agli eredi restano <b>${simEuro(d.nettoEredi)}</b>`;
     if(d.fuori>0) nota += `, più <b>${simEuro(d.fuori)}</b> fuori successione (polizze e previdenza), esenti`;
     nota += '.';
@@ -3521,6 +3685,8 @@ function sucAggiorna(){
   animaCifra(el('sucChipAsse'), d.netto, simEuro);
   animaCifra(el('sucChipSucc'), d.impostaSuccessione, simEuro);
   animaCifra(el('sucChipImm'), d.impostaImmobili, simEuro);
+  if(el('sucChipVoltBox')) el('sucChipVoltBox').style.display = d.impostaVoltura>0 ? '' : 'none';
+  animaCifra(el('sucChipVolt'), d.impostaVoltura, simEuro);
   animaCifra(el('sucChipNetto'), d.nettoEredi, simEuro);
   if(el('sucChipFuoriBox')) el('sucChipFuoriBox').style.display = d.fuori>0 ? '' : 'none';
   if(d.fuori>0) animaCifra(el('sucChipFuori'), d.fuori, simEuro);
@@ -3558,11 +3724,11 @@ function sucAggiorna(){
           <td>${sucPct(e.quota)}${fr?' <span class="muto">('+fr+')</span>':''}</td>
           <td>${simEuro(e.ricevuto)}</td>
           <td>${e.imposta>0?simEuro(e.imposta):'<span class="conf-diff-muto">esente</span>'}</td>
-          <td>${e.ipocatQuota>0?simEuro(e.ipocatQuota):'<span class="conf-diff-muto">—</span>'}</td>
+          <td>${e.altreImposte>0?simEuro(e.altreImposte):'<span class="conf-diff-muto">—</span>'}</td>
           <td><b>${simEuro(e.netto)}</b></td></tr>`;
       }).join('')
       + (nonAssegnato>0.0001 ? `<tr><td class="muto">Quota non assegnata</td><td>${sucPct(nonAssegnato)}</td><td>${simEuro(nonAssegnato*d.netto)}</td><td>—</td><td>—</td><td>—</td></tr>` : '')
-      + `<tr class="forte"><td><b>Totale</b></td><td>${sucPct(E.reduce((t,e)=>t+e.quota,0))}</td><td><b>${simEuro(d.netto - nonAssegnato*d.netto)}</b></td><td>${simEuro(d.impostaSuccessione)}</td><td>${simEuro(d.impostaImmobili)}</td><td><b>${simEuro(d.nettoEredi)}</b></td></tr>`
+      + `<tr class="forte"><td><b>Totale</b></td><td>${sucPct(E.reduce((t,e)=>t+e.quota,0))}</td><td><b>${simEuro(d.netto - nonAssegnato*d.netto)}</b></td><td>${simEuro(d.impostaSuccessione)}</td><td>${simEuro(d.impostaImmobili + d.impostaVoltura)}</td><td><b>${simEuro(d.nettoEredi)}</b></td></tr>`
     : '<tr><td colspan="6" class="muto">Nessun erede indicato</td></tr>');
 
   /* verifica della legittima */
@@ -3685,6 +3851,24 @@ function sucAggiorna(){
     }
   }
 
+  /* beni mobili registrati */
+  const cardVei = el('sucCardVeicoli');
+  if(cardVei){
+    if(!d.veicoli.length){ cardVei.style.display = 'none'; }
+    else {
+      cardVei.style.display = '';
+      set('sucVeicoliRighe', d.veicoli.map(v=>`<tr>
+          <td><b>${esc(sucBeneNome('beniMobili', v))}</b>
+            <div class="suc-sotto">${esc(v.tipoNome)} · registro ${v.registro==='altro' ? 'competente' : v.registro}${v.a?' · assegnato a '+esc(v.aNome):''}</div></td>
+          <td>${simEuro(v.valore)}</td>
+          <td>${v.esente ? '<span class="suc-badge verde">esente</span>' : 'imponibile'}</td>
+          <td><b>${v.registro==='PRA' ? simEuro2(v.voltura) : simEuro(v.voltura)}</b>${v.registro==='PRA' ? '<div class="suc-sotto">IPT · ' + v.kwUsati + ' kW' + (v.kwStimati ? ' stimati' : '') + '</div>' : ''}</td>
+        </tr>`).join('') +
+        `<tr class="forte"><td><b>Totale</b></td><td><b>${simEuro(d.comp.beniMobili)}</b></td><td>${d.beniMobiliEsenti>0 ? 'esenti ' + simEuro(d.beniMobiliEsenti) : ''}</td><td><b>${simEuro(d.impostaVoltura)}</b></td></tr>`);
+      set('sucVeicoliNota', 'Auto, moto e camper sono esenti da imposta di successione ma soggetti all\'IPT per la voltura al PRA (tariffa base 150,81 € fino a 53 kW, poi 3,5119 €/kW, con la maggiorazione provinciale del 30%). Imbarcazioni, navi e aeromobili concorrono alla base imponibile e pagano la trascrizione nel rispettivo registro: qui un importo medio indicativo. I valori sono stime di mercato alla data del decesso: per una valutazione precisa servono listini ufficiali o un perito.');
+    }
+  }
+
   sucDisegnaGrafico(d);
   sucTabella(d);
 
@@ -3704,6 +3888,7 @@ function sucAggiorna(){
         {eti:'Beni assegnati a persone', blocco:simEuro(b.legati||0), ora:simEuro(d.legati.totale), diff:confDiffNum(b.legati||0, d.legati.totale, simEuro)},
         {eti:'Imposta di successione', blocco:simEuro(b.impostaSuccessione), ora:simEuro(d.impostaSuccessione), diff:confDiffNum(b.impostaSuccessione, d.impostaSuccessione, simEuro, 'giu')},
         {eti:'Ipotecaria e catastale', blocco:simEuro(b.impostaImmobili), ora:simEuro(d.impostaImmobili), diff:confDiffNum(b.impostaImmobili, d.impostaImmobili, simEuro, 'giu')},
+        {eti:'Voltura veicoli (IPT)', blocco:simEuro(b.impostaVoltura||0), ora:simEuro(d.impostaVoltura), diff:confDiffNum(b.impostaVoltura||0, d.impostaVoltura, simEuro, 'giu')},
         {eti:'Polizze e previdenza', blocco:simEuro(b.fuori||0), ora:simEuro(d.fuori), diff:confDiffNum(b.fuori||0, d.fuori, simEuro, 'su')},
         {eti:'Legittima', blocco:b.lesione?'Lesa':'Rispettata', ora:d.lesione?'Lesa':'Rispettata', diff:confDiffTesto(b.lesione, d.lesione, 'cambiata')},
         {eti:'Totale imposte', forte:true, blocco:simEuro(b.impostaTotale), ora:simEuro(d.impostaTotale), diff:confDiffNum(b.impostaTotale, d.impostaTotale, simEuro, 'giu')},
@@ -3787,7 +3972,7 @@ function sucNormalizzaStato(d){
   const listaBeni = (k) => {
     const L = sucLista(k), v = d[k];
     if(Array.isArray(v)) return v.map(b=>({id:b.id||('bn'+nuovoId()), tipo: L.tipi.some(t=>t.k===b.tipo)?b.tipo:'altro',
-      nota:String(b.nota||''), valore:sucPos(b.valore), a: typeof b.a==='string' ? b.a : ''}));
+      nota:String(b.nota||''), valore:sucPos(b.valore), kw: sucPos(b.kw)>0 ? sucPos(b.kw) : null, a: typeof b.a==='string' ? b.a : ''}));
     if(sucPos(v) > 0) return [{id:'bn'+nuovoId(), tipo:'altro', nota:'', valore:sucPos(v), a:''}];
     return [];
   };
@@ -3843,7 +4028,7 @@ function vistaSimMutuo(){
       <div class="sim-h2">Il mutuo</div>
       <div class="sim-campo">
         <label for="mutImporto">Importo del mutuo</label>
-        <div class="sim-inp"><span class="pre">€</span><input type="number" inputmode="numeric" enterkeyhint="done" id="mutImporto" value="${s.importo}" min="0" step="5000"></div>
+        <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="mutImporto" value="${fmtMigliaia(s.importo)}"></div>
         <div class="sim-eco" id="mutImportoEco"></div>
       </div>
       <div class="sim-campo">
@@ -3930,7 +4115,7 @@ function vistaSimMutuo(){
 }
 function mutLeggiInput(){
   const v = id => document.getElementById(id);
-  if(v('mutImporto')) mutStato.importo = Math.max(0, parseFloat(v('mutImporto').value) || 0);
+  if(v('mutImporto')) mutStato.importo = Math.max(0, numIT(v('mutImporto').value) || 0);
   if(v('mutTasso')) mutStato.tasso = Math.max(0, parseFloat(v('mutTasso').value) || 0);
   if(v('mutAnni')) mutStato.anni = parseInt(v('mutAnni').value, 10) || 10;
   if(v('mutInizio')) mutStato.inizio = v('mutInizio').value || '';
@@ -4163,12 +4348,13 @@ function fotografiaSimulazione(tipo){
     const s = sucStato, d = sucCalcola();
     return {tipo, dati:{ ...JSON.parse(JSON.stringify(s)),
       lordo:d.lordo, passivita:d.passivita, netto:d.netto,
-      impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili,
+      impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaVoltura:d.impostaVoltura,
+      beniMobiliEsenti:d.beniMobiliEsenti, veicoli:d.veicoli.map(v=>({nome:sucBeneNome('beniMobili', v), tipo:v.tipoNome, valore:v.valore, esente:v.esente, voltura:v.voltura, a:v.aNome})),
       impostaTotale:d.impostaTotale, nettoEredi:d.nettoEredi, nEredi:d.nEredi, lesione:d.lesione,
       fuori:d.fuori, immobiliTot:d.immobiliTot, legatiTot:d.legati.totale, legatiResto:d.legati.resto,
       legatiRighe:d.legati.righe.map(r=>({nome:r.nome, categoria:r.listaNome, a:r.aNome, valore:r.valore})),
       eredi:d.eredi.filter(e=>e.quota>0.000001).map(e=>({nome:e.nome, quota:e.quota, ricevuto:e.ricevuto,
-        imposta:e.imposta, ipocat:e.ipocatQuota, netto:e.netto, legati:e.legati})),
+        imposta:e.imposta, ipocat:e.ipocatQuota, voltura:e.volturaQuota, netto:e.netto, legati:e.legati})),
       fuoriDettaglio:d.prodottiAttivi.map(p=>({nome:p.nome, capitale:p.capitale,
         voci:p.voci.map(v=>({nome:v.nome, quota:v.quota, importo:v.importo}))})) }};
   }
@@ -4218,8 +4404,12 @@ function testoRiepilogo(tipo){
       righe.push(`Beni assegnati per testamento: ${simEuro(d.legatiTot||0)} — resto da dividere per quote ${simEuro(d.legatiResto||0)}`);
       (d.legatiRighe||[]).forEach(r=> righe.push(`  · ${r.nome} → ${r.a}: ${simEuro(r.valore)}`));
     }
-    (d.eredi||[]).forEach(e=> righe.push(`  · ${e.nome}: ${sucPct(e.quota)} = ${simEuro(e.ricevuto)}${e.legati>0 ? ' (di cui beni assegnati '+simEuro(e.legati)+')' : ''}${e.imposta>0 ? ' — imposta '+simEuro(e.imposta) : ' — esente'}${e.ipocat>0 ? ' + ipotecaria e catastale '+simEuro(e.ipocat) : ''}, netto ${simEuro(e.netto!=null?e.netto:e.ricevuto-e.imposta)}`));
-    righe.push(`Imposta di successione: ${simEuro(d.impostaSuccessione)} · ipotecaria e catastale: ${simEuro(d.impostaImmobili)} · totale imposte: ${simEuro(d.impostaTotale)}`);
+    (d.eredi||[]).forEach(e=> righe.push(`  · ${e.nome}: ${sucPct(e.quota)} = ${simEuro(e.ricevuto)}${e.legati>0 ? ' (di cui beni assegnati '+simEuro(e.legati)+')' : ''}${e.imposta>0 ? ' — imposta '+simEuro(e.imposta) : ' — esente'}${e.ipocat>0 ? ' + ipotecaria e catastale '+simEuro(e.ipocat) : ''}${e.voltura>0 ? ' + voltura veicoli '+simEuro(e.voltura) : ''}, netto ${simEuro(e.netto!=null?e.netto:e.ricevuto-e.imposta)}`));
+    if((d.veicoli||[]).length){
+      righe.push(`Beni mobili registrati: ${(d.veicoli||[]).length}${d.beniMobiliEsenti>0 ? ' — auto, moto e camper esenti da imposta di successione per ' + simEuro(d.beniMobiliEsenti) : ''}`);
+      (d.veicoli||[]).forEach(v=> righe.push(`  · ${v.nome} (${v.tipo}): ${simEuro(v.valore)} — ${v.esente ? 'esente' : 'imponibile'}, voltura ${simEuro(v.voltura)}${v.a ? ' a carico di ' + v.a : ''}`));
+    }
+    righe.push(`Imposta di successione: ${simEuro(d.impostaSuccessione)} · ipotecaria e catastale: ${simEuro(d.impostaImmobili)}${(d.impostaVoltura||0)>0 ? ' · voltura veicoli: ' + simEuro(d.impostaVoltura) : ''} · totale imposte: ${simEuro(d.impostaTotale)}`);
     righe.push(`Netto agli eredi: ${simEuro(d.nettoEredi)}`);
     (d.fuoriDettaglio||[]).forEach(p=>{
       righe.push(`${p.nome}: ${simEuro(p.capitale)} fuori successione`);
@@ -4399,6 +4589,8 @@ function apriSimulazioneSalvata(id){
     if((d.immobili||[]).length) voci.push(['Immobili', (d.immobili||[]).length + ' per ' + simEuro(d.immobiliTot||0)]);
     voci.push(['Imposta di successione', simEuro(d.impostaSuccessione)]);
     voci.push(['Ipotecaria e catastale', simEuro(d.impostaImmobili)]);
+    if((d.impostaVoltura||0)>0) voci.push(['Voltura veicoli (IPT)', simEuro(d.impostaVoltura)]);
+    if((d.beniMobiliEsenti||0)>0) voci.push(['Auto, moto e camper (esenti)', simEuro(d.beniMobiliEsenti)]);
     voci.push(['Netto agli eredi', simEuro(d.nettoEredi)]);
     voci.push(['Quote di legittima', d.lesione ? 'Lese: azione di riduzione possibile' : 'Rispettate']);
     if((d.legatiRighe||[]).length){
@@ -4524,6 +4716,7 @@ function riapriSimulazione(id){
   }
   chiudiFinestra();
   vistaCorrente = 'simulatore'; clienteAperto = null;
+  simSchedaCorrente = 'risultati';           // una simulazione salvata si riapre per mostrarla: prima i risultati
   rendi(); window.scrollTo(0,0);
 }
 /* Conferma di eliminazione nella modale interna (niente confirm() di sistema su iPad) */
@@ -4607,7 +4800,7 @@ function datiDataIt(s){
   const [a,m,g] = String(s).slice(0,10).split('-');
   return `${g}/${m}/${a}`;
 }
-function fmtNum(n, dec){ return Number(n).toLocaleString('it-IT',{minimumFractionDigits:dec??2, maximumFractionDigits:dec??2}); }
+function fmtNum(n, dec){ return itNum(n, dec??2); }
 function fmtValuta(n, cur){
   try{ return Number(n).toLocaleString('it-IT',{style:'currency', currency:cur||'USD', minimumFractionDigits:2, maximumFractionDigits:Math.abs(n)<10?4:2}); }
   catch(e){ return fmtNum(n) + ' ' + (cur||''); }
@@ -5190,7 +5383,7 @@ async function caricaProfilo(sym){
       const d = document.getElementById('titDesc');
       if(d) d.innerHTML = `<div class="card tit-sez"><div class="dati-gruppo-tit">Profilo società</div>
         <div class="tit-desc">${esc(p.description)}</div>
-        ${p.ceo?`<div class="dati-data" style="margin-top:10px">CEO: ${esc(p.ceo)}${p.full_time_employees?' · Dipendenti: '+Number(p.full_time_employees).toLocaleString('it-IT'):''}${p.website?` · <a href="${esc(p.website)}" target="_blank" rel="noopener">${esc(p.website.replace(/^https?:\/\//,''))}</a>`:''}</div>`:''}
+        ${p.ceo?`<div class="dati-data" style="margin-top:10px">CEO: ${esc(p.ceo)}${p.full_time_employees?' · Dipendenti: '+itNum(p.full_time_employees, 0):''}${p.website?` · <a href="${esc(p.website)}" target="_blank" rel="noopener">${esc(p.website.replace(/^https?:\/\//,''))}</a>`:''}</div>`:''}
       </div>`;
     }
   }
@@ -5250,7 +5443,7 @@ async function caricaSezioni(sym){
         const vendita = String(o.acquisition_or_disposition||'').toUpperCase()==='D';
         return `<tr><td>${datiDataIt(o.transaction_date)}</td><td>${esc(o.reporting_name||'—')}</td>
         <td class="${vendita?'neg-t':'pos-t'}">${esc(o.transaction_type||'—')}</td>
-        <td>${o.securities_transacted!=null?Number(o.securities_transacted).toLocaleString('it-IT'):'—'}</td>
+        <td>${o.securities_transacted!=null?itNum(o.securities_transacted, 0):'—'}</td>
         <td>${o.price!=null&&o.price>0?fmtValuta(o.price, titoloCur):'—'}</td></tr>`;
       }).join('')}
       </table></div></div>`);
