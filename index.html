@@ -345,7 +345,7 @@
   .suc-massa{margin-top:18px; border-top:1px solid var(--bordo); padding-top:12px}
   .suc-massa.fuori{margin-top:14px}
   .riga-massa{display:flex; align-items:baseline; gap:12px; padding:6px 0; font-size:13.5px; color:var(--muto)}
-  .riga-massa b{margin-left:auto; font-variant-numeric:tabular-nums; font-weight:650; color:var(--testo)}
+  .riga-massa b{margin-left:auto; flex:none; white-space:nowrap; font-variant-numeric:tabular-nums; font-weight:650; color:var(--testo)}
   .riga-massa.forte{border-top:1px solid var(--bordo); margin-top:4px; padding-top:9px; color:var(--testo); font-weight:650}
   .suc-nota{margin:10px 0 0; font-size:12.5px; line-height:1.6; color:var(--testo-3)}
   .suc-badge{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; background:var(--fill-forte); color:var(--muto); border-radius:999px; padding:2px 8px; vertical-align:1px}
@@ -2218,6 +2218,11 @@ function uniTabella(d){
 </script>
 <script>
 /* ================= SIMULATORE DI SUCCESSIONE EREDITARIA =================
+   v97 — Denaro, gioielli e mobilia (art. 9 c. 2 D.Lgs. 346/1990): senza inventario
+   analitico si presumono nell'attivo per il 10% del valore globale netto imponibile,
+   anche se non dichiarati o dichiarati per meno; con l'inventario vale il valore che ne
+   risulta. Solo per il fisco: le quote civili e la legittima non cambiano. Oro da
+   investimento e preziosi a fini commerciali restano fuori dal forfait (valore reale).
    v96 — Beni mobili registrati: auto, moto e camper esenti da imposta di successione,
    IPT di voltura per veicolo; barche, navi e aeromobili imponibili con trascrizione.
    v95 — Quattro domande davanti al cliente: chi eredita e quanto, la legittima è
@@ -2243,6 +2248,10 @@ const SUC_FRANCHIGIA_DISABILE = 1500000;      // handicap grave L. 104/1992
 const SUC_ALIQ_IPOTECARIA = 0.02;             // 2% sul valore degli immobili
 const SUC_ALIQ_CATASTALE  = 0.01;             // 1% sul valore degli immobili
 const SUC_FISSA_PRIMA_CASA = 200;             // ipotecaria e catastale in misura fissa
+/* Denaro, gioielli e mobilia (art. 9 c. 2 D.Lgs. 346/1990): in mancanza di inventario
+   analitico (artt. 769 ss. c.p.c.) si presumono compresi nell'attivo per il 10% del
+   valore globale netto imponibile, anche se non dichiarati o dichiarati per meno. */
+const SUC_PRESUNZIONE = 0.10;
 const SUC_CAT = [
   {k:'liquidita',      nome:'Conti correnti',           colore:'var(--accento)'},
   {k:'titoli',         nome:'Titoli e fondi',            colore:'var(--viola)'},
@@ -2298,22 +2307,29 @@ function sucVoltura(b){
   else base = kw <= SUC_IPT.kwSoglia ? SUC_IPT.fissa : kw*SUC_IPT.perKw;
   return base*SUC_IPT.maggiorazione;
 }
+/* «forfait»: se il bene di uso personale rientra, di regola, nella presunzione del 10% di
+   denaro, gioielli e mobilia. Oro da investimento (L. 7/2000), lingotti e monete, o
+   preziosi detenuti per commercio o investimento, ne restano fuori: valore reale.
+   Il trattamento si può cambiare bene per bene. */
 const SUC_TIPI_VALORE = [
-  {k:'gioielli',   nome:'Gioielli'},
-  {k:'orologi',    nome:'Orologi di pregio'},
-  {k:'arte',       nome:"Opere d'arte"},
-  {k:'arredi',     nome:'Arredi di pregio e antiquariato'},
-  {k:'metalli',    nome:'Oro e metalli preziosi'},
-  {k:'collezioni', nome:'Collezioni (monete, vini, libri…)'},
-  {k:'altro',      nome:'Altro bene di valore'}
+  {k:'gioielli',   nome:'Gioielli',                              forfait:true},
+  {k:'orologi',    nome:'Orologi di pregio',                     forfait:true},
+  {k:'arte',       nome:"Opere d'arte",                          forfait:true},
+  {k:'arredi',     nome:'Arredi di pregio e antiquariato',       forfait:true},
+  {k:'metalli',    nome:'Oro da investimento, lingotti, monete', forfait:false},
+  {k:'collezioni', nome:'Collezioni (vini, libri, francobolli…)', forfait:true},
+  {k:'altro',      nome:'Altro bene di valore',                  forfait:false}
 ];
+function sucTipoValore(k){ return SUC_TIPI_VALORE.find(t=>t.k===k) || SUC_TIPI_VALORE[SUC_TIPI_VALORE.length-1]; }
+/* Il singolo bene di valore rientra nel forfait del 10%? Scelta del bene, altrimenti quella del tipo */
+function sucForfait(b){ return typeof b.forfait==='boolean' ? b.forfait : !!sucTipoValore(b.tipo).forfait; }
 /* Le tre liste di beni assegnabili: chiave nello stato, nome, tipi */
 const SUC_LISTE_BENI = [
   {k:'immobili',   cat:'immobili',   nome:'Immobili',                sing:'immobile',       tipi:SUC_TIPI_IMMOBILE, sez:'imm'},
   {k:'beniMobili', cat:'beniMobili', nome:'Beni mobili registrati',  sing:'bene mobile',    tipi:SUC_TIPI_MOBILE, sez:'bmob',
    spiega:'Auto, moto, camper, barche, navi, aeromobili: valore di mercato alla data del decesso. Auto, moto e camper sono esenti da imposta di successione ma pagano l\'IPT per la voltura al PRA; barche, navi e aeromobili concorrono alla base imponibile e pagano la trascrizione nel loro registro', nota:'Nota (es. modello, targa)'},
   {k:'altriBeni',  cat:'altriBeni',  nome:'Altri beni di valore',    sing:'bene di valore', tipi:SUC_TIPI_VALORE, sez:'bval',
-   spiega:"Gioielli, opere d'arte, arredi di pregio, metalli preziosi", nota:'Nota (es. descrizione, autore)'}
+   spiega:"Gioielli, opere d'arte, arredi di pregio, oro e metalli preziosi. I beni di uso personale sono coperti dalla presunzione del 10% (sezione «Denaro, gioielli e mobilia»); oro da investimento e preziosi a fini commerciali contano al valore reale", nota:'Nota (es. descrizione, autore)'}
 ];
 /* Chi riceve pur non essendo coniuge, figlio, ascendente o fratello: il rapporto decide l'aliquota */
 const SUC_RAPPORTI = [
@@ -2357,7 +2373,7 @@ const SUC_LIMITI = [
 const SUC_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.4" r="2.3"/><path d="M12 6.7v2.6M4.6 9.3h14.8M4.6 9.3v2.6M12 9.3v2.6M19.4 9.3v2.6"/><circle cx="4.6" cy="14.5" r="2.3"/><circle cx="12" cy="14.5" r="2.3"/><circle cx="19.4" cy="14.5" r="2.3"/></svg>';
 
 let sucScenario = null;                                    // scenario bloccato per il confronto
-let sucSezioni = {altri:false, patr:true, imm:true, bmob:true, bval:true, pol:false, pass:true, dis:true};
+let sucSezioni = {altri:false, patr:true, imm:true, bmob:true, bval:true, forf:false, pol:false, pass:true, dis:true};
 let sucStato = {
   /* patrimonio che entra nella massa ereditaria */
   liquidita:150000,
@@ -2366,6 +2382,7 @@ let sucStato = {
   partecipazioni:0, partEsenti:false,                 // partEsenti: art. 3 c. 4-ter
   crediti:0,
   mutui:0, altrePassivita:0,                          // passività: solo se aggiunte
+  inventario:false, inventarioValore:0,               // inventario analitico: se c'è, denaro/gioielli/mobilia al valore che ne risulta
   /* voci che compaiono solo quando l'utente le aggiunge con «+» */
   opzioni:{beniMobili:false, altriBeni:false, passivita:false, disabili:false},
   /* beni a elenco: con testamento ognuno può essere assegnato a una persona (campo «a») */
@@ -2499,6 +2516,8 @@ function sucAsse(s){
   };
   /* auto, moto e camper: nell'asse ma fuori dalla base imponibile dell'imposta di successione */
   comp.beniMobiliEsenti = (s.beniMobili||[]).filter(b=>sucTipoMobile(b.tipo).esente).reduce((t,b)=>t + sucPos(b.valore), 0);
+  /* gioielli, arredi e altri beni di uso personale già elencati: coperti dal forfait del 10% */
+  comp.altriBeniForfait = (s.altriBeni||[]).filter(b=>sucForfait(b)).reduce((t,b)=>t + sucPos(b.valore), 0);
   const lordo = SUC_CAT.reduce((a,c)=>a + (comp[c.k]||0), 0);
   const passivita = s.opzioni.passivita ? (sucPos(s.mutui) + sucPos(s.altrePassivita)) : 0;
   return {comp, lordo, passivita, asse: Math.max(0, lordo - passivita)};
@@ -2722,6 +2741,16 @@ function sucCalcola(s){
   const comp = M.comp, lordo = M.lordo, passivita = M.passivita, netto = M.asse;
   const esente = Math.min(netto, comp.titoliStato + (s.partEsenti ? comp.partecipazioni : 0) + comp.beniMobiliEsenti);
   const imponibileGlobale = Math.max(0, netto - esente);
+  /* denaro, gioielli e mobilia (art. 9 c. 2 D.Lgs. 346/1990). Senza inventario analitico il
+     fisco li presume pari al 10% del valore globale netto imponibile, calcolato al netto dei
+     beni di uso personale già elencati: se questi valgono meno del 10% si integra la
+     differenza, se valgono di più resta il valore dichiarato. Con l'inventario si aggiunge
+     il valore che ne risulta. Vale solo per l'imposta: quote e legittima non cambiano. */
+  const forfaitDichiarato = Math.min(imponibileGlobale, comp.altriBeniForfait);
+  const baseForfait = imponibileGlobale - forfaitDichiarato;
+  const presunto = s.inventario ? 0 : baseForfait*SUC_PRESUNZIONE;
+  const integrazione = s.inventario ? sucPos(s.inventarioValore) : Math.max(0, presunto - forfaitDichiarato);
+  const imponibileFiscale = imponibileGlobale + integrazione;
   const investito = sucPos(s.titoliInvestito) + sucPos(s.titoliStatoInvestito);
   const plusvalenza = (comp.titoli + comp.titoliStato) - investito;
 
@@ -2754,14 +2783,14 @@ function sucCalcola(s){
   const righe = E.map(e=>{
     const q = Math.max(0, eff[e.key]||0);
     const cl = SUC_CLASSI[e.classe] || SUC_CLASSI.altri;
-    const ricevuto = netto*q, parteEsente = esente*q, imponibile = imponibileGlobale*q;
+    const ricevuto = netto*q, parteEsente = esente*q, presuntoQuota = integrazione*q, imponibile = imponibileFiscale*q;
     const franchigia = e.disabile ? SUC_FRANCHIGIA_DISABILE : cl.franchigia;
     const base = Math.max(0, imponibile - franchigia);
     const imposta = base*cl.aliq;
     const ipocatQuota = immobili.filter(i=>i.a===e.key).reduce((t,i)=>t + i.totale, 0) + ipocatMassa*(pctResto[e.key]||0);
     const volturaQuota = veicoli.filter(v=>v.a===e.key).reduce((t,v)=>t + v.voltura, 0) + volturaMassa*(pctResto[e.key]||0);
     const legati = M.legati[e.key] || 0;
-    return {...e, quota:q, ricevuto, parteEsente, imponibile, franchigia, base, aliquota:cl.aliq, classeNome:cl.nome, classeBreve:cl.breve,
+    return {...e, quota:q, ricevuto, parteEsente, presuntoQuota, imponibile, franchigia, base, aliquota:cl.aliq, classeNome:cl.nome, classeBreve:cl.breve,
       imposta, ipocatQuota, volturaQuota, altreImposte: ipocatQuota + volturaQuota,
       imposteTot: imposta + ipocatQuota + volturaQuota, netto: ricevuto - imposta - ipocatQuota - volturaQuota,
       legati, pctLegati: daLegati[e.key]||0, pctResto: pctResto[e.key]||0, dalResto: ricevuto - legati,
@@ -2801,6 +2830,7 @@ function sucCalcola(s){
 
   const d = {
     comp, lordo, passivita, netto, esente, imponibileGlobale, immobiliTot:comp.immobili, investito, plusvalenza,
+    inventario:!!s.inventario, forfaitDichiarato, presunto, integrazione, imponibileFiscale,
     eredi:righe, quote:eff, quoteLegge:L.perErede, quoteTest: test ? eff : {}, legge:L, riservate:R,
     sommaQuote, residuo:nonAss, nonAss, oltre, riproporzionate:false,
     impostaSuccessione, immobili, impostaImmobili, veicoli, impostaVoltura, beniMobiliEsenti: comp.beniMobiliEsenti, impostaTotale,
@@ -2834,6 +2864,7 @@ function sucAvvisi(s, d){
   d.prodottiAttivi.forEach(p=>{ if(p.problema) a.push({t:'arancio', txt:`<b>${p.nome}.</b> ${p.problema}`}); });
   if(s.partEsenti && d.comp.partecipazioni>0) a.push({t:'info', txt:`<b>Partecipazioni esenti (art. 3 c. 4-ter)</b> per ${simEuro(d.comp.partecipazioni)}: vale solo se passano a discendenti o al coniuge che proseguono l'attività per almeno 5 anni.`});
   if(d.passivita > d.lordo && d.lordo > 0) a.push({t:'arancio', txt:"<b>Le passività superano il patrimonio:</b> l'asse ereditario è zero. Valuta la rinuncia o l'accettazione con beneficio d'inventario."});
+  if(d.inventario && d.integrazione<=0 && d.netto>0) a.push({t:'info', txt:"<b>Inventario analitico senza importo.</b> Indica il valore di denaro, gioielli e mobilia che risulta dall'inventario: se è zero la base imponibile resta senza integrazione."});
   return a;
 }
 
@@ -2989,6 +3020,8 @@ function vistaSimSuccessione(){
 
       <div id="sucBeniListe"></div>
 
+      ${sucSezione('forf', 'Denaro, gioielli e mobilia', `<div id="sucForfaitBlocco"></div>`)}
+
       ${sucSezione('pol', 'Polizze e previdenza',
         `<div class="sim-eco" style="margin:0 0 12px">Capitali che non entrano nell'asse ereditario: vanno ai beneficiari designati</div>
          ${SUC_PRODOTTI.map(p=>`<div class="suc-prodotto" id="sucProd_${p.k}"></div>`).join('')}`)}
@@ -3088,7 +3121,7 @@ function vistaSimSuccessione(){
         <div class="sim-tab-corpo" id="simTabCorpo">
           <div class="sim-tab-scroll">
             <table class="sim-tabella suc-tab-largo">
-              <thead><tr><th>Beneficiario</th><th>Classe</th><th>Quota</th><th>Ricevuto</th><th>Di cui esente</th><th>Franchigia</th><th>Imponibile</th><th>Aliquota</th><th>Imposta</th></tr></thead>
+              <thead><tr><th>Beneficiario</th><th>Classe</th><th>Quota</th><th>Ricevuto</th><th>Di cui esente</th><th>Denaro, gioielli, mobilia</th><th>Franchigia</th><th>Imponibile</th><th>Aliquota</th><th>Imposta</th></tr></thead>
               <tbody id="sucTabRighe"></tbody>
             </table>
           </div>
@@ -3100,7 +3133,7 @@ function vistaSimSuccessione(){
         <ol class="suc-limiti">${SUC_LIMITI.map(t=>`<li>${t}</li>`).join('')}</ol>
       </div>
 
-      <p class="sim-piede">Stima indicativa aggiornata alla normativa in vigore nel 2026. Imposta di successione: 4% oltre 1.000.000 € di franchigia per coniuge e parenti in linea retta, 6% oltre 100.000 € per fratelli e sorelle, 6% senza franchigia per gli altri parenti fino al 4º grado e gli affini, 8% senza franchigia per gli altri soggetti; franchigia di 1.500.000 € per i beneficiari con handicap grave ai sensi della L. 104/1992. La franchigia si applica a ciascun beneficiario sulla quota che riceve. I titoli di Stato entrano nell'asse per il calcolo delle quote ma sono esenti dall'imposta. Le polizze caso morte si liquidano ai beneficiari designati per diritto proprio (art. 1920 c.c.): restano fuori dall'asse ereditario e sono esenti da imposta di successione (art. 12 D.Lgs. 346/1990); i premi versati possono però essere soggetti ad azione di riduzione se la designazione lede i legittimari. Anche le prestazioni della previdenza complementare vanno ai beneficiari designati fuori dall'asse (art. 14 D.Lgs. 252/2005). Imposte ipotecaria (2%) e catastale (1%) sul valore degli immobili, ridotte a 200 € ciascuna con l'agevolazione «prima casa»: le paga chi riceve l'immobile. Auto, moto e camper entrano nell'asse ereditario ma sono esenti dall'imposta di successione; per la voltura al PRA si paga l'IPT (150,81 € fino a 53 kW, poi 3,5119 €/kW, con la maggiorazione provinciale del 30%), a carico di chi riceve il mezzo. Imbarcazioni, navi e aeromobili concorrono invece alla base imponibile e pagano la trascrizione nel rispettivo registro (qui un importo medio indicativo). I debiti del defunto si indicano nella voce facoltativa «Passività» e riducono l'asse ereditario. Non sostituisce il parere di un notaio o di un commercialista.</p>
+      <p class="sim-piede">Stima indicativa aggiornata alla normativa in vigore nel 2026. Imposta di successione: 4% oltre 1.000.000 € di franchigia per coniuge e parenti in linea retta, 6% oltre 100.000 € per fratelli e sorelle, 6% senza franchigia per gli altri parenti fino al 4º grado e gli affini, 8% senza franchigia per gli altri soggetti; franchigia di 1.500.000 € per i beneficiari con handicap grave ai sensi della L. 104/1992. La franchigia si applica a ciascun beneficiario sulla quota che riceve. I titoli di Stato entrano nell'asse per il calcolo delle quote ma sono esenti dall'imposta. Le polizze caso morte si liquidano ai beneficiari designati per diritto proprio (art. 1920 c.c.): restano fuori dall'asse ereditario e sono esenti da imposta di successione (art. 12 D.Lgs. 346/1990); i premi versati possono però essere soggetti ad azione di riduzione se la designazione lede i legittimari. Anche le prestazioni della previdenza complementare vanno ai beneficiari designati fuori dall'asse (art. 14 D.Lgs. 252/2005). Imposte ipotecaria (2%) e catastale (1%) sul valore degli immobili, ridotte a 200 € ciascuna con l'agevolazione «prima casa»: le paga chi riceve l'immobile. Auto, moto e camper entrano nell'asse ereditario ma sono esenti dall'imposta di successione; per la voltura al PRA si paga l'IPT (150,81 € fino a 53 kW, poi 3,5119 €/kW, con la maggiorazione provinciale del 30%), a carico di chi riceve il mezzo. Imbarcazioni, navi e aeromobili concorrono invece alla base imponibile e pagano la trascrizione nel rispettivo registro (qui un importo medio indicativo). I debiti del defunto si indicano nella voce facoltativa «Passività» e riducono l'asse ereditario. Denaro contante, gioielli e mobilia si considerano compresi nell'attivo per il 10% del valore globale netto imponibile anche se non dichiarati o dichiarati per meno, salvo inventario analitico (art. 9 c. 2 D.Lgs. 346/1990): la presunzione vale solo per l'imposta e non tocca le quote fra gli eredi; oro da investimento e preziosi detenuti per commercio ne restano fuori e contano al valore reale. Non sostituisce il parere di un notaio o di un commercialista.</p>
     </div>
   </div>`;
 }
@@ -3175,6 +3208,12 @@ function sucRenderBeniListe(){
           <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" value="${fmtMigliaia(b.valore)}" oninput="sucBeneValore('${L.k}','${b.id}',this.value)"></div>
           ${L.k==='beniMobili' && sucTipoMobile(b.tipo).registro==='PRA' ? `<span class="suc-mini-eti">Potenza (kW, dalla carta di circolazione) per l'IPT</span>
           <div class="sim-inp"><input type="number" inputmode="numeric" enterkeyhint="done" value="${b.kw!=null && b.kw>0 ? b.kw : ''}" min="0" step="1" placeholder="es. 85" oninput="sucBeneKw('${b.id}',this.value)"><span class="pre">kW</span></div>` : ''}
+          ${L.k==='altriBeni' ? `<span class="suc-mini-eti">Trattamento per l'imposta di successione</span>
+          <div class="seg">
+            <button type="button" class="${sucForfait(b)?'on':''}" onclick="sucBeneForfait('${b.id}',true)">Uso personale</button>
+            <button type="button" class="${sucForfait(b)?'':'on'}" onclick="sucBeneForfait('${b.id}',false)">Investimento o commercio</button>
+          </div>
+          <div class="sim-eco">${sucForfait(b) ? 'Coperto dalla presunzione del 10% di denaro, gioielli e mobilia: conta solo se supera il forfait' : 'Oro da investimento, lingotti, monete, stock commerciali: valore reale, fuori dal forfait del 10%'}</div>` : ''}
           ${sucSelectAssegna(L.k, b, eredi)}
           ${L.k==='beniMobili' ? `<div class="sim-eco" id="sucEcoBmob_${b.id}"></div>` : ''}
         </div>`).join('') || `<div class="sim-eco" style="margin-bottom:10px">Nessun bene inserito.</div>`}
@@ -3302,9 +3341,38 @@ function sucRenderDisabili(){
   c.innerHTML = `<div class="sim-freq">${eredi.map(e=>`<button type="button" class="pill-scelta${e.disabile?' attiva':''}" aria-pressed="${e.disabile}" onclick="sucToggleDisabile('${e.key}',this)">${esc(e.nome)}</button>`).join('')}</div>
     <div class="sim-eco">Franchigia elevata a ${simEuro(SUC_FRANCHIGIA_DISABILE)} per chi è portatore di handicap grave</div>`;
 }
+/* Denaro, gioielli e mobilia: presunzione del 10% oppure valore da inventario analitico */
+function sucRenderForfait(){
+  const c = document.getElementById('sucForfaitBlocco'); if(!c) return;
+  const s = sucStato;
+  c.innerHTML = `<div class="sim-eco" style="margin:0 0 10px">Per l'imposta di successione denaro contante, gioielli e mobilia si considerano sempre compresi nell'eredità: senza inventario analitico il fisco li presume pari al <b>10% del valore netto imponibile</b>, anche se non dichiarati o dichiarati per meno (art. 9 c. 2 D.Lgs. 346/1990). Le quote fra gli eredi e la legittima non cambiano.</div>
+    <div class="sim-campo">
+      <label style="margin:0 0 6px">Esiste un inventario analitico dell'eredità?</label>
+      <div class="seg">
+        <button type="button" id="sucInvNo" class="${s.inventario?'':'on'}" onclick="sucCambiaInventario(false)">No</button>
+        <button type="button" id="sucInvSi" class="${s.inventario?'on':''}" onclick="sucCambiaInventario(true)">Sì</button>
+      </div>
+      <div class="sim-eco" id="sucForfaitEco"></div>
+    </div>
+    ${s.inventario ? `<div class="sim-campo">
+      <label for="sucInventarioValore">Denaro, gioielli e mobilia risultanti dall'inventario</label>
+      <div class="sim-inp"><span class="pre">€</span><input type="text" inputmode="numeric" data-migliaia autocomplete="off" enterkeyhint="done" id="sucInventarioValore" value="${fmtMigliaia(s.inventarioValore)}" oninput="sucCampoNum('inventarioValore',this.value)"></div>
+      <div class="sim-eco">Inventario redatto ai sensi degli artt. 769 e ss. c.p.c.: la presunzione del 10% non si applica. Indica qui solo ciò che non hai già elencato in «Altri beni di valore».</div>
+    </div>` : ''}`;
+}
+function sucCambiaInventario(v){
+  sucStato.inventario = !!v;
+  if(!v) sucStato.inventarioValore = 0;
+  sucRenderForfait(); sucAggiorna();
+}
+function sucBeneForfait(id, v){
+  const b = (sucStato.altriBeni||[]).find(x=>x.id===id); if(!b) return;
+  b.forfait = !!v;
+  sucRenderBeniListe(); sucAggiorna();
+}
 function sucRenderPannello(){
   sucRenderImmobili(); sucRenderBeniListe(); sucRenderAltri(); sucRenderQuote();
-  sucRenderProdotti(); sucRenderBeniOpz(); sucRenderOpzionali();
+  sucRenderProdotti(); sucRenderBeniOpz(); sucRenderOpzionali(); sucRenderForfait();
 }
 
 /* ---------- interazioni ---------- */
@@ -3363,7 +3431,7 @@ function sucToggleDisabile(key, el){
 function sucBeneAggiungi(k){
   const L = sucLista(k);
   if(k==='immobili') sucStato.immobili.push({id:'im'+nuovoId(), tipo:'appartamento', nome:'', indirizzo:'', valore:150000, primaCasa:false, a:''});
-  else sucStato[k].push({id:'bn'+nuovoId(), tipo:L.tipi[0].k, nota:'', valore:0, kw:null, a:''});
+  else sucStato[k].push({id:'bn'+nuovoId(), tipo:L.tipi[0].k, nota:'', valore:0, kw:null, a:'', ...(k==='altriBeni' ? {forfait:!!L.tipi[0].forfait} : {})});
   sucApriSez(L.sez);
   if(k==='immobili') sucRenderImmobili(); else sucRenderBeniListe();
   sucAggiorna();
@@ -3377,6 +3445,7 @@ function sucBeneTesto(k, id, campo, valore){
   const b = (sucStato[k]||[]).find(x=>x.id===id); if(!b) return;
   b[campo] = valore;
   if(k==='beniMobili' && campo==='tipo'){ sucRenderBeniListe(); sucAggiorna(); return; }
+  if(k==='altriBeni' && campo==='tipo'){ b.forfait = !!sucTipoValore(valore).forfait; sucRenderBeniListe(); sucAggiorna(); return; }
   sucAggiornaSoft();
 }
 function sucBeneKw(id, valore){
@@ -3533,7 +3602,7 @@ function sucAggiungiVoce(k){
   sucStato.opzioni[k] = true;
   if(k==='beniMobili' || k==='altriBeni'){
     if(!Array.isArray(sucStato[k])) sucStato[k] = [];
-    if(!sucStato[k].length) sucStato[k].push({id:'bn'+nuovoId(), tipo:sucLista(k).tipi[0].k, nota:'', valore:0, a:''});
+    if(!sucStato[k].length) sucStato[k].push({id:'bn'+nuovoId(), tipo:sucLista(k).tipi[0].k, nota:'', valore:0, a:'', ...(k==='altriBeni' ? {forfait:!!sucLista(k).tipi[0].forfait} : {})});
     sucSezioni[sucLista(k).sez] = true;
     sucRenderBeniListe(); sucRenderBeniOpz();
   } else if(k==='passivita' || k==='disabili'){
@@ -3557,7 +3626,7 @@ function sucBloccaScenario(){
   const desc = `${simEuro(d.netto)} · ${s.modo==='legittima'?'senza testamento':'con testamento'} · imposte ${simEuro(d.impostaTotale)}`;
   sucScenario = { stato:JSON.parse(JSON.stringify(sucStato)), netto:d.netto, lordo:d.lordo, passivita:d.passivita,
     impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaVoltura:d.impostaVoltura, impostaTotale:d.impostaTotale,
-    nettoEredi:d.nettoEredi, nEredi:d.nEredi, lesione:d.lesione, fuori:d.fuori, legati:d.legati.totale, modo:s.modo, testo:desc };
+    nettoEredi:d.nettoEredi, nEredi:d.nEredi, lesione:d.lesione, fuori:d.fuori, legati:d.legati.totale, integrazione:d.integrazione, modo:s.modo, testo:desc };
   const r = document.getElementById('simScenarioRiga'); if(r) r.innerHTML = simScenarioHtml('successione');
   sucAggiorna();
   toast('Scenario bloccato: muovi i parametri per confrontare');
@@ -3649,6 +3718,14 @@ function sucAggiorna(){
   sezVal('imm', s.immobili.length ? s.immobili.length + ' · ' + simEuro(d.comp.immobili) : 'nessuno');
   if(s.opzioni.beniMobili) sezVal('bmob', s.beniMobili.length ? s.beniMobili.length + ' · ' + simEuro(d.comp.beniMobili) + (d.beniMobiliEsenti>0 ? ' (esenti ' + simEuro(d.beniMobiliEsenti) + ')' : '') : 'nessuno');
   if(s.opzioni.altriBeni) sezVal('bval', s.altriBeni.length ? s.altriBeni.length + ' · ' + simEuro(d.comp.altriBeni) : 'nessuno');
+  sezVal('forf', (d.integrazione>0 ? '+ ' + simEuro(d.integrazione) : (s.inventario ? 'da inventario' : 'coperti')));
+  set('sucForfaitEco', s.inventario
+    ? (d.integrazione>0 ? `Alla base imponibile si aggiungono <b>${simEuro(d.integrazione)}</b> da inventario` : 'Nessuna presunzione: vale il valore che risulta dall\'inventario')
+    : (d.forfaitDichiarato>0
+        ? (d.integrazione>0
+            ? `Presunzione 10% = ${simEuro(d.presunto)}: i beni di uso personale elencati (${simEuro(d.forfaitDichiarato)}) ne coprono una parte, si integrano <b>${simEuro(d.integrazione)}</b>`
+            : `I beni di uso personale elencati (${simEuro(d.forfaitDichiarato)}) superano il 10% presunto (${simEuro(d.presunto)}): vale il valore dichiarato`)
+        : (d.presunto>0 ? `Presunzione 10%: <b>+ ${simEuro(d.integrazione)}</b> sulla base imponibile, ripartiti fra gli eredi in proporzione alle quote` : 'Inserisci il patrimonio: qui compare il 10% presunto')));
   sezVal('pol', d.fuori>0 ? simEuro(d.fuori) : 'nessuna');
   if(s.opzioni.passivita) sezVal('pass', '− ' + simEuro(d.passivita));
   if(s.opzioni.disabili){
@@ -3670,6 +3747,9 @@ function sucAggiorna(){
     else if(d.impostaSuccessione<=0) nota += `L'imposta di successione è <b>zero</b>: ogni erede resta sotto la sua franchigia. `;
     else nota += `Imposta di successione <b>${simEuro(d.impostaSuccessione)}</b>${d.impostaImmobili>0 ? ' più ipotecaria e catastale ' + simEuro(d.impostaImmobili) : ''}${voltTxt}. `;
     if(d.beniMobiliEsenti>0) nota += `Auto, moto e camper (${simEuro(d.beniMobiliEsenti)}) sono esenti dall'imposta di successione. `;
+    if(d.integrazione>0) nota += s.inventario
+      ? `Denaro, gioielli e mobilia da inventario (${simEuro(d.integrazione)}) si aggiungono alla base imponibile. `
+      : `Per denaro, gioielli e mobilia il fisco presume un <b>10% in più</b> (${simEuro(d.integrazione)}) sulla base imponibile. `;
     nota += `Agli eredi restano <b>${simEuro(d.nettoEredi)}</b>`;
     if(d.fuori>0) nota += `, più <b>${simEuro(d.fuori)}</b> fuori successione (polizze e previdenza), esenti`;
     nota += '.';
@@ -3803,7 +3883,15 @@ function sucAggiorna(){
        ['Altre passività', '− ' + simEuro(s.altrePassivita), false],
        ['Asse ereditario netto', simEuro(d.netto), true]]
     : [['Asse ereditario', simEuro(d.netto), true]];
+  const righeFisco = [[d.passivita>0 ? 'Asse ereditario netto' : 'Asse ereditario', simEuro(d.netto), false]];
+  if(d.esente>0) righeFisco.push(['Beni esenti (titoli di Stato, auto, partecipazioni)', '− ' + simEuro(d.esente), false]);
+  righeFisco.push([s.inventario
+      ? 'Denaro, gioielli e mobilia da inventario'
+      : (d.forfaitDichiarato>0 && d.integrazione<=0 ? 'Denaro, gioielli e mobilia: i beni elencati superano il 10%' : 'Denaro, gioielli e mobilia presunti al 10%' + (d.forfaitDichiarato>0 ? ' (oltre ai beni elencati)' : '')),
+    '+ ' + simEuro(d.integrazione), false]);
+  righeFisco.push(["Base imponibile per l'imposta di successione", simEuro(d.imponibileFiscale), true]);
   set('sucMassaBox', `<div class="suc-massa">${righeMassa.map(r=>`<div class="riga-massa${r[2]?' forte':''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div>` +
+    `<div class="suc-massa"><div class="suc-mini-eti" style="margin:0 0 4px">Per il fisco</div>${righeFisco.map(r=>`<div class="riga-massa${r[2]?' forte':''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div>` +
     (d.investito>0 ? `<p class="suc-nota">Sul portafoglio titoli sono stati investiti ${simEuro(d.investito)} e il montante alla data del decesso è ${simEuro(d.comp.titoli + d.comp.titoliStato)}: ${d.plusvalenza>=0 ? 'una plusvalenza latente di ' + simEuro(d.plusvalenza) : 'una minusvalenza di ' + simEuro(-d.plusvalenza)}. Nell'asse ereditario entra il montante.</p>` : ''));
 
   /* polizze e previdenza: a chi vanno */
@@ -3886,6 +3974,7 @@ function sucAggiorna(){
         {eti:'Asse ereditario netto', blocco:simEuro(b.netto), ora:simEuro(d.netto), diff:confDiffNum(b.netto, d.netto, simEuro)},
         {eti:'Numero di eredi', blocco:String(b.nEredi), ora:String(d.nEredi), diff:confDiffNum(b.nEredi, d.nEredi, v=>String(Math.round(v)))},
         {eti:'Beni assegnati a persone', blocco:simEuro(b.legati||0), ora:simEuro(d.legati.totale), diff:confDiffNum(b.legati||0, d.legati.totale, simEuro)},
+        {eti:'Denaro, gioielli e mobilia (fisco)', blocco:simEuro(b.integrazione||0), ora:simEuro(d.integrazione), diff:confDiffNum(b.integrazione||0, d.integrazione, simEuro, 'giu')},
         {eti:'Imposta di successione', blocco:simEuro(b.impostaSuccessione), ora:simEuro(d.impostaSuccessione), diff:confDiffNum(b.impostaSuccessione, d.impostaSuccessione, simEuro, 'giu')},
         {eti:'Ipotecaria e catastale', blocco:simEuro(b.impostaImmobili), ora:simEuro(d.impostaImmobili), diff:confDiffNum(b.impostaImmobili, d.impostaImmobili, simEuro, 'giu')},
         {eti:'Voltura veicoli (IPT)', blocco:simEuro(b.impostaVoltura||0), ora:simEuro(d.impostaVoltura), diff:confDiffNum(b.impostaVoltura||0, d.impostaVoltura, simEuro, 'giu')},
@@ -3948,12 +4037,13 @@ function sucTabella(d){
       <td>${sucPct(e.quota)}</td>
       <td>${simEuro(e.ricevuto)}</td>
       <td>${simEuro(e.parteEsente)}</td>
+      <td>${e.presuntoQuota>0 ? '+ ' + simEuro(e.presuntoQuota) : '—'}</td>
       <td>${simEuro(e.franchigia)}</td>
       <td>${simEuro(e.base)}</td>
       <td>${sucPct(e.aliquota)}</td>
       <td><b>${simEuro(e.imposta)}</b></td>
-    </tr>`).join('') + `<tr><td><b>Totale</b></td><td colspan="7"></td><td><b>${simEuro(d.impostaSuccessione)}</b></td></tr>`
-   : '<tr><td colspan="9" class="muto">Nessun beneficiario</td></tr>';
+    </tr>`).join('') + `<tr><td><b>Totale</b></td><td colspan="8"></td><td><b>${simEuro(d.impostaSuccessione)}</b></td></tr>`
+   : '<tr><td colspan="10" class="muto">Nessun beneficiario</td></tr>';
 }
 
 /* Riporta uno stato salvato (anche in formato precedente) alla struttura corrente. */
@@ -3971,8 +4061,12 @@ function sucNormalizzaStato(d){
   /* beni a elenco: fino alla v94 «beni mobili» e «altri beni» erano un solo importo */
   const listaBeni = (k) => {
     const L = sucLista(k), v = d[k];
-    if(Array.isArray(v)) return v.map(b=>({id:b.id||('bn'+nuovoId()), tipo: L.tipi.some(t=>t.k===b.tipo)?b.tipo:'altro',
-      nota:String(b.nota||''), valore:sucPos(b.valore), kw: sucPos(b.kw)>0 ? sucPos(b.kw) : null, a: typeof b.a==='string' ? b.a : ''}));
+    if(Array.isArray(v)) return v.map(b=>{
+      const tipo = L.tipi.some(t=>t.k===b.tipo) ? b.tipo : 'altro';
+      const out = {id:b.id||('bn'+nuovoId()), tipo, nota:String(b.nota||''), valore:sucPos(b.valore), kw: sucPos(b.kw)>0 ? sucPos(b.kw) : null, a: typeof b.a==='string' ? b.a : ''};
+      if(k==='altriBeni') out.forfait = typeof b.forfait==='boolean' ? b.forfait : !!sucTipoValore(tipo).forfait;
+      return out;
+    });
     if(sucPos(v) > 0) return [{id:'bn'+nuovoId(), tipo:'altro', nota:'', valore:sucPos(v), a:''}];
     return [];
   };
@@ -3993,6 +4087,7 @@ function sucNormalizzaStato(d){
     partecipazioni:sucPos(d.partecipazioni), partEsenti:!!d.partEsenti,
     crediti:sucPos(d.crediti),
     mutui:sucPos(d.mutui != null ? d.mutui : d.debiti), altrePassivita:sucPos(d.altrePassivita),
+    inventario:!!d.inventario, inventarioValore:sucPos(d.inventarioValore),
     opzioni:{
       beniMobili: d.opzioni ? (!!d.opzioni.beniMobili || beniMobili.length>0) : beniMobili.length>0,
       altriBeni:  d.opzioni ? (!!d.opzioni.altriBeni  || altriBeni.length>0)  : altriBeni.length>0,
@@ -4348,6 +4443,7 @@ function fotografiaSimulazione(tipo){
     const s = sucStato, d = sucCalcola();
     return {tipo, dati:{ ...JSON.parse(JSON.stringify(s)),
       lordo:d.lordo, passivita:d.passivita, netto:d.netto,
+      integrazione:d.integrazione, presunto:d.presunto, forfaitDichiarato:d.forfaitDichiarato, imponibileFiscale:d.imponibileFiscale,
       impostaSuccessione:d.impostaSuccessione, impostaImmobili:d.impostaImmobili, impostaVoltura:d.impostaVoltura,
       beniMobiliEsenti:d.beniMobiliEsenti, veicoli:d.veicoli.map(v=>({nome:sucBeneNome('beniMobili', v), tipo:v.tipoNome, valore:v.valore, esente:v.esente, voltura:v.voltura, a:v.aNome})),
       impostaTotale:d.impostaTotale, nettoEredi:d.nettoEredi, nEredi:d.nEredi, lesione:d.lesione,
@@ -4400,6 +4496,9 @@ function testoRiepilogo(tipo){
     righe.push(d.passivita>0
       ? `Patrimonio lordo: ${simEuro(d.lordo)} − passività ${simEuro(d.passivita)} = asse ereditario netto ${simEuro(d.netto)}`
       : `Asse ereditario: ${simEuro(d.netto)}`);
+    if((d.integrazione||0)>0) righe.push(d.inventario
+      ? `Denaro, gioielli e mobilia da inventario analitico: +${simEuro(d.integrazione)} sulla base imponibile (${simEuro(d.imponibileFiscale)})`
+      : `Denaro, gioielli e mobilia presunti al 10% (art. 9 D.Lgs. 346/1990): +${simEuro(d.integrazione)} sulla base imponibile (${simEuro(d.imponibileFiscale)})`);
     if((d.legatiRighe||[]).length){
       righe.push(`Beni assegnati per testamento: ${simEuro(d.legatiTot||0)} — resto da dividere per quote ${simEuro(d.legatiResto||0)}`);
       (d.legatiRighe||[]).forEach(r=> righe.push(`  · ${r.nome} → ${r.a}: ${simEuro(r.valore)}`));
@@ -4586,6 +4685,7 @@ function apriSimulazioneSalvata(id){
     }
     voci.push([d.passivita>0 ? 'Asse ereditario netto' : 'Asse ereditario', simEuro(d.netto)]);
     if(d.titoliStato>0) voci.push(['Titoli di Stato (esenti)', simEuro(d.titoliStato)]);
+    if((d.integrazione||0)>0) voci.push([d.inventario ? 'Denaro, gioielli e mobilia (inventario)' : 'Denaro, gioielli e mobilia (presunzione 10%)', '+ ' + simEuro(d.integrazione)]);
     if((d.immobili||[]).length) voci.push(['Immobili', (d.immobili||[]).length + ' per ' + simEuro(d.immobiliTot||0)]);
     voci.push(['Imposta di successione', simEuro(d.impostaSuccessione)]);
     voci.push(['Ipotecaria e catastale', simEuro(d.impostaImmobili)]);

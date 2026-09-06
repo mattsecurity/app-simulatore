@@ -100,7 +100,7 @@ con il cestino:
 |---|---|---|
 | **Immobili** | Appartamenti, case, box, negozi, uffici, capannoni, terreni | Nome, tipo, indirizzo, valore, **prima casa** |
 | **Beni mobili registrati** *(facoltativo)* | Auto, moto, camper, barche, navi, aeromobili | Tipo, nota (modello, targa), valore di mercato alla data del decesso, **kW** (solo per i mezzi al PRA, per l'IPT) |
-| **Altri beni di valore** *(facoltativo)* | Gioielli, orologi, arte, arredi, metalli, collezioni | Tipo, nota, valore |
+| **Altri beni di valore** *(facoltativo)* | Gioielli, orologi, arte, arredi, oro da investimento, collezioni | Tipo, nota, valore, **trattamento fiscale** (uso personale / investimento o commercio, vedi § 3.6 bis) |
 
 Con il testamento ogni bene ha in fondo la tendina **«A chi va»**:
 
@@ -114,6 +114,33 @@ un veicolo ne paga la **voltura** (IPT al PRA o trascrizione nel registro).
 
 Sotto ogni bene mobile registrato compare una riga che dice se è **esente** o
 **imponibile** per l'imposta di successione e quanto costa la voltura.
+
+### 3.6 bis Denaro, gioielli e mobilia
+
+Sezione richiudibile, sempre presente, sotto gli elenchi dei beni. Serve per l'**imposta**,
+non per le quote: per il fisco denaro contante, gioielli e mobilia si considerano sempre
+compresi nell'eredità (art. 9 c. 2 D.Lgs. 346/1990).
+
+- **Esiste un inventario analitico dell'eredità?** — Sì / No (predefinito **No**).
+- **No** — il simulatore aggiunge alla base imponibile il **10% del valore globale netto
+  imponibile** (asse netto meno beni esenti, senza contare i beni di uso personale già
+  elencati). Sotto il pulsante compare l'importo integrato e, se hai elencato gioielli o
+  arredi in «Altri beni di valore», quanto di quel 10% è già coperto. Se i beni elencati
+  superano il 10%, vale il valore dichiarato e non si integra nulla.
+- **Sì** — la presunzione non si applica. Compare il campo **«Denaro, gioielli e mobilia
+  risultanti dall'inventario»** (artt. 769 e ss. c.p.c.): quel valore si aggiunge alla base
+  imponibile. Indica solo ciò che non hai già elencato in «Altri beni di valore».
+
+Ogni voce di «Altri beni di valore» ha il selettore **Uso personale / Investimento o
+commercio**, preimpostato dal tipo:
+
+| Trattamento | Cosa comprende | Effetto |
+|---|---|---|
+| **Uso personale** (gioielli, orologi, arte, arredi, collezioni) | Anelli, collane, orologi, quadri e oggetti decorativi, mobili | Coperto dal forfait del 10%: conta solo per la parte che lo supera |
+| **Investimento o commercio** (oro da investimento, altro) | Lingotti, monete d'oro (L. 7/2000), stock di oreficeria, preziosi detenuti per rivendita | Valore reale, fuori dal 10%, mai contato due volte |
+
+Il titolo della sezione mostra sempre l'integrazione («+ 48.000 €», «coperti» oppure
+«da inventario»).
 
 ### 3.7 Polizze e previdenza
 
@@ -226,15 +253,31 @@ asse ereditario   = liquidità + titoli + titoli di Stato + immobili
 beni assegnati    = somma dei beni con «A chi va» su una persona   (solo con testamento)
 resto             = asse ereditario − beni assegnati
 
-base imponibile   = asse ereditario − titoli di Stato
+netto imponibile  = asse ereditario − titoli di Stato
                     − partecipazioni esenti (se hai attivato l'art. 3 c. 4-ter)
                     − auto, moto e camper (esenti da imposta di successione)
+
+denaro, gioielli e mobilia (art. 9 c. 2 D.Lgs. 346/1990):
+  senza inventario:
+    beni personali  = «Altri beni di valore» con trattamento «Uso personale»
+    presunto        = 10% × (netto imponibile − beni personali)
+    integrazione    = max(0, presunto − beni personali)
+  con inventario:
+    integrazione    = valore di denaro, gioielli e mobilia da inventario
+
+base imponibile   = netto imponibile + integrazione
 
 per ogni erede:
   quota ricevuta  = beni a lui assegnati + sua % del resto
   imponibile      = base imponibile × (quota ricevuta / asse)
   imposta         = max(0, imponibile − franchigia) × aliquota
 ```
+
+La presunzione del 10% vale **solo per l'imposta**: l'asse ereditario, le quote fra gli
+eredi e la verifica della legittima restano quelli dei beni effettivamente inseriti.
+L'integrazione si ripartisce fra gli eredi in proporzione alle quote e si vede nella
+scheda «Composizione del patrimonio» (blocco «Per il fisco») e nella colonna
+«Denaro, gioielli, mobilia» del dettaglio del calcolo.
 
 ### 5.3 Imposte ipotecaria e catastale sugli immobili
 
@@ -359,10 +402,10 @@ prodotto, ogni beneficiario con la sua percentuale e il suo importo.
 | **Quote ereditarie** | Barra di ripartizione per gruppo familiare, grafico a barre per erede (in verde acqua il netto, in rosso le imposte) e tabella con quota, valore, imposta, ipotecaria + catastale + voltura, netto |
 | **Verifica della legittima** | Riservato per legge · assegnato · esito, con il dettaglio per persona, l'importo della lesione e la scheda **«Come sistemare»** |
 | **Beni assegnati per testamento** | Bene, a chi va, valore, percentuale dell'asse, con il resto da dividere |
-| **Composizione del patrimonio** | Barra a colori per categoria di bene e riepilogo della massa |
+| **Composizione del patrimonio** | Barra a colori per categoria di bene, riepilogo della massa e blocco «Per il fisco»: asse, beni esenti, denaro/gioielli/mobilia presunti o da inventario, base imponibile |
 | **Immobili** | Elenco con tipo, indirizzo, assegnatario, valore, ipotecaria, catastale e totale |
 | **Beni mobili registrati** | Elenco con tipo, registro, assegnatario, valore, esente/imponibile e imposta di voltura |
-| **Dettaglio del calcolo** | Tabella richiudibile: classe, quota, ricevuto, di cui esente, franchigia, imponibile, aliquota, imposta |
+| **Dettaglio del calcolo** | Tabella richiudibile: classe, quota, ricevuto, di cui esente, denaro/gioielli/mobilia, franchigia, imponibile, aliquota, imposta |
 | **Limiti da conoscere** | I sei limiti del § 10, sempre sotto gli occhi |
 
 ---
@@ -417,11 +460,12 @@ Tutte le funzioni hanno prefisso `suc`.
 | `SUC_FRANCHIGIA_DISABILE` | 1.500.000 € |
 | `SUC_ALIQ_IPOTECARIA` / `SUC_ALIQ_CATASTALE` | 0,02 e 0,01 |
 | `SUC_FISSA_PRIMA_CASA` | 200 € |
+| `SUC_PRESUNZIONE` | 0,10: denaro, gioielli e mobilia presunti (art. 9 c. 2 D.Lgs. 346/1990) |
 | `SUC_IPT` | Tariffe IPT per la voltura al PRA (fissa, soglia kW, €/kW, moto, maggiorazione) |
 | `SUC_VOLTURA_FISSA` | Importi medi di trascrizione per barche, navi, aeromobili |
 | `SUC_CAT` | Categorie di bene e colori della barra di composizione |
 | `SUC_LISTE_BENI` | Le tre liste assegnabili: immobili, beni mobili, altri beni |
-| `SUC_TIPI_IMMOBILE` / `SUC_TIPI_MOBILE` / `SUC_TIPI_VALORE` | Tipologie dei beni; per i mobili registrati anche `esente`, `registro` e `kwStima` |
+| `SUC_TIPI_IMMOBILE` / `SUC_TIPI_MOBILE` / `SUC_TIPI_VALORE` | Tipologie dei beni; per i mobili registrati anche `esente`, `registro` e `kwStima`; per gli altri beni `forfait` (rientra nel 10%) |
 | `SUC_RAPPORTI` | Rapporto con il defunto degli altri eredi → classe fiscale |
 | `SUC_PRODOTTI` | Polizza, temporanea caso morte, previdenza |
 | `SUC_DESIGNAZIONI` | Nominativi, eredi legittimi, eredi testamentari |
@@ -442,15 +486,22 @@ Tutte le funzioni hanno prefisso `suc`.
 | `sucQuoteEffettive()` | Quote effettive: beni assegnati + quota del resto |
 | `sucRipartoFuori()` | Ripartizione di polizze e previdenza fra i beneficiari |
 | `sucVoltura()` | IPT o imposta di trascrizione del singolo veicolo |
+| `sucForfait()` | Se un bene di valore rientra nel forfait del 10% (scelta del bene o del tipo) |
+| `sucRenderForfait()` | Sezione «Denaro, gioielli e mobilia»: inventario Sì/No e importo |
 | `sucCalcola()` | Motore: quote, imposte, immobili, veicoli, legittima, fuori successione, avvisi |
 | `sucConsigli()` | I consigli della scheda «Come sistemare» |
 | `sucAggiorna()` | Ridisegna tutta la dashboard |
 | `sucNormalizzaStato()` | Rilegge i salvataggi, anche in formato precedente |
 
 **Se cambiano le aliquote**: si modificano solo `SUC_CLASSI`, le costanti delle imposte
-immobiliari e `SUC_IPT` / `SUC_VOLTURA_FISSA`. Il resto del calcolo si adegua da sé.
+immobiliari, `SUC_IPT` / `SUC_VOLTURA_FISSA` e `SUC_PRESUNZIONE`. Il resto del calcolo si adegua da sé.
+
+**Stato**: `inventario` (booleano) e `inventarioValore`; ogni voce di `altriBeni` ha
+`forfait`. Nel risultato di `sucCalcola()`: `forfaitDichiarato`, `presunto`, `integrazione`,
+`imponibileFiscale` e, per erede, `presuntoQuota`.
 
 **Salvataggi**: stanno in `localStorage`, chiave `simfin_db`, insieme a quelli degli altri
 simulatori. `sucNormalizzaStato()` gestisce anche i salvataggi creati con versioni
 precedenti dello strumento (beni mobili e altri beni come importo unico, altri eredi con
-la sola classe fiscale, immobili senza assegnatario), quindi restano apribili.
+la sola classe fiscale, immobili senza assegnatario, altri beni senza `forfait`,
+stato senza `inventario`), quindi restano apribili.
