@@ -179,16 +179,17 @@
   #risBar .risBar-info:active{background:var(--fill)}
   #risBar .et{font-size:12px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.3px; min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   #risBar .cifra{font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accento); line-height:1.15}
-  #risBar .seg{flex:none; width:232px}
-  #risBar .seg button{min-height:44px; font-size:14px; padding:10px 6px}
-  @media(max-width:480px){ #risBar .seg{width:180px} }
+  #risBar .seg{flex:none; width:318px}
+  #risBar .seg button{min-height:44px; font-size:14px; padding:10px 4px}
+  @media(max-width:560px){ #risBar .seg{width:246px} #risBar .seg button{font-size:12.5px} }
   @media(max-width:860px){
     body.sim-aperto #risBar{display:flex}
     body.sim-aperto main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
     body.sim-aperto .toast{bottom:calc(110px + env(safe-area-inset-bottom))}
     /* colonna singola (iPad portrait, Split View): una scheda alla volta, parametri o risultati */
     body.sim-aperto:not(.presentazione).scheda-ris .sim-grid > .sim-pannello{display:none}
-    body.sim-aperto:not(.presentazione):not(.scheda-ris) .sim-grid > .sim-dash{display:none}
+    body.sim-aperto:not(.presentazione).scheda-par .sim-grid > .sim-dash{display:none}
+    /* «Entrambi»: nessuna delle due classi, le colonne stanno una sotto l'altra */
   }
   .sim-dash{display:flex; flex-direction:column; gap:22px}
   .sim-dash > .card{margin-bottom:0}
@@ -659,16 +660,16 @@
   </div>
   <button class="navvoce" id="navSimulatore" title="Simulatori" onclick="vai('simulatore')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-    Simulatori
+    <span class="nav-eti">Simulatori</span>
   </button>
   <button class="navvoce" id="navSalvate" title="Simulazioni salvate" onclick="vai('salvate')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h11l3 3V19a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 19V6a1.5 1.5 0 0 1 1-1.5z"/><path d="M8 4.5v4h6v-4M8 20v-5h8v5"/></svg>
-    Salvate
+    <span class="nav-eti">Salvate</span>
     <span class="nav-count" id="cntSalvate"></span>
   </button>
   <button class="navvoce" id="navDati" title="Dati di mercato" onclick="vai('dati')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 13 7.5 13 10.5 5.5 14 19 16.5 13 21 13"/></svg>
-    Dati di mercato
+    <span class="nav-eti">Dati di mercato</span>
   </button>
   <span class="spinta"></span>
   <button class="navvoce" id="btnTema" title="Aspetto chiaro/scuro" onclick="temaToggle()">
@@ -683,6 +684,7 @@
   <button type="button" class="risBar-info" aria-live="polite" title="Vai ai risultati" onclick="simScheda('risultati')"><span class="et" id="risBarEt"></span><b class="cifra" id="risBarCifra"></b></button>
   <div class="seg" role="tablist" aria-label="Parametri o risultati">
     <button type="button" role="tab" id="schedaPar" class="on" aria-selected="true" onclick="simScheda('parametri')">Parametri</button>
+    <button type="button" role="tab" id="schedaTutto" aria-selected="false" onclick="simScheda('entrambi')">Entrambi</button>
     <button type="button" role="tab" id="schedaRis" aria-selected="false" onclick="simScheda('risultati')">Risultati</button>
   </div>
 </div>
@@ -840,11 +842,12 @@ function rendi(){
   if(vistaCorrente!=='simulatore' || !simPagina) document.body.classList.remove('presentazione');
   aggiornaContatori();
 }
-/* Schede «Parametri | Risultati»: contano solo a colonna singola (iPad portrait, Split View),
-   dove le due colonne non stanno affiancate. In landscape il CSS le mostra entrambe. */
+/* Schede «Parametri | Entrambi | Risultati»: contano solo a colonna singola (iPad portrait,
+   Split View), dove le due colonne non stanno affiancate. In landscape il CSS le mostra
+   entrambe. «Entrambi» le mette una sotto l'altra nella stessa pagina. */
 let simSchedaCorrente = 'parametri';
 function simScheda(s){
-  simSchedaCorrente = s==='risultati' ? 'risultati' : 'parametri';
+  simSchedaCorrente = (s==='risultati' || s==='entrambi') ? s : 'parametri';
   simSchedaApplica();
   /* ridisegno: grafici e cifre animate della colonna appena mostrata */
   const f = {accumulo:'simAggiorna', decumulo:'decAggiorna', universita:'uniAggiorna', mutuo:'mutAggiorna', successione:'sucAggiorna'}[simPagina];
@@ -854,11 +857,13 @@ function simScheda(s){
   requestAnimationFrame(()=> window.scrollTo(0, 0));
 }
 function simSchedaApplica(){
-  const ris = simSchedaCorrente==='risultati';
-  document.body.classList.toggle('scheda-ris', ris);
-  const a = document.getElementById('schedaPar'), b = document.getElementById('schedaRis');
-  if(a){ a.classList.toggle('on', !ris); a.setAttribute('aria-selected', !ris); }
-  if(b){ b.classList.toggle('on', ris); b.setAttribute('aria-selected', ris); }
+  const c = simSchedaCorrente;
+  document.body.classList.toggle('scheda-ris', c==='risultati');
+  document.body.classList.toggle('scheda-par', c==='parametri');
+  [['schedaPar','parametri'], ['schedaTutto','entrambi'], ['schedaRis','risultati']].forEach(([id, k])=>{
+    const b = document.getElementById(id); if(!b) return;
+    b.classList.toggle('on', c===k); b.setAttribute('aria-selected', c===k);
+  });
 }
 /* Barra risultato fissa (solo a colonna singola): rispecchia etichetta e cifra del box hero */
 function risBarAggiorna(et, cifra, colore){
