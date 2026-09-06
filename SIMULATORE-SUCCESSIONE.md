@@ -26,7 +26,10 @@ Si apre da **Simulatori → Simulatore Successione** (scheda con l'albero geneal
 ## 2. Struttura della schermata
 
 A sinistra il **pannello dei parametri**, a destra la **dashboard dei risultati** che si
-aggiorna a ogni modifica. Su iPad in verticale le due parti vanno una sotto l'altra.
+aggiorna a ogni modifica. Su iPad in verticale (o in Split View) si vede una parte alla
+volta: la barra in basso mostra il totale delle imposte e le due schede **Parametri |
+Risultati**; toccando la cifra si passa ai risultati. Una simulazione salvata si riapre
+direttamente sui risultati.
 
 Le sezioni pesanti del pannello sono **richiudibili**: il titolo mostra sempre il totale
 di quella sezione (per esempio «IMMOBILI · 2 · 700.000 €»), così vedi tutto a colpo

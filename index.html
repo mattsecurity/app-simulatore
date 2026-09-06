@@ -91,7 +91,8 @@
     .sidebar .spinta{flex:1}
     main{margin-left:0; padding:88px 20px 40px; max-width:none}
   }
-  @media(max-width:520px){ .navvoce span:not(.nav-count), .logo > div{display:none} .navvoce{padding:9px 11px} }
+  .navvoce span{white-space:nowrap}
+  @media(max-width:700px){ .navvoce span:not(.nav-count), .logo > div{display:none} .navvoce{padding:9px 11px} }
 
   .testata{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin:2px 0 24px}
   .testata h1{margin:0; font-size:28px; font-weight:750; letter-spacing:-.8px}
@@ -172,13 +173,22 @@
   }
 
   /* Barra risultato live: visibile solo a colonna singola (iPad portrait), mostra il risultato mentre regoli i parametri */
-  #risBar{position:fixed; left:0; right:0; bottom:0; z-index:15; display:none; align-items:center; justify-content:space-between; gap:14px; padding:12px 20px calc(12px + env(safe-area-inset-bottom)); background:var(--sidebar); -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px); border-top:1px solid var(--sidebar-bordo)}
-  #risBar .et{font-size:12.5px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.3px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-  #risBar .cifra{font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accento)}
+  #risBar{position:fixed; left:0; right:0; bottom:0; z-index:15; display:none; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px calc(8px + env(safe-area-inset-bottom)); background:var(--sidebar); -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px); border-top:1px solid var(--sidebar-bordo)}
+  /* a sinistra il risultato (toccandolo si passa ai risultati), a destra le due schede */
+  #risBar .risBar-info{flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:1px; min-height:48px; border:none; background:transparent; padding:4px 8px; border-radius:12px; text-align:left; font-family:inherit; cursor:pointer}
+  #risBar .risBar-info:active{background:var(--fill)}
+  #risBar .et{font-size:12px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.3px; min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  #risBar .cifra{font-size:22px; font-weight:750; letter-spacing:-.6px; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accento); line-height:1.15}
+  #risBar .seg{flex:none; width:232px}
+  #risBar .seg button{min-height:44px; font-size:14px; padding:10px 6px}
+  @media(max-width:480px){ #risBar .seg{width:180px} }
   @media(max-width:860px){
     body.sim-aperto #risBar{display:flex}
-    body.sim-aperto main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
-    body.sim-aperto .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+    body.sim-aperto main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+    body.sim-aperto .toast{bottom:calc(110px + env(safe-area-inset-bottom))}
+    /* colonna singola (iPad portrait, Split View): una scheda alla volta, parametri o risultati */
+    body.sim-aperto:not(.presentazione).scheda-ris .sim-grid > .sim-pannello{display:none}
+    body.sim-aperto:not(.presentazione):not(.scheda-ris) .sim-grid > .sim-dash{display:none}
   }
   .sim-dash{display:flex; flex-direction:column; gap:22px}
   .sim-dash > .card{margin-bottom:0}
@@ -489,7 +499,24 @@
   body.presentazione #presEsci{display:inline-flex}
 
   /* ===== TIPOGRAFIA PER SCHERMI TOUCH (iPad) ===== */
+  /* Comandi ed etichette: il tocco prolungato non deve selezionare testo né aprire il callout */
+  button, label, .pill-scelta, .seg, .navvoce, .sim-tab-toggle, .sim-back, .suc-add, .suc-togli, .sim-h2, .sim-minmax, .sim-slider, #risBar, .sim-chip .k, .sidebar-riapri{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+  /* App aggiunta alla Home: la pagina non deve «rimbalzare» ai bordi */
+  @media(display-mode:standalone){ html, body{overscroll-behavior-y:none} }
   @media(pointer:coarse){
+    /* target minimi da 44pt (Apple HIG) sui comandi che erano più piccoli */
+    .suc-bene .icona-btn{width:44px; height:44px}
+    .suc-togli{width:36px; height:36px; margin:-4px 0}
+    .suc-bene-nome{padding:11px 2px; min-height:44px}
+    .sim-tab-toggle{min-height:44px}
+    .sim-back{min-height:44px}
+    .suc-add{min-height:44px}
+    .sidebar-riapri{width:44px; height:44px}
+    .seg button{min-height:44px}
+    select, .suc-bene select{min-height:44px}
+    .sim-inp{min-height:46px}
+    .sim-inp input{min-height:44px; padding:10px 0}
+    input:not([type=range]):not([type=checkbox]):not([type=radio]){min-height:44px}
     body{font-size:15.5px}
     label{font-size:14px}
     .sim-eco{font-size:13px}
@@ -652,7 +679,13 @@
 
 <main id="app"></main>
 
-<div id="risBar" aria-live="polite"><span class="et" id="risBarEt"></span><b class="cifra" id="risBarCifra"></b></div>
+<div id="risBar">
+  <button type="button" class="risBar-info" aria-live="polite" title="Vai ai risultati" onclick="simScheda('risultati')"><span class="et" id="risBarEt"></span><b class="cifra" id="risBarCifra"></b></button>
+  <div class="seg" role="tablist" aria-label="Parametri o risultati">
+    <button type="button" role="tab" id="schedaPar" class="on" aria-selected="true" onclick="simScheda('parametri')">Parametri</button>
+    <button type="button" role="tab" id="schedaRis" aria-selected="false" onclick="simScheda('risultati')">Risultati</button>
+  </div>
+</div>
 <button id="presEsci" onclick="presentazioneToggle()">✕ Esci dalla presentazione</button>
 
 <div class="velo" id="velo"><div class="finestra" id="finestra"></div></div>
@@ -803,8 +836,29 @@ function rendi(){
   else if(vistaCorrente==='dati'){ app.innerHTML = vistaDati(); if(titoloAperto) initTitolo(); else initDati(); }
   else { app.innerHTML = vistaSimulatore(); initSimulatore(); }
   document.body.classList.toggle('sim-aperto', vistaCorrente==='simulatore' && !!simPagina);
+  simSchedaApplica();
   if(vistaCorrente!=='simulatore' || !simPagina) document.body.classList.remove('presentazione');
   aggiornaContatori();
+}
+/* Schede «Parametri | Risultati»: contano solo a colonna singola (iPad portrait, Split View),
+   dove le due colonne non stanno affiancate. In landscape il CSS le mostra entrambe. */
+let simSchedaCorrente = 'parametri';
+function simScheda(s){
+  simSchedaCorrente = s==='risultati' ? 'risultati' : 'parametri';
+  simSchedaApplica();
+  /* ridisegno: grafici e cifre animate della colonna appena mostrata */
+  const f = {accumulo:'simAggiorna', decumulo:'decAggiorna', universita:'uniAggiorna', mutuo:'mutAggiorna', successione:'sucAggiorna'}[simPagina];
+  if(f && typeof window[f]==='function' && matchMedia('(max-width:860px)').matches) window[f]();
+  /* in cima, anche dopo il ridisegno (l'ancoraggio dello scroll potrebbe spostare la pagina) */
+  window.scrollTo(0, 0);
+  requestAnimationFrame(()=> window.scrollTo(0, 0));
+}
+function simSchedaApplica(){
+  const ris = simSchedaCorrente==='risultati';
+  document.body.classList.toggle('scheda-ris', ris);
+  const a = document.getElementById('schedaPar'), b = document.getElementById('schedaRis');
+  if(a){ a.classList.toggle('on', !ris); a.setAttribute('aria-selected', !ris); }
+  if(b){ b.classList.toggle('on', ris); b.setAttribute('aria-selected', ris); }
 }
 /* Barra risultato fissa (solo a colonna singola): rispecchia etichetta e cifra del box hero */
 function risBarAggiorna(et, cifra, colore){
@@ -921,7 +975,7 @@ function simEuro2(n){ return itNum(n, 2) + '\u00a0€'; }
 function simPct(n){ return n.toFixed(1).replace('.', ','); }
 function simAnniTesto(n){ return n + (n===1 ? ' anno' : ' anni'); }
 
-function simApriPagina(p){ simPagina = p; vistaCorrente = 'simulatore'; clienteAperto = null; rendi(); window.scrollTo(0,0); }
+function simApriPagina(p){ simPagina = p; vistaCorrente = 'simulatore'; clienteAperto = null; simSchedaCorrente = 'parametri'; rendi(); window.scrollTo(0,0); }
 function vistaSimulatore(){
   if(simPagina==='accumulo') return vistaSimAccumulo();
   if(simPagina==='decumulo') return vistaSimDecumulo();
@@ -4657,6 +4711,7 @@ function riapriSimulazione(id){
   }
   chiudiFinestra();
   vistaCorrente = 'simulatore'; clienteAperto = null;
+  simSchedaCorrente = 'risultati';           // una simulazione salvata si riapre per mostrarla: prima i risultati
   rendi(); window.scrollTo(0,0);
 }
 /* Conferma di eliminazione nella modale interna (niente confirm() di sistema su iPad) */
