@@ -894,16 +894,20 @@
   .toast.mostra{transform:translateX(-50%) scale(1)}
 
   /* ---- ingresso delle viste ---- */
-  .entra > *{animation:entra .6s var(--dolce) both}
+  .entra > *{animation:entra .55s var(--dolce) backwards}
   .entra > *:nth-child(2){animation-delay:.04s} .entra > *:nth-child(3){animation-delay:.08s} .entra > *:nth-child(4){animation-delay:.12s}
-  .entra .sim-dash > *{animation:entra .65s var(--dolce) both}
+  .entra .sim-dash > *{animation:entra .6s var(--dolce) backwards}
   .entra .sim-dash > *:nth-child(2){animation-delay:.07s} .entra .sim-dash > *:nth-child(3){animation-delay:.12s}
   .entra .sim-dash > *:nth-child(4){animation-delay:.17s} .entra .sim-dash > *:nth-child(5){animation-delay:.22s}
   .entra .sim-dash > *:nth-child(n+6){animation-delay:.26s}
-  .entra .sim-scelte > *{animation:entra .6s var(--molla) both}
+  .entra .sim-scelte > *{animation:entra .6s var(--dolce) backwards}
   .entra .sim-scelte > *:nth-child(2){animation-delay:.05s} .entra .sim-scelte > *:nth-child(3){animation-delay:.10s}
   .entra .sim-scelte > *:nth-child(4){animation-delay:.15s} .entra .sim-scelte > *:nth-child(5){animation-delay:.20s}
-  @keyframes entra{from{opacity:0; transform:translateY(18px) scale(.985)}}
+  @keyframes entra{from{opacity:0; transform:translateY(14px)}}
+  /* il titolo grande non si anima mai con trasformazioni: su Safari iPad resterebbe sgranato */
+  .entra > .testata{animation:entra-testo .5s ease backwards}
+  @keyframes entra-testo{from{opacity:0}}
+  .testata h1{color:var(--testo); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; transform:none}
   .sim-freq-blocco{transition:max-height .45s var(--dolce), opacity .3s ease, margin .3s ease}
   .sim-tab-corpo{transition:max-height .5s var(--dolce)}
 
