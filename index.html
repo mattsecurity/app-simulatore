@@ -929,6 +929,75 @@
     .sim-chip::before{display:none}
     .sl-passo, .sl-rapidi{display:none!important}
   }
+
+  /* =====================================================================
+     PANNELLO PARAMETRI · stile modulo raggruppato iOS (Impostazioni)
+     righe bianche su fondo grigio, etichetta a sinistra e valore a destra
+     ===================================================================== */
+  :root{ --gruppo-fondo:#f2f2f7; --riga:#ffffff; --riga-sep:rgba(60,60,67,.14); --riga-attiva:#f7f9ff }
+  [data-theme="dark"]{ --gruppo-fondo:#0f0f12; --riga:#1f1f24; --riga-sep:rgba(255,255,255,.08); --riga-attiva:#23262f }
+  .sim-pannello{background:var(--gruppo-fondo); padding:18px 16px 20px}
+  .sim-pannello .sim-h2{font-size:13px; font-weight:600; color:var(--muto); text-transform:uppercase; letter-spacing:.5px; margin:22px 4px 8px}
+  .sim-pannello > .sim-h2:first-child{margin-top:4px}
+  .sim-pannello .sim-strategia-desc{margin:10px 4px 0; font-size:13px; line-height:1.45; min-height:38px}
+  .sim-pannello .sim-strategia-desc{animation:none}
+  .sim-pannello .seg{background:rgba(118,118,128,.14)}
+
+  .sim-pannello:not(.suc-pannello) .sim-campo{background:var(--riga); margin:0; padding:14px 16px; border-radius:0; position:relative;
+    transition:background .3s var(--dolce)}
+  .sim-pannello:not(.suc-pannello) .sim-campo + .sim-campo::before{content:""; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--riga-sep)}
+  .sim-pannello:not(.suc-pannello) .sim-campo:not(.sim-campo + .sim-campo){border-top-left-radius:18px; border-top-right-radius:18px}
+  .sim-pannello:not(.suc-pannello) .sim-campo:not(:has(+ .sim-campo:not(.chiuso), + .sim-campo.chiuso + .sim-campo)){border-bottom-left-radius:18px; border-bottom-right-radius:18px}
+  .sim-pannello:not(.suc-pannello) .sim-campo:focus-within{background:var(--riga-attiva)}
+
+  /* campo importo: etichetta | valore € sulla stessa riga */
+  .sim-pannello .sim-campo:has(> .sim-inp){display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,48%); align-items:center; column-gap:12px; row-gap:0}
+  .sim-pannello .sim-campo:has(> .sim-inp) > label{margin:0; font-size:15.5px; font-weight:500; color:var(--testo)}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp{background:transparent; border:none; box-shadow:none; padding:0 0 0 10px; min-height:40px; border-radius:12px;
+    display:flex; flex-direction:row-reverse; justify-content:flex-start; gap:6px; transition:background .25s var(--dolce), box-shadow .3s var(--dolce)}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp .pre{font-size:17px; font-weight:600; color:var(--muto); padding-right:2px}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp input{text-align:right; font-size:19px; font-weight:650; letter-spacing:-.4px; color:var(--accento); min-height:40px; padding:6px 0}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp:focus-within{background:var(--accento-tenue); box-shadow:none; border:none}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp:focus-within input{color:var(--testo)}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-eco{grid-column:2; text-align:right; margin:0; min-height:0; font-size:12.5px; padding-right:2px}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-eco:empty{display:none}
+  .sim-pannello .sim-campo:has(> .sim-inp) > .sim-eco:not(:empty){grid-column:1 / -1}
+
+  /* campo cursore */
+  .sim-pannello .sl-testa > label{font-size:15.5px; font-weight:500}
+  .sim-pannello .sl-valore{font-size:21px; font-weight:700; letter-spacing:-.5px}
+  .sim-pannello .sim-slider{gap:8px; margin:2px -4px 0}
+  .sim-pannello .sl-passo{width:38px; height:38px; background:rgba(118,118,128,.12)}
+  .sim-pannello .sl-passo svg{width:17px; height:17px}
+  .sim-pannello .sim-minmax{padding:0 46px; margin-top:-6px; font-size:11.5px; color:var(--testo-3)}
+  .sim-pannello .sim-campo > .sim-eco{margin-top:6px}
+  .sl-rapidi.seg{margin-top:8px; padding:3px; border-radius:13px; background:rgba(118,118,128,.12); gap:0}
+  .sl-rapidi.seg .sl-rapido{background:transparent; min-height:34px; border-radius:10px; font-size:13.5px; font-weight:600; color:var(--muto); flex:1 1 0}
+  .sl-rapidi.seg .sl-rapido.on{background:transparent; color:var(--testo)}
+  .sl-rapidi.seg .seg-cursore{top:3px; bottom:3px; border-radius:10px}
+  .sl-rapidi.seg .sl-rapido:active{transform:scale(.92)}
+
+  /* campo a scelta (pillole): etichetta sopra, pillole compatte */
+  .sim-pannello .sim-campo:has(> .sim-freq) > label{font-size:15.5px; font-weight:500; margin-bottom:10px}
+  .sim-pannello .sim-freq{gap:6px}
+  .sim-pannello .pill-scelta{min-height:38px; padding:8px 14px; font-size:13.5px; background:rgba(118,118,128,.12)}
+  .sim-pannello .pill-scelta.attiva{background:var(--accento); color:#fff}
+  .sim-pannello .sim-freq-blocco .sim-freq{background:var(--riga); border-radius:18px; padding:12px}
+  .sim-pannello .sim-freq-blocco .sim-h2{margin:22px 4px 8px!important}
+  .sim-pannello select{background-color:rgba(118,118,128,.12); font-size:15.5px}
+  .sim-pannello .sim-scenario-riga{margin-top:22px}
+  .sim-pannello .sim-scenario-riga .btn.secondario{background:var(--riga); color:var(--accento); min-height:48px; border-radius:16px}
+
+  /* micro-animazioni */
+  .sim-inp input{transition:color .25s}
+  @keyframes lampo{0%{background:var(--accento-tenue)} 100%{background:transparent}}
+  .sim-campo.lampo > .sim-inp{animation:lampo .7s var(--dolce)}
+  .pill-scelta.attiva{animation:scatto .45s var(--molla)}
+  @keyframes scatto{0%{transform:scale(.9)} 100%{transform:scale(1)}}
+  .sim-campo:not(.chiuso){animation:none}
+  .sim-campo.appena-aperto{animation:svela .45s var(--dolce)}
+  @keyframes svela{from{opacity:0; transform:translateY(-6px)}}
+  @media(pointer:coarse){ .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp input{font-size:19px} }
 </style>
 </head>
 <body>
@@ -1677,10 +1746,10 @@ function simAggiorna(){
   document.getElementById('simAnniVal').textContent = simAnniTesto(s.anni);
   document.getElementById('simTassoVal').textContent = simPct(s.tasso)+'%';
   const inflVal = document.getElementById('simInflVal'); if(inflVal) inflVal.textContent = simPct(s.inflazione ?? 2)+'%';
-  document.getElementById('simCapitaleEco').textContent = s.capitale>0 ? simEuro(s.capitale) : '';
-  document.getElementById('simObiettivoEco').textContent = s.obiettivo>0 ? simEuro(s.obiettivo) : '';
+  document.getElementById('simCapitaleEco').textContent = '';
+  document.getElementById('simObiettivoEco').textContent = '';
   const rataEco = document.getElementById('simRataEco');
-  if(rataEco) rataEco.textContent = s.rata>0 ? simEuro(s.rata) + ' ' + SIM_FREQ_NOMI[s.freq].toLowerCase() : '';
+  if(rataEco) rataEco.textContent = 'a ' + SIM_FREQ_PAROLA[s.freq];
   const obLab = document.getElementById('simObiettivoLabel');
   const aliqLab = FISC_ALIQ[s.fiscale] || 0;
   if(obLab) obLab.textContent = s.modo==='rata' ? 'Obiettivo (facoltativo)' : (aliqLab>0 ? 'Obiettivo futuro (netto)' : 'Obiettivo futuro');
@@ -2157,8 +2226,8 @@ function decAggiorna(){
   const s = decStato;
   const anVal = document.getElementById('decAnniVal'); if(anVal) anVal.textContent = simAnniTesto(s.anni);
   document.getElementById('decTassoVal').textContent = simPct(s.tasso)+'%';
-  document.getElementById('decCapitaleEco').textContent = s.capitale>0 ? simEuro(s.capitale) : '';
-  const necEco = document.getElementById('decNecessitaEco'); if(necEco) necEco.textContent = s.necessita>0 ? simEuro(s.necessita) + " all'anno" : '';
+  document.getElementById('decCapitaleEco').textContent = '';
+  const necEco = document.getElementById('decNecessitaEco'); if(necEco) necEco.textContent = "all'anno";
   document.getElementById('decHeroTag').textContent = 'Prelievi ' + {12:'mensili',6:'bimestrali',4:'trimestrali',2:'semestrali',1:'annuali'}[s.freq];
   const d = decCalcola();
   const et = document.getElementById('decRisEt'), cifra = document.getElementById('decRisCifra'), nota = document.getElementById('decRisNota');
@@ -4707,7 +4776,7 @@ function mutAggiorna(){
   if(simPagina!=='mutuo' || !document.getElementById('mutImporto')) return;
   const s = mutStato, d = mutCalcola(), el = id => document.getElementById(id);
   el('mutAnniVal').textContent = simAnniTesto(s.anni);
-  const impEco = el('mutImportoEco'); if(impEco) impEco.textContent = s.importo>0 ? simEuro(s.importo) : '';
+  const impEco = el('mutImportoEco'); if(impEco) impEco.textContent = '';
   el('mutHeroTag').textContent = simAnniTesto(s.anni) + ' · ' + SIM_FREQ_NOMI[s.freq];
   el('mutRisEt').textContent = 'Rata ' + MUT_FREQ_AGG[s.freq];
   animaCifra(el('mutRisCifra'), d.rata, simEuro2);
@@ -6012,8 +6081,8 @@ function slPotenzia(inp){
   if(inp.dataset.preset){
     const vals = inp.dataset.preset.split(',').map(Number);
     const eti = (inp.dataset.presetEti || inp.dataset.preset).split(',');
-    rapidi = document.createElement('div'); rapidi.className = 'sl-rapidi';
-    rapidi.innerHTML = vals.map((v,i)=>`<button type="button" class="sl-rapido" data-v="${v}">${eti[i]}</button>`).join('');
+    rapidi = document.createElement('div'); rapidi.className = 'sl-rapidi seg';
+    rapidi.innerHTML = vals.map((v,i)=>`<button type="button" class="sl-rapido" data-v="${v}" aria-label="Imposta ${eti[i]}">${eti[i]}</button>`).join('');
     rapidi.addEventListener('click', e=>{ const b = e.target.closest('.sl-rapido'); if(b) slImposta(inp, +b.dataset.v, true); });
     const mm = campo && campo.querySelector('.sim-minmax');
     (mm || box).insertAdjacentElement('afterend', rapidi);
@@ -6103,6 +6172,18 @@ function animaGrafici(){
   new MutationObserver(()=>potenziaTutto(document.getElementById('app'))).observe(document.getElementById('app'), {childList:true, subtree:true});
   potenziaTutto(document);
 })();
+
+/* piccolo lampo quando confermi un importo; rivelazione morbida dei campi che ricompaiono */
+document.addEventListener('change', e=>{
+  const c = e.target && e.target.closest && e.target.closest('.sim-pannello .sim-campo');
+  if(c && e.target.matches('input[data-migliaia], input[type=text], input[type=number]')){ c.classList.remove('lampo'); void c.offsetWidth; c.classList.add('lampo'); }
+}, true);
+new MutationObserver(ms=>ms.forEach(m=>{
+  const el = m.target;
+  if(el.classList && el.classList.contains('sim-campo') && !el.classList.contains('chiuso') && (m.oldValue||'').includes('chiuso')){
+    el.classList.remove('appena-aperto'); void el.offsetWidth; el.classList.add('appena-aperto');
+  }
+})).observe(document.getElementById('app'), {attributes:true, subtree:true, attributeFilter:['class'], attributeOldValue:true});
 </script>
 </body>
 </html>
