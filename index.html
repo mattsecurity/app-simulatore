@@ -998,6 +998,88 @@
   .sim-campo.appena-aperto{animation:svela .45s var(--dolce)}
   @keyframes svela{from{opacity:0; transform:translateY(-6px)}}
   @media(pointer:coarse){ .sim-pannello .sim-campo:has(> .sim-inp) > .sim-inp input{font-size:19px} }
+
+  /* =====================================================================
+     PANNELLO SUCCESSIONE · stesso stile a righe raggruppate
+     ===================================================================== */
+  .suc-pannello > .sim-campo, .suc-sez-corpo > .sim-campo, #sucForfaitBlocco > .sim-campo{background:var(--riga); margin:0; padding:14px 16px; position:relative}
+  .suc-pannello > .sim-campo + .sim-campo::before, .suc-sez-corpo > .sim-campo + .sim-campo::before, #sucForfaitBlocco > .sim-campo + .sim-campo::before{content:""; position:absolute; top:0; left:16px; right:0; height:.5px; background:var(--riga-sep)}
+  .suc-pannello > .sim-h2 + .sim-campo{border-radius:18px 18px 0 0}
+  .suc-pannello > .sim-campo:not(:has(+ .sim-campo)){border-radius:0 0 18px 18px}
+  .suc-pannello .suc-eti-riga{margin:0; flex-direction:column; align-items:flex-start; gap:4px}
+  .suc-pannello .suc-eti-riga label{flex:none!important}
+  @media(min-width:1100px){ .sim-grid:has(> .suc-pannello){grid-template-columns:360px minmax(0,1fr)} }
+  .suc-pannello .suc-eti-riga label{font-size:15.5px; font-weight:500}
+  .suc-pannello .suc-quota{font-size:12px; padding:3px 9px}
+
+  /* Coniuge: Sì / No sulla stessa riga */
+  .suc-pannello > .sim-campo:has(> .seg){display:grid; grid-template-columns:minmax(0,1fr) 132px; align-items:center; gap:10px}
+  .suc-pannello > .sim-campo:has(> .seg) .suc-eti-riga{flex-wrap:wrap; row-gap:4px}
+  .suc-pannello > .sim-campo > .seg{padding:3px; border-radius:12px}
+  .suc-pannello > .sim-campo > .seg button{min-height:36px; font-size:14px; border-radius:9px}
+  .suc-pannello > .sim-campo > .seg .seg-cursore{top:3px; bottom:3px; border-radius:9px}
+
+  /* Figli, ascendenti, fratelli: stepper − n + */
+  .suc-pannello > .sim-campo:has(.sl-stepper){display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; column-gap:10px}
+  .suc-pannello > .sim-campo:has(.sl-stepper) .suc-eti-riga{flex-wrap:wrap; row-gap:4px}
+  .suc-pannello > .sim-campo:has(.sl-stepper) > .sim-eco{grid-column:1 / -1; margin-top:4px}
+  .sim-slider.sl-stepper{margin:0; gap:0; background:rgba(118,118,128,.12); border-radius:999px; padding:3px}
+  .sim-slider.sl-stepper input[type=range]{display:none}
+  .sim-slider.sl-stepper .sl-passo{order:1; width:38px; height:38px; background:transparent}
+  .sim-slider.sl-stepper .sl-passo:last-of-type{order:3}
+  .sim-slider.sl-stepper .val{order:2; display:inline-block!important; min-width:34px; text-align:center; font-size:19px; font-weight:700;
+    font-variant-numeric:tabular-nums; transition:transform .35s var(--molla)}
+  .sim-slider.sl-stepper .val.batti{transform:scale(1.25); color:var(--accento)}
+  .sim-slider.sl-stepper .sl-passo:active{background:var(--carta)}
+
+  /* sezioni richiudibili come righe raggruppate */
+  .suc-pannello .suc-sez{background:var(--riga); border:none; border-radius:18px; padding:15px 16px; margin-top:12px; min-height:54px;
+    font-size:15.5px; font-weight:600; letter-spacing:-.2px; text-transform:none; color:var(--testo);
+    transition:border-radius .3s var(--dolce), background .2s}
+  .suc-pannello .suc-sez:active{background:var(--riga-attiva)}
+  .suc-pannello .suc-sez.aperta{border-radius:18px 18px 0 0}
+  .suc-pannello .suc-sez-val{font-size:14px; font-weight:600; color:var(--accento)}
+  .suc-pannello .suc-sez-chev{color:var(--testo-3); transition:transform .4s var(--molla)}
+  .suc-pannello .suc-sez-corpo.aperta{background:var(--riga); border-radius:0 0 18px 18px; padding:2px 0 14px; position:relative;
+    animation:svela .4s var(--dolce)}
+  .suc-pannello .suc-sez-corpo.aperta::before{content:""; position:absolute; top:0; left:16px; right:16px; height:.5px; background:var(--riga-sep)}
+  .suc-sez-corpo > *:not(.sim-campo){margin-left:14px; margin-right:14px}
+  .suc-sez-corpo > .sim-eco:first-child, .suc-sez-corpo > div > .sim-eco:first-child{margin-top:12px!important}
+  .suc-sez-corpo > .sim-campo{padding:12px 16px}
+  .suc-sez-corpo > .sim-campo > label{font-size:15px; font-weight:500}
+  .suc-sez-corpo > .sim-campo:has(> .sim-inp){display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,48%); align-items:center; column-gap:12px}
+  .suc-sez-corpo > .sim-campo:has(> .sim-inp) > .sim-freq, .suc-sez-corpo > .sim-campo:has(> .sim-inp) > .sim-eco{grid-column:1 / -1}
+  .suc-sez-corpo #sucForfaitBlocco > .sim-campo{padding:12px 16px 12px 2px}
+
+  /* coppie Investito / Montante: righe compatte con importo a destra */
+  .suc-pannello .suc-coppia{margin:6px 0 0; gap:10px}
+  .suc-pannello .suc-coppia > .suc-mini-eti{width:auto; flex:1; font-size:14px; font-weight:500; color:var(--muto)}
+  .suc-pannello .suc-coppia > .sim-inp{flex:0 0 58%; background:rgba(118,118,128,.10); min-height:42px; flex-direction:row-reverse; padding:0 12px}
+  .suc-pannello .suc-coppia > .sim-inp input{text-align:right; font-size:17px; color:var(--accento)}
+  .suc-pannello .suc-coppia > .sim-inp .pre{font-size:15px}
+  .suc-pannello .sim-inp:focus-within{background:var(--accento-tenue)!important; box-shadow:none}
+
+  /* schede ripetibili: immobili, veicoli, beneficiari, polizze */
+  .suc-pannello .suc-bene, .suc-pannello .suc-prodotto{background:rgba(118,118,128,.07); border:none; border-radius:16px; padding:14px; margin:12px 0 0;
+    animation:svela .4s var(--dolce)}
+  .suc-pannello .suc-prodotto.spento{background:rgba(118,118,128,.07)}
+  .suc-pannello .suc-bene .sim-inp, .suc-pannello .suc-prodotto .sim-inp{background:var(--riga); min-height:44px}
+  .suc-pannello .suc-bene select, .suc-pannello .suc-bene .suc-bene-testo, .suc-pannello .suc-ben-riga > input[type=text]{background-color:var(--riga); border:none; font-size:15px}
+  .suc-pannello .suc-bene-nome{font-size:16px; font-weight:650; border-bottom-color:var(--riga-sep)}
+  .suc-pannello .suc-mini-eti{font-size:12.5px; color:var(--muto); margin:12px 0 6px}
+  .suc-pannello .suc-prod-nome{font-size:15px}
+  .suc-pannello .suc-seg-si-no{width:120px}
+  .suc-pannello .suc-seg-si-no .seg-cursore{top:2px; bottom:2px}
+
+  /* pulsanti di aggiunta */
+  .suc-pannello .suc-btn-agg{background:rgba(0,122,255,.08); color:var(--accento); border-radius:14px; min-height:46px; margin-top:12px; box-shadow:none; font-weight:650}
+  .suc-pannello .suc-add{border:none; background:var(--riga); color:var(--accento); box-shadow:var(--ombra); font-size:13.5px}
+  .suc-pannello .suc-sez-corpo .suc-add{background:rgba(0,122,255,.08); box-shadow:none}
+  .suc-pannello .suc-aggiungi{margin:12px 0 2px}
+  .suc-pannello .suc-quota-riga{background:var(--riga); padding:10px 16px; margin:0; border-radius:0}
+  .suc-pannello .sim-h2 + .sim-eco + .suc-quota-riga{border-radius:18px 18px 0 0}
+  .suc-pannello .suc-quota-hint{background:var(--riga); margin:0; padding:0 16px 8px}
+  @media(hover:hover){ .suc-pannello .suc-sez:hover{background:var(--riga-attiva)} .suc-pannello .suc-add:hover{background:var(--accento-tenue)} }
 </style>
 </head>
 <body>
@@ -3402,17 +3484,17 @@ function vistaSimSuccessione(){
       </div>
       <div class="sim-campo">
         <div class="suc-eti-riga"><label for="sucFigli" style="margin:0">Figli</label><span class="suc-quota" id="sucQFigli"></span></div>
-        <div class="sim-slider"><input type="range" id="sucFigli" min="0" max="8" value="${s.figli}"><span class="val" id="sucFigliVal">${s.figli}</span></div>
+        <div class="sim-slider"><input type="range" data-stepper="1" id="sucFigli" min="0" max="8" value="${s.figli}"><span class="val" id="sucFigliVal">${s.figli}</span></div>
         <div class="sim-eco" id="sucFigliEco"></div>
       </div>
       <div class="sim-campo">
         <div class="suc-eti-riga"><label for="sucAscendenti" style="margin:0">Ascendenti in vita</label><span class="suc-quota" id="sucQAscendenti"></span></div>
-        <div class="sim-slider"><input type="range" id="sucAscendenti" min="0" max="4" value="${s.ascendenti}"><span class="val" id="sucAscendentiVal">${s.ascendenti}</span></div>
+        <div class="sim-slider"><input type="range" data-stepper="1" id="sucAscendenti" min="0" max="4" value="${s.ascendenti}"><span class="val" id="sucAscendentiVal">${s.ascendenti}</span></div>
         <div class="sim-eco" id="sucAscEco"></div>
       </div>
       <div class="sim-campo">
         <div class="suc-eti-riga"><label for="sucFratelli" style="margin:0">Fratelli e sorelle</label><span class="suc-quota" id="sucQFratelli"></span></div>
-        <div class="sim-slider"><input type="range" id="sucFratelli" min="0" max="8" value="${s.fratelli}"><span class="val" id="sucFratelliVal">${s.fratelli}</span></div>
+        <div class="sim-slider"><input type="range" data-stepper="1" id="sucFratelli" min="0" max="8" value="${s.fratelli}"><span class="val" id="sucFratelliVal">${s.fratelli}</span></div>
         <div class="sim-eco" id="sucFraEco"></div>
       </div>
 
@@ -6039,13 +6121,15 @@ function slImposta(inp, v, batti){
   inp.dispatchEvent(new Event('input', {bubbles:true}));
   if(batti){
     const big = inp.closest('.sim-campo') && inp.closest('.sim-campo').querySelector('.sl-valore');
-    if(big){ big.classList.remove('batti'); void big.offsetWidth; big.classList.add('batti'); setTimeout(()=>big.classList.remove('batti'), 180); }
+    const bersaglio = big || inp.closest('.sim-slider').querySelector('.val');
+    if(bersaglio){ bersaglio.classList.remove('batti'); void bersaglio.offsetWidth; bersaglio.classList.add('batti'); setTimeout(()=>bersaglio.classList.remove('batti'), 180); }
   }
   return true;
 }
 function slPotenzia(inp){
   if(inp.dataset.sl) return; inp.dataset.sl = '1';
   const box = inp.closest('.sim-slider'); if(!box) return;
+  if(inp.dataset.stepper) box.classList.add('sl-stepper');
   const campo = box.closest('.sim-campo');
   const val = box.querySelector('.val');
   const label = campo ? campo.querySelector(':scope > label') : null;
