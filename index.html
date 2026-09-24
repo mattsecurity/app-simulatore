@@ -642,6 +642,293 @@
     .solo-stampa{display:block; font-size:11.5px; color:#444; line-height:1.6; margin:0 0 16px}
     .solo-stampa b{font-size:13px}
   }
+
+  /* =====================================================================
+     LIQUID GLASS · iPadOS 27
+     Il vetro sta SOLO nello strato di navigazione (menu laterale, barra
+     superiore, barra risultato, gruppi di azioni, fogli modali, toast).
+     Il contenuto (schede, tabelle, grafici) resta solido e leggibile.
+     ===================================================================== */
+  :root{
+    --vetro:rgba(255,255,255,.58); --vetro-forte:rgba(255,255,255,.82);
+    --vetro-bordo:rgba(255,255,255,.75); --vetro-bordo-basso:rgba(0,0,0,.07);
+    --vetro-luce:inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.05), inset 0 0 0 .5px rgba(255,255,255,.5);
+    --vetro-ombra:0 1px 1px rgba(0,0,0,.03), 0 10px 34px rgba(24,32,60,.13);
+    --vetro-blur:blur(26px) saturate(190%);
+    --molla:cubic-bezier(.34,1.45,.55,1); --dolce:cubic-bezier(.22,1,.36,1);
+    --raggio:28px; --raggio-md:20px; --raggio-sm:14px;
+    --sidebar-w:252px;
+    --sfondo:#eef1f6;
+    --ombra:0 0 0 .5px rgba(20,30,60,.05), 0 1px 2px rgba(20,30,60,.04), 0 10px 30px rgba(20,30,60,.06);
+    --ombra-forte:0 0 0 .5px rgba(20,30,60,.06), 0 18px 50px rgba(20,30,60,.16);
+    --azzurro:#5ac8fa;
+  }
+  [data-theme="dark"]{
+    --vetro:rgba(38,38,44,.52); --vetro-forte:rgba(34,34,40,.84);
+    --vetro-bordo:rgba(255,255,255,.16); --vetro-bordo-basso:rgba(0,0,0,.5);
+    --vetro-luce:inset 0 1px 0 rgba(255,255,255,.20), inset 0 -1px 0 rgba(0,0,0,.35), inset 0 0 0 .5px rgba(255,255,255,.10);
+    --vetro-ombra:0 1px 1px rgba(0,0,0,.3), 0 12px 38px rgba(0,0,0,.5);
+    --sfondo:#07080b; --carta:#17181c; --carta-2:#1f2025;
+    --ombra:0 0 0 .5px rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.35);
+    --ombra-forte:0 0 0 .5px rgba(255,255,255,.08), 0 18px 50px rgba(0,0,0,.6);
+  }
+  body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", sans-serif; font-feature-settings:"ss01","cv11"; -webkit-font-smoothing:antialiased; letter-spacing:-.1px}
+  /* luce ambientale dietro a tutto: dà al vetro qualcosa da rifrangere */
+  body::before{content:""; position:fixed; inset:-10%; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(38% 42% at 8% 6%, rgba(0,122,255,.16), transparent 70%),
+      radial-gradient(34% 38% at 96% 4%, rgba(90,200,250,.16), transparent 70%),
+      radial-gradient(40% 44% at 88% 96%, rgba(175,82,222,.11), transparent 70%),
+      radial-gradient(36% 40% at 4% 98%, rgba(48,176,120,.11), transparent 70%),
+      var(--sfondo)}
+  [data-theme="dark"] body::before{
+    background:
+      radial-gradient(38% 42% at 8% 6%, rgba(10,132,255,.22), transparent 70%),
+      radial-gradient(34% 38% at 96% 4%, rgba(90,200,250,.12), transparent 70%),
+      radial-gradient(40% 44% at 88% 96%, rgba(191,90,242,.14), transparent 70%),
+      radial-gradient(36% 40% at 4% 98%, rgba(48,209,88,.10), transparent 70%),
+      var(--sfondo)}
+  body{background:var(--sfondo)}
+
+  /* ---- materiale vetro (solo navigazione) ---- */
+  .sidebar, .sidebar-riapri, #risBar, .testata .act-tools, .velo .finestra, .toast, #presEsci, .seg-vetro{
+    background:var(--vetro); -webkit-backdrop-filter:var(--vetro-blur); backdrop-filter:var(--vetro-blur);
+    border:1px solid var(--vetro-bordo); box-shadow:var(--vetro-luce), var(--vetro-ombra)}
+
+  /* ---- menu laterale flottante ---- */
+  .sidebar{top:12px; left:12px; bottom:12px; width:calc(var(--sidebar-w) - 12px); border-radius:32px;
+    padding:calc(18px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom)); gap:3px}
+  .marchio{width:44px; height:44px; border-radius:14px; font-size:15px; letter-spacing:-.4px;
+    background:linear-gradient(145deg,#4fb0ff 0%,#007AFF 48%,#5b3df5 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 6px 18px rgba(0,122,255,.35)}
+  .logo b{font-size:16.5px; letter-spacing:-.4px}
+  .navvoce{padding:12px 14px; border-radius:16px; font-size:15px; font-weight:560; min-height:48px;
+    transition:background .25s var(--dolce), color .25s, transform .3s var(--molla)}
+  .navvoce:active{transform:scale(.97)}
+  .navvoce.attiva{background:var(--accento); color:#fff; box-shadow:0 6px 18px rgba(0,122,255,.32)}
+  .navvoce.attiva svg{color:#fff}
+  .navvoce.attiva .nav-count{background:rgba(255,255,255,.28); color:#fff}
+  .sidebar-collassa{border-radius:50%}
+  .sidebar-riapri{top:calc(14px + env(safe-area-inset-top)); left:14px; width:46px; height:46px; border-radius:50%; color:var(--testo)}
+  main{margin-left:var(--sidebar-w); padding:26px 30px calc(40px + env(safe-area-inset-bottom)) 26px}
+  @media(max-width:1024px){
+    .sidebar{top:calc(8px + env(safe-area-inset-top)); left:10px; right:10px; bottom:auto; width:auto; border-radius:999px;
+      padding:6px 8px; border-bottom:1px solid var(--vetro-bordo)}
+    .navvoce{min-height:44px; padding:10px 16px; border-radius:999px}
+    .marchio{width:38px; height:38px; border-radius:50%}
+    main{margin-left:0; padding:calc(84px + env(safe-area-inset-top)) 18px 40px}
+  }
+
+  /* ---- intestazioni ---- */
+  .testata{margin:4px 0 22px; align-items:center}
+  .testata h1{font-family:-apple-system, "SF Pro Display", sans-serif; font-size:34px; font-weight:750; letter-spacing:-1px; line-height:1.1}
+  .testata .sotto{font-size:15px; margin-top:6px; line-height:1.45}
+  .testata .act-tools{border-radius:999px; padding:4px; gap:2px}
+  .testata .act-tools .icona-btn{background:transparent; border-radius:50%; width:44px; height:44px; color:var(--testo)}
+  .testata .act-tools .icona-btn:active{background:var(--fill-forte); transform:scale(.9)}
+  .sim-back{font-size:15.5px; font-weight:600; border-radius:999px; padding:8px 14px 8px 8px; margin:-6px 0 6px -8px}
+  .sim-back:active{background:var(--accento-tenue)}
+
+  /* ---- schede di contenuto: solide, angoli ampi ---- */
+  .card{border:none; border-radius:var(--raggio); box-shadow:var(--ombra); padding:24px}
+  .card h2{font-size:19px; font-weight:700; letter-spacing:-.4px}
+  .sim-h2{font-size:13px; font-weight:650; letter-spacing:.1px; text-transform:none; color:var(--muto)}
+  .sim-card-sotto{margin:4px 0 16px; font-size:14px; color:var(--muto)}
+  .sim-chart-tit, .conf-tit, .sim-tab-toggle{font-size:18px; font-weight:700; letter-spacing:-.4px}
+
+  /* ---- campi ---- */
+  label, .sim-campo > label{font-size:14px; font-weight:600; letter-spacing:-.1px}
+  input, select, textarea{border-radius:var(--raggio-sm)}
+  .sim-inp{border-radius:var(--raggio-sm); min-height:50px; transition:background .2s, border .2s, box-shadow .25s var(--dolce)}
+  .sim-inp input{font-size:18px; font-weight:650; letter-spacing:-.3px}
+  .sim-inp:focus-within{box-shadow:0 0 0 4px var(--accento-tenue), 0 6px 18px rgba(0,122,255,.12)}
+
+  /* ---- controllo segmentato con cursore che scivola ---- */
+  .seg{position:relative; border-radius:16px; padding:4px; background:var(--fill)}
+  .seg button{position:relative; z-index:1; border-radius:12px; min-height:44px; font-size:14px; font-weight:620; transition:color .25s}
+  .seg.seg-js button.on{background:transparent; box-shadow:none}
+  .seg-cursore{position:absolute; z-index:0; top:4px; bottom:4px; left:0; width:0; border-radius:12px; background:var(--carta);
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.7);
+    transition:transform .45s var(--molla), width .45s var(--molla); pointer-events:none}
+  [data-theme="dark"] .seg-cursore{background:#3a3a40; box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12)}
+  #risBar .seg-cursore{background:var(--accento); box-shadow:0 4px 14px rgba(0,122,255,.35)}
+  #risBar .seg.seg-js button.on{color:#fff}
+
+  /* ---- pillole di scelta ---- */
+  .pill-scelta{min-height:44px; padding:10px 17px; font-size:14px; border:none;
+    transition:background .25s var(--dolce), color .25s, transform .35s var(--molla), box-shadow .25s}
+  .pill-scelta:active{transform:scale(.94)}
+  .pill-scelta.attiva{background:var(--accento); color:#fff; border:none; box-shadow:0 4px 14px rgba(0,122,255,.30)}
+
+  /* ---- pulsanti ---- */
+  .btn{border-radius:999px; min-height:46px; padding:11px 20px; font-size:15px; font-weight:650;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 6px 18px rgba(0,122,255,.30); transition:transform .35s var(--molla), filter .2s, background .2s}
+  .btn:active{transform:scale(.95)}
+  .btn.secondario{background:var(--fill); box-shadow:none}
+  .icona-btn{border-radius:50%; transition:transform .35s var(--molla), background .2s}
+  .icona-btn:active{transform:scale(.9)}
+
+  /* ---- CURSORI (orizzonte, rendimento…): grandi, con − / + e scelte rapide ---- */
+  .sl-wrap{display:flex; flex-direction:column; gap:8px}
+  .sl-testa{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:2px}
+  .sl-testa > label{margin:0}
+  .sl-valore{font-size:24px; font-weight:750; letter-spacing:-.7px; font-variant-numeric:tabular-nums; color:var(--accento); line-height:1;
+    display:inline-block; transition:transform .35s var(--molla)}
+  .sl-valore.batti{transform:scale(1.12)}
+  .sim-slider{gap:10px}
+  .sim-slider .val{display:none}
+  .sl-passo{width:46px; height:46px; flex:none; border:none; border-radius:50%; background:var(--fill); color:var(--testo);
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; font-family:inherit;
+    transition:transform .3s var(--molla), background .2s; touch-action:manipulation}
+  .sl-passo svg{width:20px; height:20px}
+  .sl-passo:active{transform:scale(.86); background:var(--fill-forte)}
+  .sl-passo:disabled{opacity:.35; cursor:default}
+  .sim-slider input[type=range]{height:46px; touch-action:pan-y; --p:50%}
+  .sim-slider input[type=range]::-webkit-slider-runnable-track{height:8px; border-radius:999px;
+    background:linear-gradient(90deg, var(--accento) 0 var(--p), var(--fill-forte) var(--p) 100%)}
+  .sim-slider input[type=range]::-moz-range-track{height:8px; border-radius:999px; background:var(--fill-forte)}
+  .sim-slider input[type=range]::-moz-range-progress{height:8px; border-radius:999px; background:var(--accento)}
+  .sim-slider input[type=range]::-webkit-slider-thumb{width:34px; height:34px; margin-top:-13px; border:none; background:#fff;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.08), 0 3px 10px rgba(0,0,0,.20), 0 1px 1px rgba(0,0,0,.08);
+    transition:transform .3s var(--molla)}
+  .sim-slider input[type=range].trascina::-webkit-slider-thumb, .sim-slider input[type=range]:active::-webkit-slider-thumb{transform:scale(1.18)}
+  .sim-slider input[type=range]::-moz-range-thumb{width:30px; height:30px; border:none; background:#fff; box-shadow:0 3px 10px rgba(0,0,0,.22)}
+  .sim-minmax{padding:0 56px; margin-top:-4px}
+  .sl-rapidi{display:flex; gap:5px; flex-wrap:nowrap}
+  .sl-rapido{min-width:0!important}
+  .sl-rapido{flex:1 1 0; min-width:44px; min-height:40px; border:none; border-radius:12px; background:var(--fill); color:var(--muto);
+    font-family:inherit; font-size:14px; font-weight:650; font-variant-numeric:tabular-nums; cursor:pointer;
+    transition:background .25s var(--dolce), color .2s, transform .3s var(--molla)}
+  .sl-rapido:active{transform:scale(.9)}
+  .sl-rapido.on{background:var(--accento-tenue); color:var(--accento)}
+
+  .sim-dash > *{flex-shrink:0}
+  @media(min-width:1100px){ .sim-grid{grid-template-columns:330px minmax(0,1fr)} }
+  .sim-minmax{font-size:12px}
+  .nav-count:empty{display:none}
+  .testata > div:first-child{flex:1 1 360px; min-width:0}
+  .testata{row-gap:12px}
+  /* ---- risultato principale ---- */
+  .sim-hero{border-radius:var(--raggio); overflow:hidden; isolation:isolate; padding:28px}
+  .sim-hero::after{content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+    background:radial-gradient(60% 90% at 100% 0%, rgba(255,255,255,.28), transparent 60%),
+               radial-gradient(50% 70% at 0% 100%, rgba(0,0,0,.14), transparent 70%)}
+  .sim-hero{background:linear-gradient(135deg,#3aa0ff 0%,#007AFF 45%,#4f46e5 100%)}
+  .sim-hero .et{font-size:13px; letter-spacing:.2px; text-transform:none; font-weight:650}
+  .sim-hero .cifra{font-family:-apple-system, "SF Pro Display", sans-serif; font-size:clamp(40px,6vw,60px); font-weight:760; letter-spacing:-2px; margin:6px 0 14px}
+  .sim-hero .nota{font-size:15.5px; line-height:1.6}
+  .sim-hero-tag{background:rgba(255,255,255,.2); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-color:rgba(255,255,255,.35); text-transform:none; letter-spacing:0; font-size:12.5px; padding:6px 13px}
+
+  /* ---- riquadri numerici ---- */
+  .sim-chips{grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px}
+  .sim-chip{border:none; border-radius:var(--raggio-md); padding:18px 18px 16px; position:relative; overflow:hidden}
+  .sim-chip::before{content:""; position:absolute; left:0; top:16px; bottom:16px; width:4px; border-radius:0 4px 4px 0; background:var(--bordo-forte)}
+  .sim-chip.verde::before{background:var(--verde)} .sim-chip.arancio::before{background:var(--arancio)}
+  .sim-chip.blu::before{background:var(--accento)} .sim-chip.viola::before{background:var(--viola)} .sim-chip.teal::before{background:var(--teal)}
+  .sim-chip .k{font-size:13px; text-transform:none; letter-spacing:0; font-weight:600}
+  .sim-chip .v{font-size:26px; font-weight:750; letter-spacing:-.8px}
+  .sim-chip.blu .v{color:var(--accento)}
+  .sim-chip .s{margin-top:8px; font-size:12.5px; line-height:1.4; color:var(--muto)}
+  .sim-chip .s b{color:var(--testo)}
+  .uni-comp{height:16px; gap:3px; background:transparent; margin:4px 0 18px}
+  .uni-comp span{border-radius:999px; transition:width .6s var(--dolce)}
+  .sim-punti{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:20px}
+  .sim-punti:empty{display:none}
+  .sim-punto{background:var(--fill); border-radius:var(--raggio-md); padding:14px 16px}
+  .sim-punto .k{font-size:12.5px; font-weight:600; color:var(--muto)}
+  .sim-punto .v{font-size:20px; font-weight:750; letter-spacing:-.5px; margin:4px 0 4px; font-variant-numeric:tabular-nums}
+  .sim-punto .n{font-size:12.5px; line-height:1.45; color:var(--muto)}
+
+  /* ---- grafico ---- */
+  .sim-tip, .graf-tip{background:var(--vetro-forte); color:var(--testo); -webkit-backdrop-filter:var(--vetro-blur); backdrop-filter:var(--vetro-blur);
+    border:1px solid var(--vetro-bordo); box-shadow:var(--vetro-luce), var(--vetro-ombra); border-radius:14px}
+  .sim-tip .tt{color:var(--muto); opacity:1}
+  .disegna{stroke-dasharray:var(--len); stroke-dashoffset:var(--len); animation:disegna 1.1s var(--dolce) forwards}
+  @keyframes disegna{to{stroke-dashoffset:0}}
+  .appare{animation:appare .9s ease both}
+  @keyframes appare{from{opacity:0}}
+
+  /* ---- tabelle ---- */
+  .sim-tab-scroll{border-radius:var(--raggio-sm)}
+  .sim-tabella thead th, .conf-tab th, .mut-conf th{text-transform:none; letter-spacing:0; font-size:12.5px}
+
+  /* ---- barra risultato (iPad verticale) ---- */
+  #risBar{left:12px; right:12px; bottom:calc(10px + env(safe-area-inset-bottom)); border-radius:28px; padding:8px 8px 8px 12px}
+  #risBar .et{text-transform:none; letter-spacing:0; font-size:12.5px}
+  #risBar .cifra{font-size:24px}
+  #risBar .seg{background:var(--fill); border-radius:20px}
+  #risBar .seg button{border-radius:16px}
+
+  /* ---- scelta del simulatore ---- */
+  .sim-scelte{gap:18px}
+  .sim-scelta{border:none; border-radius:var(--raggio); padding:26px; box-shadow:var(--ombra); position:relative; overflow:hidden;
+    transition:transform .45s var(--molla), box-shadow .3s}
+  .sim-scelta::after{content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px; border-radius:50%;
+    background:currentColor; opacity:.0; pointer-events:none}
+  .sim-scelta:active{transform:scale(.97)}
+  .sim-scelta-ico{width:58px; height:58px; border-radius:18px; box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+  .sim-scelta-ico svg{width:28px; height:28px}
+  .sim-scelta-ico.blu{background:linear-gradient(145deg,#4fb0ff,#007AFF); color:#fff}
+  .sim-scelta-ico.verde{background:linear-gradient(145deg,#4cd48e,#22855a); color:#fff}
+  .sim-scelta-ico.viola{background:linear-gradient(145deg,#b69cff,#7c4df0); color:#fff}
+  .sim-scelta-ico.arancio{background:linear-gradient(145deg,#ffb340,#e07800); color:#fff}
+  .sim-scelta-ico.teal{background:linear-gradient(145deg,#4fd3e0,#0b8794); color:#fff}
+  .sim-scelta-tit{font-size:20px; letter-spacing:-.5px; margin-top:4px}
+  .sim-scelta-desc{font-size:14.5px}
+  .sim-scelta-vai{font-size:14.5px; display:inline-flex; align-items:center; gap:4px}
+  .sim-salvata{border:none; background:var(--fill); border-radius:var(--raggio-md); padding:14px; transition:transform .35s var(--molla), background .2s}
+  .sim-salvata:active{transform:scale(.985)}
+  .sim-mini-ico{border-radius:13px}
+
+  /* ---- foglio modale ---- */
+  .velo{background:rgba(10,14,30,.26); -webkit-backdrop-filter:none; backdrop-filter:none; transition:opacity .3s ease}
+  .velo .finestra{background:var(--vetro-forte); border-radius:34px; padding:28px; max-width:640px;
+    transform:translateY(40px) scale(.94); opacity:0; transition:transform .5s var(--molla), opacity .25s ease}
+  .velo.aperto .finestra{transform:none; opacity:1}
+  .finestra h3{font-size:22px; letter-spacing:-.5px}
+  .info-voce{border-radius:var(--raggio-sm)}
+  .info-voce .eti{text-transform:none; letter-spacing:0; font-size:12.5px}
+
+  /* ---- toast ---- */
+  .toast{color:var(--testo); padding:13px 22px; font-size:14.5px; transition:opacity .3s ease, transform .5s var(--molla); transform:translateX(-50%) translateY(24px) scale(.9)}
+  .toast.mostra{transform:translateX(-50%) scale(1)}
+
+  /* ---- ingresso delle viste ---- */
+  .entra > *{animation:entra .6s var(--dolce) both}
+  .entra > *:nth-child(2){animation-delay:.04s} .entra > *:nth-child(3){animation-delay:.08s} .entra > *:nth-child(4){animation-delay:.12s}
+  .entra .sim-dash > *{animation:entra .65s var(--dolce) both}
+  .entra .sim-dash > *:nth-child(2){animation-delay:.07s} .entra .sim-dash > *:nth-child(3){animation-delay:.12s}
+  .entra .sim-dash > *:nth-child(4){animation-delay:.17s} .entra .sim-dash > *:nth-child(5){animation-delay:.22s}
+  .entra .sim-dash > *:nth-child(n+6){animation-delay:.26s}
+  .entra .sim-scelte > *{animation:entra .6s var(--molla) both}
+  .entra .sim-scelte > *:nth-child(2){animation-delay:.05s} .entra .sim-scelte > *:nth-child(3){animation-delay:.10s}
+  .entra .sim-scelte > *:nth-child(4){animation-delay:.15s} .entra .sim-scelte > *:nth-child(5){animation-delay:.20s}
+  @keyframes entra{from{opacity:0; transform:translateY(18px) scale(.985)}}
+  .sim-freq-blocco{transition:max-height .45s var(--dolce), opacity .3s ease, margin .3s ease}
+  .sim-tab-corpo{transition:max-height .5s var(--dolce)}
+
+  @media(hover:hover){
+    .sim-scelta:hover{transform:translateY(-4px); box-shadow:var(--ombra-forte); border:none}
+    .testata .act-tools .icona-btn:hover{background:var(--fill)}
+    .sl-passo:hover, .sl-rapido:hover{background:var(--fill-forte)}
+    .navvoce.attiva:hover{background:var(--accento)}
+    .pill-scelta.attiva:hover{background:var(--accento)}
+  }
+  @media(pointer:coarse){
+    .sim-chip .v{font-size:27px}
+    .sim-h2{font-size:13.5px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *, *::before, *::after{animation-duration:.01ms!important; animation-delay:0s!important; transition-duration:.01ms!important}
+  }
+  @media(prefers-reduced-transparency:reduce){
+    .sidebar, .sidebar-riapri, #risBar, .testata .act-tools, .velo .finestra, .toast, #presEsci, .sim-tip{background:var(--carta); -webkit-backdrop-filter:none; backdrop-filter:none}
+  }
+  @media print{
+    body::before{display:none}
+    .sim-chip::before{display:none}
+    .sl-passo, .sl-rapidi{display:none!important}
+  }
 </style>
 </head>
 <body>
@@ -905,7 +1192,7 @@ function animaCifra(el, valore, formatta){
 /* Quattro strumenti: ACCUMULO, DECUMULO, UNIVERSITÀ, MUTUO.
    I calcoli restano in locale; una simulazione si può salvare con un nome (localStorage). */
 let simPagina = null;   // null = pagina di scelta, 'accumulo' | 'decumulo' | 'universita' | 'mutuo'
-let simStato = { modo:'pic', freq:12, capitale:5000, obiettivo:50000, anni:15, tasso:5, rata:200, fiscale:'lordo' };
+let simStato = { modo:'pic', freq:12, capitale:5000, obiettivo:50000, anni:15, tasso:5, rata:200, fiscale:'lordo', inflazione:2 };
 let mutStato = { importo:120000, tasso:3, anni:30, freq:12, inizio:'' };
 let decStato = { modo:'orizzonte', freq:12, capitale:200000, anni:20, tasso:4, necessita:12000, fiscale:'lordo' };
 let simScenario = null;   // scenario "bloccato" per il confronto nell'Accumulo {periodi, testo}
@@ -1007,7 +1294,7 @@ function vistaSceltaSimulatore(){
     <button class="sim-scelta viola" onclick="simApriPagina('universita')">
       <span class="sim-scelta-ico viola">${SIM_ICO_CAP}</span>
       <span class="sim-scelta-tit">Spese Universitarie</span>
-      <span class="sim-scelta-desc">Il capitale necessario per far studiare un figlio: tasse, alloggio, vitto e trasporti, rivalutati all'anno di inizio degli studi.</span>
+      <span class="sim-scelta-desc">Il capitale necessario per far studiare un figlio: tasse, alloggio, vitto e trasporti, rivalutati con l'inflazione fino a ogni anno di corso.</span>
       <span class="sim-scelta-vai">Apri il simulatore ›</span>
     </button>
     <button class="sim-scelta arancio" onclick="simApriPagina('mutuo')">
@@ -1157,13 +1444,19 @@ function vistaSimAccumulo(){
       </div>
       <div class="sim-campo">
         <label for="simAnni">Orizzonte temporale</label>
-        <div class="sim-slider"><input type="range" id="simAnni" min="1" max="40" value="${s.anni}"><span class="val" id="simAnniVal">${simAnniTesto(s.anni)}</span></div>
+        <div class="sim-slider"><input type="range" id="simAnni" data-preset="5,10,15,20,25,30" min="1" max="40" value="${s.anni}"><span class="val" id="simAnniVal">${simAnniTesto(s.anni)}</span></div>
         <div class="sim-minmax"><span>1 anno</span><span>40 anni</span></div>
       </div>
       <div class="sim-campo">
         <label for="simTasso">Rendimento medio annuo atteso</label>
-        <div class="sim-slider"><input type="range" id="simTasso" min="0" max="12" step="0.5" value="${s.tasso}"><span class="val" id="simTassoVal">${simPct(s.tasso)}%</span></div>
+        <div class="sim-slider"><input type="range" id="simTasso" data-preset="2,4,6,8,10" min="0" max="12" step="0.5" value="${s.tasso}"><span class="val" id="simTassoVal">${simPct(s.tasso)}%</span></div>
         <div class="sim-minmax"><span>0%</span><span>12%</span></div>
+      </div>
+      <div class="sim-campo">
+        <label for="simInfl">Inflazione media attesa</label>
+        <div class="sim-slider"><input type="range" id="simInfl" min="0" max="5" step="0.5" value="${s.inflazione ?? 2}"><span class="val" id="simInflVal">${simPct(s.inflazione ?? 2)}%</span></div>
+        <div class="sim-minmax"><span>0%</span><span>5%</span></div>
+        <div class="sim-eco">Serve solo a stimare il potere d’acquisto del capitale finale.</div>
       </div>
       <div class="sim-campo">
         <label>Regime fiscale sui guadagni</label>
@@ -1182,10 +1475,17 @@ function vistaSimAccumulo(){
       </div>
       <div id="confBox"></div>
       <div class="sim-chips" id="simChips">
-        <div class="sim-chip"><div class="k">Capitale iniziale</div><div class="v" id="simChipIniziale">—</div></div>
-        <div class="sim-chip"><div class="k" id="simChipVersatoEt">Totale versato</div><div class="v" id="simChipVersato">—</div></div>
-        <div class="sim-chip verde"><div class="k">Interessi maturati</div><div class="v" id="simChipInteressi">—</div></div>
-        <div class="sim-chip arancio" id="simChipFiscBox" style="display:none"><div class="k">Imposta stimata</div><div class="v" id="simChipFisc">—</div></div>
+        <div class="sim-chip"><div class="k" id="simChipVersatoEt">Totale versato</div><div class="v" id="simChipVersato">—</div><div class="s" id="simChipVersatoSub"></div></div>
+        <div class="sim-chip verde"><div class="k">Interessi maturati</div><div class="v" id="simChipInteressi">—</div><div class="s" id="simChipInteressiSub"></div></div>
+        <div class="sim-chip blu"><div class="k" id="simChipFinaleEt">Capitale finale</div><div class="v" id="simChipFinale">—</div><div class="s" id="simChipFinaleSub"></div></div>
+        <div class="sim-chip arancio" id="simChipFiscBox" style="display:none"><div class="k">Imposta sui guadagni</div><div class="v" id="simChipFisc">—</div><div class="s" id="simChipFiscSub"></div></div>
+      </div>
+      <div class="card">
+        <div class="sim-chart-tit">Da dove arriva il capitale finale</div>
+        <p class="sim-card-sotto">Quanto metti tu e quanto aggiunge il rendimento nel tempo.</p>
+        <div class="uni-comp" id="simComp"></div>
+        <div class="uni-leg" id="simCompLeg"></div>
+        <div class="sim-punti" id="simPunti"></div>
       </div>
       <div class="card">
         <div class="sim-chart-testa">
@@ -1210,7 +1510,7 @@ function vistaSimAccumulo(){
           </div>
         </div>
       </div>
-      <p class="sim-piede">Simulazione indicativa basata su un rendimento annuo costante e capitalizzazione composta. Il tasso periodico è ricavato dal tasso annuo in modo coerente con la frequenza dei versamenti. Il calcolo non considera imposte, costi di gestione, commissioni o inflazione e non costituisce consulenza finanziaria.</p>
+      <p class="sim-piede">Simulazione indicativa: rendimento annuo costante e capitalizzazione composta. Il tasso di ogni periodo è ricavato dal tasso annuo in modo equivalente (per esempio mensile = (1 + tasso annuo)<sup>1/12</sup> − 1), e ogni versamento periodico è considerato a fine periodo. L’imposta, se scelta, è applicata in modo semplificato sul guadagno complessivo a scadenza; non sono considerati costi di gestione, commissioni, bollo titoli o variazioni del rendimento nel tempo. L’inflazione serve solo a stimare il potere d’acquisto. Non costituisce consulenza finanziaria.</p>
     </div>
   </div>`;
 }
@@ -1226,7 +1526,7 @@ function initSimulatore(){
     if(el.tagName==='SELECT' || el.type==='date') el.addEventListener('change', th);
   };
   if(simPagina==='accumulo'){
-    ['simCapitale','simObiettivo','simRata','simAnni','simTasso'].forEach(id=>ascolta(id, ()=>{ simLeggiInput(); simAggiorna(); }));
+    ['simCapitale','simObiettivo','simRata','simAnni','simTasso','simInfl'].forEach(id=>ascolta(id, ()=>{ simLeggiInput(); simAggiorna(); }));
     simWireChart();
     simAggiorna();
   } else if(simPagina==='decumulo'){
@@ -1269,6 +1569,8 @@ function simLeggiInput(){
   if(rataEl) simStato.rata = Math.max(0, numIT(rataEl.value) || 0);
   simStato.anni = parseInt(document.getElementById('simAnni').value, 10);
   simStato.tasso = parseFloat(document.getElementById('simTasso').value);
+  const inf = document.getElementById('simInfl');
+  if(inf) simStato.inflazione = parseFloat(inf.value);
 }
 function simCambiaModo(m){
   simStato.modo = m;
@@ -1374,6 +1676,7 @@ function simAggiorna(){
   const s = simStato;
   document.getElementById('simAnniVal').textContent = simAnniTesto(s.anni);
   document.getElementById('simTassoVal').textContent = simPct(s.tasso)+'%';
+  const inflVal = document.getElementById('simInflVal'); if(inflVal) inflVal.textContent = simPct(s.inflazione ?? 2)+'%';
   document.getElementById('simCapitaleEco').textContent = s.capitale>0 ? simEuro(s.capitale) : '';
   document.getElementById('simObiettivoEco').textContent = s.obiettivo>0 ? simEuro(s.obiettivo) : '';
   const rataEco = document.getElementById('simRataEco');
@@ -1399,9 +1702,10 @@ function simAggiorna(){
       risEt = 'Non serve investire altro'; risVal = 0;
       nota = `Il capitale che hai oggi (<b>${simEuro(s.capitale)}</b>) è già sufficiente: lasciato investito al ${simPct(s.tasso)}% annuo arriva a <b>${simEuro(finale)}</b> ${traAnni}, raggiungendo l'obiettivo di <b>${simEuro(s.obiettivo)}</b>.`;
     } else {
-      risEt = "Devi investire oggi, in un'unica soluzione"; risVal = d.unica;
+      risEt = s.capitale>0 ? "Devi aggiungere oggi, in un'unica soluzione" : "Devi investire oggi, in un'unica soluzione";
+      risVal = s.capitale>0 ? d.extra : d.unica;
       nota = s.capitale>0
-        ? `Hai già <b>${simEuro(s.capitale)}</b>: ti servono altri <b>${simEuro(d.extra)}</b> versati oggi per raggiungere <b>${simEuro(s.obiettivo)}</b> ${traAnni} al ${simPct(s.tasso)}% annuo.`
+        ? `Ai <b>${simEuro(s.capitale)}</b> che hai già aggiungi oggi <b>${simEuro(d.extra)}</b>: in tutto investi <b>${simEuro(d.unica)}</b>, che al ${simPct(s.tasso)}% annuo diventano <b>${simEuro(s.obiettivo)}</b> ${traAnni}.`
         : `Versando questa cifra oggi e lasciandola investita al ${simPct(s.tasso)}% annuo, raggiungi <b>${simEuro(s.obiettivo)}</b> ${traAnni}.`;
     }
     document.getElementById('simChipVersatoEt').textContent = 'Versamenti aggiuntivi';
@@ -1439,14 +1743,83 @@ function simAggiorna(){
   document.getElementById('simRisEt').textContent = risEt;
   animaCifra(document.getElementById('simRisCifra'), risVal, simEuro);
   document.getElementById('simRisNota').innerHTML = nota;
-  animaCifra(document.getElementById('simChipIniziale'), s.modo==='pic' ? s.capitale + d.extra : s.capitale, simEuro);
-  animaCifra(document.getElementById('simChipVersato'), versato, simEuro);
-  animaCifra(document.getElementById('simChipInteressi'), finale - investito, simEuro);
+  /* Totale versato = TUTTO il denaro messo da te: capitale iniziale + versamenti (o importo unico) */
+  const nVers = s.modo==='pic' ? 0 : d.periodi.length-1;
+  const interessi = finale - investito;
+  const setTxt = (id, t)=>{ const el = document.getElementById(id); if(el) el.innerHTML = t; };
+  document.getElementById('simChipVersatoEt').textContent = s.modo==='pic' ? 'Totale investito' : 'Totale versato';
+  animaCifra(document.getElementById('simChipVersato'), investito, simEuro);
+  if(s.modo==='pic'){
+    setTxt('simChipVersatoSub', d.extra>0 && s.capitale>0
+      ? `${simEuro(s.capitale)} che hai già + ${simEuro(d.extra)} da aggiungere oggi`
+      : (d.extra>0 ? 'versati tutti oggi, in un’unica soluzione' : 'il capitale che hai già, nessuna aggiunta'));
+  } else {
+    setTxt('simChipVersatoSub', nVers>0 && d.rata>0
+      ? `${s.capitale>0 ? simEuro(s.capitale)+' oggi + ' : ''}${itNum(nVers,0)} versamenti da ${simEuro2(d.rata).replace(',00','')}`
+      : (s.capitale>0 ? 'solo il capitale iniziale, nessun versamento' : 'nessun versamento'));
+  }
+  animaCifra(document.getElementById('simChipInteressi'), interessi, simEuro);
+  setTxt('simChipInteressiSub', investito>0 ? `+${simPct(interessi/investito*100)}% su quanto versato` : '');
+  document.getElementById('simChipFinaleEt').textContent = aliq>0 ? 'Capitale finale lordo' : 'Capitale finale';
+  animaCifra(document.getElementById('simChipFinale'), finale, simEuro);
+  setTxt('simChipFinaleSub', 'tra ' + simAnniTesto(s.anni));
   const fiscBox = document.getElementById('simChipFiscBox');
   if(fiscBox){
     fiscBox.style.display = aliq>0 ? '' : 'none';
-    if(aliq>0) animaCifra(document.getElementById('simChipFisc'), imposta, simEuro);
+    if(aliq>0){
+      animaCifra(document.getElementById('simChipFisc'), imposta, simEuro);
+      setTxt('simChipFiscSub', `netto: <b>${simEuro(finale - imposta)}</b>`);
+    }
   }
+  /* composizione del capitale finale: capitale iniziale / versamenti / interessi netti / imposta */
+  const capIniz = s.modo==='pic' ? investito : s.capitale;
+  const versPer = s.modo==='pic' ? 0 : d.rata * nVers;
+  const parti = [
+    {n: s.modo==='pic' ? 'Capitale che hai già' : 'Capitale iniziale', v: s.modo==='pic' ? Math.min(s.capitale, capIniz) : capIniz, c:'var(--accento)'},
+    {n: s.modo==='pic' ? 'Aggiunto oggi' : 'Versamenti periodici', v: s.modo==='pic' ? d.extra : versPer, c:'#5ac8fa'},
+    {n: aliq>0 ? 'Interessi netti' : 'Interessi maturati', v:Math.max(0, interessi - imposta), c:'var(--verde)'},
+    {n:'Imposta sui guadagni', v:imposta, c:'var(--arancio)'}
+  ].filter(x=>x.v>0.5);
+  const totComp = parti.reduce((a,x)=>a+x.v, 0) || 1;
+  const compEl = document.getElementById('simComp');
+  if(compEl) compEl.innerHTML = parti.map(x=>`<span style="width:${(x.v/totComp*100).toFixed(2)}%;background:${x.c}"></span>`).join('');
+  const legEl = document.getElementById('simCompLeg');
+  if(legEl) legEl.innerHTML = parti.map(x=>`<div class="r"><i class="pallino" style="background:${x.c}"></i><span>${x.n}</span><span class="imp">${simEuro(x.v)}</span><span class="pct">${simPct(x.v/totComp*100)}%</span></div>`).join('');
+  /* punti chiave */
+  const punti = [];
+  if(investito>0 && finale>0) punti.push(['Ogni euro versato diventa', `${itNum(finale/investito, 2)} €`, aliq>0 ? `al lordo; al netto dell’imposta ${itNum((finale-imposta)/investito, 2)} €` : `in ${simAnniTesto(s.anni)} al ${simPct(s.tasso)}% annuo`]);
+  const infl = (s.inflazione ?? 2)/100;
+  if(finale>0){
+    const netto = finale - imposta;
+    const reale = netto / Math.pow(1+infl, s.anni);
+    punti.push(['Potere d’acquisto a oggi', simEuro(reale), infl>0 ? `${simEuro(netto)}${aliq>0?' netti':''} tra ${simAnniTesto(s.anni)} valgono come ${simEuro(reale)} di oggi (inflazione ${simPct(infl*100)}% annuo)` : 'inflazione impostata a zero']);
+  }
+  if(s.modo!=='pic' && nVers>0){
+    /* primo anno in cui gli interessi dell'anno superano i versamenti dell'anno */
+    const k = s.freq; let annoSorpasso = 0;
+    for(let a=1; a<=s.anni; a++){
+      let intA = 0; for(let p=(a-1)*k+1; p<=a*k; p++) intA += d.periodi[p].interesse;
+      if(intA > d.rata*k){ annoSorpasso = a; break; }
+    }
+    punti.push(['Quando il rendimento lavora più di te', annoSorpasso ? `Anno ${annoSorpasso}` : 'Non nell’orizzonte scelto',
+      annoSorpasso ? 'da quell’anno gli interessi annui superano i versamenti annui' : `gli interessi annui restano sotto i ${simEuro(d.rata*k)} versati ogni anno`]);
+  }
+  if(s.obiettivo>0){
+    const nettoDi = p => p.saldo - aliq*Math.max(0, p.saldo - (s.modo==='pic' ? investito : s.capitale + d.rata*(p.indice||0)));
+    const hit = d.periodi.find(p=>nettoDi(p) >= s.obiettivo - 0.5);
+    if(hit){
+      let aa = Math.floor(hit.t + 1e-9), mm = Math.round((hit.t - aa)*12); if(mm===12){ aa++; mm=0; }
+      const quando = hit.t===0 ? 'Già oggi' : [aa ? simAnniTesto(aa) : '', mm ? mm + (mm===1?' mese':' mesi') : ''].filter(Boolean).join(' e ');
+      punti.push(['Obiettivo raggiunto', quando, `soglia di ${simEuro(s.obiettivo)}${aliq>0?' netti':''}`]);
+    } else if(s.modo==='rata'){
+      const k = s.freq, r = s.tasso/100, i = Math.pow(1+r, 1/k)-1, n = s.anni*k;
+      const A = Math.pow(1+i, n), B = i===0 ? n : (A-1)/i, al = FISC_ALIQ[s.fiscale]||0;
+      const serve = Math.max(0, (s.obiettivo - s.capitale*(A*(1-al)+al)) / (B*(1-al) + al*n));
+      punti.push(['Per centrare l’obiettivo', `${simEuro(Math.ceil(serve))} a ${SIM_FREQ_PAROLA[s.freq]}`, `invece di ${simEuro(s.rata)}: ${simEuro(Math.max(0, Math.ceil(serve) - s.rata))} in più a ogni versamento`]);
+    }
+  }
+  const puntiEl = document.getElementById('simPunti');
+  if(puntiEl) puntiEl.innerHTML = punti.map(([k,v,n])=>`<div class="sim-punto"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join('');
   risBarAggiorna(risEt, simEuro(risVal), 'var(--accento)');
   /* confronto con lo scenario bloccato: linea tratteggiata sul grafico + tabella Bloccato/Adesso/Differenza */
   d.confronto = simScenario ? simScenario.periodi : null;
@@ -1628,12 +2001,12 @@ function vistaSimDecumulo(){
       </div>
       <div class="sim-campo${s.modo==='orizzonte'?'':' chiuso'}" id="decCampoAnni">
         <label for="decAnni">Orizzonte temporale</label>
-        <div class="sim-slider"><input type="range" id="decAnni" min="1" max="40" value="${s.anni}"><span class="val" id="decAnniVal">${simAnniTesto(s.anni)}</span></div>
+        <div class="sim-slider"><input type="range" id="decAnni" data-preset="10,15,20,25,30" min="1" max="40" value="${s.anni}"><span class="val" id="decAnniVal">${simAnniTesto(s.anni)}</span></div>
         <div class="sim-minmax"><span>1 anno</span><span>40 anni</span></div>
       </div>
       <div class="sim-campo">
         <label for="decTasso">Rendimento medio annuo atteso</label>
-        <div class="sim-slider"><input type="range" id="decTasso" min="0" max="12" step="0.5" value="${s.tasso}"><span class="val" id="decTassoVal">${simPct(s.tasso)}%</span></div>
+        <div class="sim-slider"><input type="range" id="decTasso" data-preset="2,3,4,5,6" min="0" max="12" step="0.5" value="${s.tasso}"><span class="val" id="decTassoVal">${simPct(s.tasso)}%</span></div>
         <div class="sim-minmax"><span>0%</span><span>12%</span></div>
       </div>
       <div class="sim-h2 due">Frequenza dei prelievi</div>
@@ -1685,7 +2058,7 @@ function vistaSimDecumulo(){
           </div>
         </div>
       </div>
-      <p class="sim-piede">Simulazione indicativa basata su un rendimento annuo costante e prelievi a fine periodo. Il tasso periodico è ricavato dal tasso annuo in modo coerente con la frequenza dei prelievi. Il calcolo non considera imposte, costi di gestione, commissioni o inflazione e non costituisce consulenza finanziaria.</p>
+      <p class="sim-piede">Simulazione indicativa basata su un rendimento annuo costante e prelievi a fine periodo. Il tasso periodico è ricavato dal tasso annuo in modo coerente con la frequenza dei prelievi. L’imposta, se scelta, è stimata in modo semplificato sul totale degli interessi maturati; non sono considerati costi di gestione, commissioni o inflazione. Non costituisce consulenza finanziaria.</p>
     </div>
   </div>`;
 }
@@ -1786,7 +2159,7 @@ function decAggiorna(){
   document.getElementById('decTassoVal').textContent = simPct(s.tasso)+'%';
   document.getElementById('decCapitaleEco').textContent = s.capitale>0 ? simEuro(s.capitale) : '';
   const necEco = document.getElementById('decNecessitaEco'); if(necEco) necEco.textContent = s.necessita>0 ? simEuro(s.necessita) + " all'anno" : '';
-  document.getElementById('decHeroTag').textContent = 'Prelievo ' + SIM_FREQ_NOMI[s.freq].toLowerCase();
+  document.getElementById('decHeroTag').textContent = 'Prelievi ' + {12:'mensili',6:'bimestrali',4:'trimestrali',2:'semestrali',1:'annuali'}[s.freq];
   const d = decCalcola();
   const et = document.getElementById('decRisEt'), cifra = document.getElementById('decRisCifra'), nota = document.getElementById('decRisNota');
   cifra.classList.remove('testo');
@@ -1822,7 +2195,7 @@ function decAggiorna(){
   }
   if(animaPrelievo) animaCifra(cifra, d.prelievoAnnuo, simEuro); else delete cifra.dataset.v;
   if(s.capitale>0 && aliq>0 && imposta>0)
-    nota.innerHTML += ` L'imposta del ${simPct(aliq*100)}% sulla quota di guadagno vale circa <b>−${simEuro(imposta)}</b> sull'intero periodo${animaPrelievo ? `: il prelievo annuo equivale a <b>${simEuro(Math.max(0, d.prelievoAnnuo - imposta/Math.max(1,(d.nPeriodi/s.freq))))}</b> netti` : ''}.`;
+    nota.innerHTML += ` L'imposta del ${simPct(aliq*100)}% sulla quota di guadagno vale circa <b>−${simEuro(imposta)}</b> sull'intero periodo${animaPrelievo ? `: il prelievo annuo equivale in media a <b>${simEuro(Math.max(0, d.prelievoAnnuo - imposta/Math.max(1,(d.nPeriodi/s.freq))))}</b> netti` : ''}.`;
   animaCifra(document.getElementById('decChipIniziale'), s.capitale, simEuro);
   document.getElementById('decChipPrelevatoEt').textContent = d.perpetuo ? 'Prelevato in 40 anni' : 'Totale prelevato';
   animaCifra(document.getElementById('decChipPrelevato'), d.totPrelevato, simEuro);
@@ -1897,7 +2270,7 @@ function vistaSimUniversita(){
   const statale = s.tipoAteneo==='statale';
   const famiglia = s.sistemazione==='famiglia';
   return simBtnIndietro() +
-  testata('Spese Universitarie', 'Quanto serve per far studiare un figlio — costi rivalutati all\'inizio degli studi', simBtnAzioni('universita')) +
+  testata('Spese Universitarie', 'Quanto costerà far studiare un figlio — ogni anno di corso rivalutato con l\'inflazione', simBtnAzioni('universita')) +
   `<div class="solo-stampa" id="printHead"></div>
   <div class="sim-grid">
     <div class="card sim-pannello">
@@ -1908,7 +2281,7 @@ function vistaSimUniversita(){
       </div>
       <div class="sim-campo">
         <label for="uniAnniMancanti">Anni mancanti all'inizio degli studi</label>
-        <div class="sim-slider"><input type="range" id="uniAnniMancanti" min="0" max="20" value="${s.anniMancanti}"><span class="val" id="uniAnniMancantiVal">${s.anniMancanti===0?'Inizia ora':simAnniTesto(s.anniMancanti)}</span></div>
+        <div class="sim-slider"><input type="range" id="uniAnniMancanti" data-preset="0,5,10,15,18" data-preset-eti="Ora,5,10,15,18" min="0" max="20" value="${s.anniMancanti}"><span class="val" id="uniAnniMancantiVal">${s.anniMancanti===0?'Inizia ora':simAnniTesto(s.anniMancanti)}</span></div>
         <div class="sim-minmax"><span>Ora</span><span>20 anni</span></div>
       </div>
       <div class="sim-h2 due">Ateneo e corso</div>
@@ -2126,12 +2499,12 @@ function uniAggiorna(){
   const cittaEco = el('uniCittaEco');
   if(cittaEco) cittaEco.textContent = s.sistemazione!=='famiglia' ? 'Stanza singola: circa '+simEuro(d.citta.affitto)+' al mese oggi' : '';
   el('uniHeroTag').textContent = d.anniTot + ' anni di studi';
-  el('uniRisEt').textContent = 'Capitale complessivo necessario';
+  el('uniRisEt').textContent = 'Spesa totale stimata per gli studi';
   animaCifra(el('uniRisCifra'), d.totale, simEuro);
   risBarAggiorna('Capitale necessario', simEuro(d.totale), 'var(--viola-txt)');
   const chi = s.studente ? 'per <b>'+esc(s.studente)+'</b>' : 'per lo studente';
   const quando = s.anniMancanti===0 ? 'con inizio immediato' : 'con inizio tra <b>'+simAnniTesto(s.anniMancanti)+'</b>';
-  el('uniRisNota').innerHTML = `Stima ${chi}: ${d.corso.nome.toLowerCase()}${s.fuoriCorso?' più '+simAnniTesto(s.fuoriCorso)+' fuori corso':''}, ${quando}. Ai prezzi di oggi servirebbero <b>${simEuro(d.annuoOggi)}</b> all'anno; la cifra qui sopra è già rivalutata al ${simPct(s.inflazione)}% annuo fino a ciascun anno di corso.`;
+  el('uniRisNota').innerHTML = `Stima ${chi}: ${d.corso.nome.toLowerCase()}${s.fuoriCorso?' più '+simAnniTesto(s.fuoriCorso)+' fuori corso':''}, ${quando}. Ai prezzi di oggi servirebbero <b>${simEuro(d.annuoOggi)}</b> all'anno; la cifra qui sopra è già rivalutata al ${simPct(s.inflazione)}% annuo fino a ciascun anno di corso. È la somma delle spese future: non tiene conto del rendimento che il denaro accantonato può produrre nel frattempo (per quello usa il Simulatore Accumulo).`;
   animaCifra(el('uniChipAnnuo'), d.annuoOggi, simEuro);
   animaCifra(el('uniChipOggi'), d.totaleOggi, simEuro);
   animaCifra(el('uniChipInflazione'), Math.max(0, d.totale - d.totaleOggi), v=>'+' + simEuro(v));
@@ -4133,7 +4506,7 @@ function vistaSimMutuo(){
       </div>
       <div class="sim-campo">
         <label for="mutAnni">Durata</label>
-        <div class="sim-slider"><input type="range" id="mutAnni" min="5" max="40" step="1" value="${s.anni}"><span class="val" id="mutAnniVal">${simAnniTesto(s.anni)}</span></div>
+        <div class="sim-slider"><input type="range" id="mutAnni" data-preset="10,15,20,25,30" min="5" max="40" step="1" value="${s.anni}"><span class="val" id="mutAnniVal">${simAnniTesto(s.anni)}</span></div>
         <div class="sim-minmax"><span>5 anni</span><span>40 anni</span></div>
       </div>
       <div class="sim-campo">
@@ -4272,7 +4645,7 @@ function mutAggiungiMesi(d0, mesi){
 }
 function mutMesiTrascorsi(d0, d1){
   let mesi = (d1.getFullYear()-d0.getFullYear())*12 + (d1.getMonth()-d0.getMonth());
-  if(d1.getDate() < d0.getDate()) mesi -= 1;       // il mese non è ancora compiuto
+  if(mutAggiungiMesi(d0, mesi) > d1) mesi -= 1;    // stessa regola di fine mese usata per le scadenze
   return mesi;
 }
 function mutDataTesto(d){ return d instanceof Date && !isNaN(d) ? d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'; }
@@ -4346,14 +4719,14 @@ function mutAggiorna(){
   animaCifra(el('mutChipTotale'), d.totaleRimborso, simEuro);
   mutRiquadroOggi(d);
   // confronto per durata: finestra di 5 durate a passi di 5 anni centrata su quella scelta (che può essere qualsiasi)
-  let anniConf = [-10,-5,0,5,10].map(o=>s.anni+o).filter(a=>a>=5 && a<=45);
+  let anniConf = [-10,-5,0,5,10].map(o=>s.anni+o).filter(a=>a>=5 && a<=40);
   while(anniConf.length<5){
     const mn = anniConf[0], mx = anniConf[anniConf.length-1];
-    if(mx+5<=45) anniConf.push(mx+5); else anniConf.unshift(mn-5);
+    if(mx+5<=40) anniConf.push(mx+5); else anniConf.unshift(mn-5);
   }
   const durate = anniConf.map(dd=>{
-    const N = dd*s.freq, rata = mutRata(s.importo, d.i, N);
-    return {anni:dd, rata, interessi:Math.max(0, rata*N - s.importo), sel:dd===s.anni};
+    const pp = mutPiano(s.importo, s.tasso, dd, s.freq);   // stesso arrotondamento dei riquadri
+    return {anni:dd, rata:pp.rata, interessi:pp.totaleInteressi, sel:dd===s.anni};
   });
   // confronto con lo scenario bloccato: tabella Bloccato / Adesso / Differenza
   confAggiornaSblocca(!!mutScenario);
@@ -4428,8 +4801,8 @@ function fotografiaSimulazione(tipo){
   if(tipo==='accumulo'){
     const s = simStato, d = simCalcola();
     const finale = d.periodi.length ? d.periodi[d.periodi.length-1].saldo : 0;
-    return {tipo, dati:{ modo:s.modo, freq:s.freq, capitale:s.capitale, obiettivo:s.obiettivo, anni:s.anni, tasso:s.tasso, rata:s.rata, fiscale:s.fiscale,
-      risultato: s.modo==='pic' ? d.unica : (s.modo==='pac' ? d.rata : finale), extra:d.extra, finale,
+    return {tipo, dati:{ modo:s.modo, freq:s.freq, capitale:s.capitale, obiettivo:s.obiettivo, anni:s.anni, tasso:s.tasso, rata:s.rata, fiscale:s.fiscale, inflazione:s.inflazione,
+      risultato: s.modo==='pic' ? d.extra : (s.modo==='pac' ? d.rata : finale), extra:d.extra, finale, v2:true,
       versato: s.modo==='pic' ? 0 : d.rata*(d.periodi.length-1) }};
   }
   if(tipo==='universita'){
@@ -4477,7 +4850,7 @@ function testoRiepilogo(tipo){
     } else {
       righe.push(`Versamento ${(SIM_FREQ_NOMI[d.freq]||'').toLowerCase()}: ${simEuro(d.modo==='pac' ? d.risultato : d.rata)} · capitale iniziale ${simEuro(d.capitale)} · ${simPct(d.tasso)}% annuo · ${simAnniTesto(d.anni)}`);
       if(d.obiettivo>0) righe.push(`Obiettivo: ${simEuro(d.obiettivo)}`);
-      righe.push(`Totale versato: ${simEuro(d.versato)} — capitale finale previsto: ${simEuro(d.finale)}`);
+      righe.push(`Totale versato: ${simEuro(d.capitale + d.versato)} (capitale iniziale ${simEuro(d.capitale)} + versamenti ${simEuro(d.versato)}) — capitale finale previsto: ${simEuro(d.finale)}`);
     }
     if(d.fiscale && d.fiscale!=='lordo') righe.push(`Regime fiscale considerato: ${FISC_NOMI[d.fiscale]}`);
   } else if(tipo==='decumulo'){
@@ -4489,7 +4862,7 @@ function testoRiepilogo(tipo){
   } else if(tipo==='universita'){
     righe.push('Simulazione Spese Universitarie' + (d.studente ? ' — ' + d.studente : ''));
     righe.push(`${uniNomeCorso(d.corso)}${d.fuoriCorso ? ' + ' + simAnniTesto(d.fuoriCorso) + ' fuori corso' : ''}, inizio ${d.anniMancanti===0 ? 'immediato' : 'tra ' + simAnniTesto(d.anniMancanti)}`);
-    righe.push(`Costo annuo ai prezzi di oggi: ${simEuro(d.annuoOggi)} — capitale complessivo necessario (rivalutato al ${simPct(d.inflazione)}%): ${simEuro(d.totale)}`);
+    righe.push(`Costo annuo ai prezzi di oggi: ${simEuro(d.annuoOggi)} — spesa totale stimata (costi rivalutati al ${simPct(d.inflazione)}% annuo): ${simEuro(d.totale)}`);
   } else if(tipo==='successione'){
     righe.push('Simulazione Successione ereditaria');
     righe.push(`${d.modo==='legittima' ? 'Successione legittima (senza testamento)' : 'Successione testamentaria'} — ${d.nEredi} ${d.nEredi===1?'erede':'eredi'}`);
@@ -4622,11 +4995,14 @@ function simRigaTitolo(sim){
 function simRigaRisultato(sim){
   const d = sim.dati||{};
   if(sim.tipo==='accumulo'){
-    if(d.modo==='pic') return {v:simEuro(d.risultato), k:'da investire oggi'};
+    if(d.modo==='pic'){
+      const extra = d.v2 ? d.risultato : Math.max(0, (d.risultato||0) - (d.capitale||0));   // salvataggi vecchi: risultato = importo totale
+      return {v:simEuro(extra), k: d.capitale>0 ? 'da aggiungere oggi' : 'da investire oggi'};
+    }
     if(d.modo==='rata') return {v:simEuro(d.finale), k:'capitale finale'};
     return {v:simEuro(d.risultato), k:'al '+(SIM_FREQ_PAROLA[d.freq]||'mese')};
   }
-  if(sim.tipo==='universita') return {v:simEuro(d.totale), k:'capitale necessario'};
+  if(sim.tipo==='universita') return {v:simEuro(d.totale), k:'spesa totale stimata'};
   if(sim.tipo==='mutuo') return {v:simEuro2(d.rata), k:'rata al '+(SIM_FREQ_PAROLA[d.freq]||'mese')};
   if(sim.tipo==='successione') return {v:simEuro(d.impostaTotale), k:'totale imposte'};
   if(d.modo==='orizzonte') return {v:simEuro(d.prelievoAnnuo), k:"prelievo all'anno"};
@@ -4752,7 +5128,11 @@ function apriSimulazioneSalvata(id){
     voci.push(['Orizzonte temporale', simAnniTesto(d.anni)]);
     voci.push(['Rendimento annuo', simPct(d.tasso||0)+'%']);
     if(d.fiscale && d.fiscale!=='lordo') voci.push(['Regime fiscale', FISC_NOMI[d.fiscale]]);
-    if(d.modo!=='pic') voci.push(['Totale versato', simEuro(d.versato)]);
+    if(d.modo!=='pic'){
+      voci.push(['Versamenti periodici', simEuro(d.versato)]);
+      voci.push(['Totale versato (capitale + versamenti)', simEuro(d.capitale + d.versato)]);
+    } else voci.push(['Totale investito oggi', simEuro(d.capitale + (d.extra||0))]);
+    voci.push(['Interessi maturati', simEuro(Math.max(0, d.finale - (d.modo==='pic' ? d.capitale + (d.extra||0) : d.capitale + d.versato)))]);
     voci.push(['Capitale finale previsto', simEuro(d.finale)]);
   } else {
     voci.push(['Calcolo', d.modo==='orizzonte' ? 'Quanto prelevare (durata scelta da te)' : 'Quanto dura (necessità scelta da te)']);
@@ -4775,7 +5155,7 @@ function apriSimulazioneSalvata(id){
       <div class="et">${suc
         ? 'Totale imposte della successione'
         : s.tipo==='universita'
-        ? 'Capitale complessivo necessario'
+        ? 'Spesa totale stimata per gli studi'
         : mut
           ? 'Rata ' + (MUT_FREQ_AGG[d.freq]||'mensile')
         : acc
@@ -4796,7 +5176,7 @@ function riapriSimulazione(id){
   const s = db.simulazioni.find(x=>x.id===id); if(!s) return;
   const d = s.dati||{};
   if(s.tipo==='accumulo'){
-    simStato = { modo:d.modo||'pic', freq:d.freq||12, capitale:d.capitale||0, obiettivo:d.obiettivo||0, anni:d.anni||15, tasso:(d.tasso ?? 5), rata:(d.rata ?? 200), fiscale:d.fiscale||'lordo' };
+    simStato = { modo:d.modo||'pic', freq:d.freq||12, capitale:d.capitale||0, obiettivo:d.obiettivo||0, anni:d.anni||15, tasso:(d.tasso ?? 5), rata:(d.rata ?? 200), fiscale:d.fiscale||'lordo', inflazione:(d.inflazione ?? 2) };
     simPagina = 'accumulo';
   } else if(s.tipo==='universita'){
     uniStato = { studente:d.studente||'', tipoAteneo:d.tipoAteneo||'statale', isee:(d.isee ?? 30000), retta:(d.retta ?? 9000),
@@ -5571,6 +5951,158 @@ async function datiDettaglio(sym, nome){
     apriFinestra(`<h2 style="margin:0 0 6px">${esc(nome)}</h2><div class="dati-err">Storico non disponibile al momento. Controlla la connessione e riprova.</div>`);
   }
 }
+</script>
+
+<script>
+/* ================= INTERAZIONE TOUCH E ANIMAZIONI (iPadOS 27) ================= */
+const SL_ICO_MENO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg>';
+const SL_ICO_PIU  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>';
+function slRiempi(inp){
+  const mn = +inp.min || 0, mx = +inp.max || 100, v = +inp.value;
+  inp.style.setProperty('--p', ((v-mn)/(mx-mn||1)*100).toFixed(2) + '%');
+}
+function slImposta(inp, v, batti){
+  const mn = +inp.min || 0, mx = +inp.max || 100, st = +inp.step || 1;
+  v = Math.min(mx, Math.max(mn, Math.round((v-mn)/st)*st + mn));
+  v = +v.toFixed(4);
+  if(+inp.value === v) return false;
+  inp.value = v;
+  inp.dispatchEvent(new Event('input', {bubbles:true}));
+  if(batti){
+    const big = inp.closest('.sim-campo') && inp.closest('.sim-campo').querySelector('.sl-valore');
+    if(big){ big.classList.remove('batti'); void big.offsetWidth; big.classList.add('batti'); setTimeout(()=>big.classList.remove('batti'), 180); }
+  }
+  return true;
+}
+function slPotenzia(inp){
+  if(inp.dataset.sl) return; inp.dataset.sl = '1';
+  const box = inp.closest('.sim-slider'); if(!box) return;
+  const campo = box.closest('.sim-campo');
+  const val = box.querySelector('.val');
+  const label = campo ? campo.querySelector(':scope > label') : null;
+  const st = +inp.step || 1;
+  /* intestazione: etichetta a sinistra, valore grande a destra */
+  let big = null;
+  if(label && val){
+    const testa = document.createElement('div'); testa.className = 'sl-testa';
+    label.parentNode.insertBefore(testa, label); testa.appendChild(label);
+    big = document.createElement('span'); big.className = 'sl-valore'; big.setAttribute('aria-live','polite');
+    testa.appendChild(big);
+  } else if(val) val.style.display = 'inline';
+  /* pulsanti − e + (tenendoli premuti il valore scorre) */
+  const mkBtn = (dir)=>{
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'sl-passo'; b.innerHTML = dir<0 ? SL_ICO_MENO : SL_ICO_PIU;
+    b.setAttribute('aria-label', (dir<0 ? 'Diminuisci ' : 'Aumenta ') + (label ? label.textContent : ''));
+    let t1 = 0, t2 = 0, daPuntatore = false;
+    const passo = ()=> slImposta(inp, +inp.value + dir*st, true);
+    const ferma = ()=>{ clearTimeout(t1); clearInterval(t2); };
+    b.addEventListener('pointerdown', e=>{
+      daPuntatore = true; passo(); ferma();
+      t1 = setTimeout(()=>{ t2 = setInterval(()=>{ if(!passo()) ferma(); }, 85); }, 380);
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev, ferma));
+    b.addEventListener('click', ()=>{ if(!daPuntatore) passo(); daPuntatore = false; });
+    return b;
+  };
+  const meno = mkBtn(-1), piu = mkBtn(1);
+  box.insertBefore(meno, inp); box.insertBefore(piu, inp.nextSibling);
+  /* scelte rapide */
+  let rapidi = null;
+  if(inp.dataset.preset){
+    const vals = inp.dataset.preset.split(',').map(Number);
+    const eti = (inp.dataset.presetEti || inp.dataset.preset).split(',');
+    rapidi = document.createElement('div'); rapidi.className = 'sl-rapidi';
+    rapidi.innerHTML = vals.map((v,i)=>`<button type="button" class="sl-rapido" data-v="${v}">${eti[i]}</button>`).join('');
+    rapidi.addEventListener('click', e=>{ const b = e.target.closest('.sl-rapido'); if(b) slImposta(inp, +b.dataset.v, true); });
+    const mm = campo && campo.querySelector('.sim-minmax');
+    (mm || box).insertAdjacentElement('afterend', rapidi);
+  }
+  const sync = ()=>{
+    if(big && val) big.textContent = val.textContent;
+    slRiempi(inp);
+    meno.disabled = +inp.value <= +inp.min; piu.disabled = +inp.value >= +inp.max;
+    if(rapidi) rapidi.querySelectorAll('.sl-rapido').forEach(b=>b.classList.toggle('on', +b.dataset.v === +inp.value));
+  };
+  if(val) new MutationObserver(sync).observe(val, {childList:true, characterData:true, subtree:true});
+  inp.addEventListener('input', sync);
+  sync();
+  /* al tocco: un tap sul binario sposta subito il cursore, un trascinamento orizzontale lo segue */
+  let x0 = 0, y0 = 0, trascina = false, attivo = false;
+  const daX = x=>{
+    const r = inp.getBoundingClientRect(), th = 34;
+    const f = Math.min(1, Math.max(0, (x - r.left - th/2) / (r.width - th)));
+    slImposta(inp, +inp.min + f*(+inp.max - +inp.min));
+  };
+  inp.addEventListener('pointerdown', e=>{
+    if(e.pointerType==='mouse') return;
+    attivo = true; trascina = false; x0 = e.clientX; y0 = e.clientY;
+  });
+  inp.addEventListener('pointermove', e=>{
+    if(!attivo) return;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    if(!trascina && Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(dy)){
+      trascina = true; inp.classList.add('trascina');
+      try{ inp.setPointerCapture(e.pointerId); }catch(_){}
+    }
+    if(trascina) daX(e.clientX);
+  });
+  const fine = e=>{
+    if(!attivo) return; attivo = false;
+    if(!trascina && e.type==='pointerup' && Math.abs(e.clientX-x0) < 8 && Math.abs(e.clientY-y0) < 8) daX(e.clientX);
+    trascina = false; inp.classList.remove('trascina');
+  };
+  inp.addEventListener('pointerup', fine);
+  inp.addEventListener('pointercancel', fine);
+}
+/* Controllo segmentato: un cursore che scivola sotto l'opzione scelta */
+function segPotenzia(seg){
+  if(seg.dataset.segjs) return;
+  if(!seg.querySelector(':scope > button')) return;
+  seg.dataset.segjs = '1'; seg.classList.add('seg-js');
+  const cur = document.createElement('span'); cur.className = 'seg-cursore'; seg.insertBefore(cur, seg.firstChild);
+  let primo = true;
+  const posiziona = ()=>{
+    const on = seg.querySelector(':scope > button.on');
+    if(!on || !on.offsetWidth){ cur.style.opacity = '0'; return; }
+    if(primo){ cur.style.transition = 'none'; }
+    cur.style.opacity = '1';
+    cur.style.width = on.offsetWidth + 'px';
+    cur.style.transform = `translateX(${on.offsetLeft}px)`;
+    if(primo){ void cur.offsetWidth; cur.style.transition = ''; primo = false; }
+  };
+  new MutationObserver(posiziona).observe(seg, {attributes:true, subtree:true, attributeFilter:['class']});
+  if(window.ResizeObserver) new ResizeObserver(posiziona).observe(seg);
+  posiziona();
+}
+function potenziaTutto(radice){
+  (radice||document).querySelectorAll('.sim-slider input[type=range]').forEach(slPotenzia);
+  (radice||document).querySelectorAll('.seg').forEach(segPotenzia);
+}
+/* grafici: la linea si disegna e l'area compare, solo alla prima apertura della pagina */
+function animaGrafici(){
+  document.querySelectorAll('#app svg path').forEach(p=>{
+    const f = p.getAttribute('fill'), sw = p.getAttribute('stroke'), dash = p.getAttribute('stroke-dasharray');
+    if(f==='none' && sw && !dash && typeof p.getTotalLength==='function'){
+      const len = p.getTotalLength(); if(!len) return;
+      p.style.setProperty('--len', len); p.classList.add('disegna');
+    } else if(f && f.startsWith('url(')) p.classList.add('appare');
+  });
+}
+(function(){
+  const _rendi = rendi;
+  rendi = function(){
+    _rendi.apply(this, arguments);
+    const app = document.getElementById('app');
+    app.classList.remove('entra'); void app.offsetWidth; app.classList.add('entra');
+    clearTimeout(rendi._t); rendi._t = setTimeout(()=>app.classList.remove('entra'), 1000);
+    potenziaTutto(app);
+    requestAnimationFrame(animaGrafici);
+  };
+  /* parti del pannello ricostruite senza passare da rendi() (es. successione) */
+  new MutationObserver(()=>potenziaTutto(document.getElementById('app'))).observe(document.getElementById('app'), {childList:true, subtree:true});
+  potenziaTutto(document);
+})();
 </script>
 </body>
 </html>
